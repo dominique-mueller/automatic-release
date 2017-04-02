@@ -10,15 +10,15 @@ Automates the full release process for Open Source projects on GitHub, using Tra
 
 ## What it does
 
-![Automatic Release Preview GIF](/docs/preview.gif?raw=true)
-
 **automatic release** automates the whole release process for Open Source projects in GitHub by:
 
 - updating version numbers automatically
 - generating a detailed changelog
 - and creating releases on GitHub.
 
-When used in combination with the **Git Flow** branching model and a Continueous Integration platform such as **Travis CI**, releasing a library to NPM & GitHub gets as easy as merging the latest development state into the `master` branch.
+When used in combination with the **Git Flow** branching model and a Continuous Integration platform such as **Travis CI**, releasing a library to NPM & GitHub gets as easy as merging the latest development state into the `master` branch.
+
+![Automatic Release Preview GIF](/docs/preview.gif?raw=true)
 
 <br>
 
