@@ -1,0 +1,9 @@
+# Dependencies
+node_modules
+
+# Unnecessary stuff
+docs
+.nvmrc
+
+# Logs
+*.log

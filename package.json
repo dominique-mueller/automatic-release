@@ -1,0 +1,45 @@
+{
+	"name": "automatic-release",
+	"description": "TODO",
+	"version": "1.0.0",
+	"author": {
+		"name": "Dominique Müller",
+		"email": "dominique.m.mueller@gmail.com",
+		"url": "https://www.devdom.io/"
+	},
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/dominique-mueller/automatic-release"
+	},
+	"homepage": "https://github.com/dominique-mueller/automatic-release",
+	"bugs": {
+		"url": "https://github.com/dominique-mueller/automatic-release/issues"
+	},
+	"keywords": [
+		"automatic",
+		"auto",
+		"semantic",
+		"release",
+		"automatic release",
+		"semantic release",
+		"ci",
+		"nodejs",
+		"npm"
+	],
+	"main": "./index.js",
+	"bin": {
+		"automatic-release": "./bin/automatic-release.js"
+	},
+	"dependencies": {
+		"chalk": "1.1.x",
+		"concat-stream": "1.6.x",
+		"conventional-changelog": "1.1.x",
+		"conventional-github-releaser": "1.1.x",
+		"conventional-recommended-bump": "1.0.x",
+		"figures": "2.0.x",
+		"github-url-from-git": "1.5.x",
+		"semver": "5.3.x",
+		"simple-git": "1.68.x"
+	}
+}
