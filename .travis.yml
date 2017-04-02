@@ -1,0 +1,24 @@
+language: node_js
+cache:
+  directories:
+    - node_modules
+notifications:
+  email: false
+
+branches:
+  only:
+    - master
+    - develop
+
+before_install:
+  - npm install -g npm
+install:
+  - npm install
+
+deploy:
+  provider: npm
+  email: dominique.m.mueller@gmail.com
+  api_key: "${NPM_TOKEN}"
+  on:
+    branch: master
+    repo: dominique-mueller/automatic-release
