@@ -2,7 +2,11 @@
 
 # automatic-release
 
-Automates the full release process for Open Source projects on GitHub, using Travis CI and deploying to NPM.
+**Automates the full release process for Open Source projects on GitHub, using Travis CI and deploying to NPM.**
+
+[![npm version](https://img.shields.io/npm/v/automatic-release.svg?maxAge=2592000&style=flat-square)](https://www.npmjs.com/package/automatic-release)
+[![dependency status](https://img.shields.io/david/dominique-mueller/automatic-release.svg?maxAge=2592000&style=flat-square)](https://david-dm.org/dominique-mueller/automatic-release)
+[![license](https://img.shields.io/npm/l/automatic-release.svg?maxAge=2592000&style=flat-square)](https://github.com/dominique-mueller/automatic-release/LICENSE)
 
 </div>
 
