@@ -1,6 +1,6 @@
 {
 	"name": "automatic-release",
-	"description": "TODO",
+	"description": "Automates the full release process for Open Source projects on GitHub, using Travis CI and deploying to NPM.",
 	"version": "1.0.0",
 	"author": {
 		"name": "Dominique Müller",
@@ -18,14 +18,15 @@
 	},
 	"keywords": [
 		"automatic",
-		"auto",
 		"semantic",
 		"release",
-		"automatic release",
-		"semantic release",
+		"publish",
+		"deploy",
 		"ci",
-		"nodejs",
-		"npm"
+		"github",
+		"travis",
+		"npm",
+		"node"
 	],
 	"main": "./index.js",
 	"bin": {
@@ -40,6 +41,6 @@
 		"figures": "2.0.x",
 		"github-url-from-git": "1.5.x",
 		"semver": "5.3.x",
-		"simple-git": "1.68.x"
+		"simple-git": "1.69.x"
 	}
 }
