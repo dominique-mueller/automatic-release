@@ -9,6 +9,11 @@ branches:
   only:
     - master
 
+before_install:
+  - npm install -g npm
+install:
+  - npm install
+
 deploy:
   provider: npm
   email: dominique.m.mueller@gmail.com
