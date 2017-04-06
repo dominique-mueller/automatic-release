@@ -25,7 +25,7 @@ module.exports = function( repositoryUrl ) {
 
 		// Catch errors
 		changelogFileStream.on( 'error', ( error ) => {
-			throw new Error( {
+			reject( {
 				message: 'An error occured while generating the changelog.',
 				details: error
 			} );

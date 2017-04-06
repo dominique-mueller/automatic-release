@@ -18,7 +18,7 @@ module.exports = function( packageJsonFileContent ) {
 
 			// Catch errors
 			if ( error ) {
-				throw new Error( {
+				reject( {
 					message: 'Error while writing to the "package.json" file.',
 					details: error
 				} );
