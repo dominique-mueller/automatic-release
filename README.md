@@ -4,9 +4,11 @@
 
 **Automates the full release process for Open Source projects on GitHub, using Travis CI and deploying to NPM.**
 
-[![npm version](https://img.shields.io/npm/v/automatic-release.svg?maxAge=2592000&style=flat-square)](https://www.npmjs.com/package/automatic-release)
-[![dependency status](https://img.shields.io/david/dominique-mueller/automatic-release.svg?maxAge=2592000&style=flat-square)](https://david-dm.org/dominique-mueller/automatic-release)
-[![license](https://img.shields.io/npm/l/automatic-release.svg?maxAge=2592000&style=flat-square)](https://github.com/dominique-mueller/automatic-release/LICENSE)
+[![npm version](https://img.shields.io/npm/v/automatic-release.svg?maxAge=3600&style=flat-square)](https://www.npmjs.com/package/automatic-release)
+[![dependency status](https://img.shields.io/david/dominique-mueller/automatic-release.svg?maxAge=3600&style=flat-square)](https://david-dm.org/dominique-mueller/automatic-release)
+[![dev dependency status](https://img.shields.io/david/dev/dominique-mueller/automatic-release.svg?maxAge=3600&style=flat-square)](https://david-dm.org/dominique-mueller/automatic-release?type=dev)
+[![travis ci build status](https://img.shields.io/travis/dominique-mueller/automatic-release/master.svg?maxAge=3600&style=flat-square)](https://travis-ci.org/dominique-mueller/automatic-release)
+[![license](https://img.shields.io/npm/l/automatic-release.svg?maxAge=3600&style=flat-square)](https://github.com/dominique-mueller/automatic-release/LICENSE)
 
 </div>
 
@@ -96,23 +98,32 @@ Within Travis CI, add the following **Environment Variables** for your GitHub re
 
 Now, extend your `.travis.yml` configuration file with the following steps (replacing the `<...>` parts with real data):
 
-- First, we have to make Travis CI clone the whole repository - instead just of the master branch. **automatic-release** needs access to both the *master* and *develop* branches. To fix this, extend the `before_install` block:
+- Upfront, make sure the `master` branch is included in the `branches` block, so that a push to (merge from `develop` into) `master` actually triggers a release. For example:
+	``` yml
+	branches:
+	  only:
+	    - master # Used for publishing releases automatically
+	    - develop
+	```
+- Then (at least for the release process) we have to make Travis CI clone the whole repository - instead just of the master branch. Reason is that **automatic-release** needs access to both the *master* and *develop* branches to finish up the release process. Travis CI, however, will only checkout specific commits / branches by default. To fix this, extend the `before_install` block:
 	``` yml
 	before_install:
-	  - git clone https://github.com/$TRAVIS_REPO_SLUG.git $TRAVIS_REPO_SLUG
-	  - cd $TRAVIS_REPO_SLUG
-	  - git checkout -qf $TRAVIS_COMMIT
+	  - if [ "$TRAVIS_BRANCH" == "master" ]; then
+          git clone "https://github.com/$TRAVIS_REPO_SLUG.git" "$TRAVIS_REPO_SLUG";
+          cd "$TRAVIS_REPO_SLUG";
+          git checkout -qf "$TRAVIS_COMMIT";
+        fi
 	```
-	> Solution taken from **[this discussion on Stackoverflow](http://stackoverflow.com/questions/32580821/how-can-i-customize-override-the-git-clone-step-in-travis-ci)**.
-- Then, we have to configure Git (and fix Git-related Travis CI issues), and then run the **automatic-release** process, by extending the `before_deploy` block:
+	> Solution inspired by **[this discussion on StackOverflow](http://stackoverflow.com/questions/32580821/how-can-i-customize-override-the-git-clone-step-in-travis-ci)**.
+- Now, we have to configure Git (and fix Git-related Travis CI issues), and then run the **automatic-release** process, by extending the `before_deploy` block:
 	``` yml
 	before_deploy:
 	  - git config --global user.name "<GITHUB_USER_NAME>" # Replace!
 	  - git config --global user.email "<GITHUB_USER_EMAIL>" # Replace!
 	  - git config credential.helper "store --file=.git/credentials"
-	  - echo "https://${GH_TOKEN}:@github.com" > .git/credentials
+	  - echo "https://$GH_TOKEN:@github.com" > .git/credentials
 	  - git checkout master
-	  - npm run automatic-release
+	  - npm run automatic-release # Here happens the magic
 	```
 	> To make `npm run automatic-release` work, you have to add `"automatic-release": "automatic-release"` to the `scripts` block in your `package.json` file.
 - Finally, add your `deploy` block - in this case deploying directly to the public NPM registry:
@@ -120,19 +131,20 @@ Now, extend your `.travis.yml` configuration file with the following steps (repl
 	deploy:
 	  provider: npm
 	  email: <NPM_USER_EMAIL> # Replace!
-	  api_key: "${NPM_TOKEN}"
+	  api_key: "$NPM_TOKEN"
 	  skip_cleanup: true
 	  on:
 	    branch: master
 	    repo: <GITHUB_REPO_USER>/<GITHUB_REPO_NAME> # Replace!
 	```
-- Furthermore, make sure the `master` branch is included in the `branches` block, so that the release gets actually triggered; for example:
-	``` yml
-	branches:
-	  only:
-	    - master # Used for publishing releases automatically
-	    - develop
-	```
+
+<br>
+
+## Recommended additions
+
+Besides this library, there are a lot of other tools out there related to automatic releases / deployments. The following are a few I can recommend, and which perfectly complement the **automatic-release** library.
+
+- **[pkgfiles](https://github.com/timoxley/pkgfiles)** logs out a list of all the files to be published to npm, depending on the .npmignore / .gitignore settings. You can use it upfront to verify that the release will be complete. It's also quite nice to run it within the `after_deploy` block of the `.travis.yml` file, in which case it looks more like it lists the successfully published files.
 
 <br>
 

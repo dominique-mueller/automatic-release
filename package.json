@@ -44,7 +44,7 @@
 		"figures": "2.0.x",
 		"github-url-from-git": "1.5.x",
 		"semver": "5.3.x",
-		"simple-git": "1.69.x"
+		"simple-git": "1.70.x"
 	},
 	"devDependencies": {
 		"pkgfiles": "2.3.x"
