@@ -15,10 +15,7 @@ module.exports = function() {
 
 			// Catch errors
 			if ( error ) {
-				reject( {
-					message: 'Error while reading the "package.json" file.',
-					details: error
-				} );
+				reject( 'Error while reading the "package.json" file.' );
 			}
 
 			// Parse JSON data
@@ -26,10 +23,7 @@ module.exports = function() {
 			try {
 				parsedData = JSON.parse( data );
 			} catch( error ) {
-				reject( {
-					message: 'Error while parsing the "package.json" file content.',
-					details: error
-				} );
+				reject( 'Error while parsing the "package.json" file content.' );
 			}
 
 			// Continue

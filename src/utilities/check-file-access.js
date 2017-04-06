@@ -15,9 +15,7 @@ module.exports = function( pathToFile ) {
 
 			// Catch errors
 			if ( error ) {
-				reject( {
-					message: `File at the path "${ pathToFile }" does not exist, or cannot be read / written.`
-				} );
+				reject(  `File at the path "${ pathToFile }" does not exist, or cannot be read / written.` );
 			}
 
 			// Continue

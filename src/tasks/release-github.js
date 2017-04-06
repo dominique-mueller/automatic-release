@@ -38,18 +38,12 @@ module.exports = async function() {
 
 			// Catch library errors
 			if ( error ) {
-				reject( {
-					message: 'An error occured while creating a new release in GitHub.',
-					details: error
-				} );
+				reject( 'An error occured while creating a new release in GitHub.' );
 			}
 
 			// Catch GitHub errors
 			if ( responses.length > 0 && responses[ 0 ].state === 'rejected' ) {
-				reject( {
-					message: 'An error occured while creating a new release in GitHub.',
-					details: `${ responses[ 0 ].state }: ${ responses[ 0 ].reason }`
-				} );
+				reject( `An error occured while creating a new release in GitHub. ${ responses[ 0 ].state }: ${ responses[ 0 ].reason }` );
 			}
 
 			console.log( chalk.green( `    ${ figures.tick } Created new release (w/ changelog in the notes) on GitHub.` ) );

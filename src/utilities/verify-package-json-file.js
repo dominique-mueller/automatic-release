@@ -11,34 +11,24 @@ module.exports = function( packageJsonContent ) {
 
 	// Check the 'name' field
 	if ( !packageJsonContent.hasOwnProperty( 'name' ) ) {
-		throw new Error( {
-			message: 'The "package.json" file has no "name" field.'
-		} );
+		throw new Error( 'The "package.json" file has no "name" field.' );
 	}
 
 	// Check the 'version' field
 	if ( !packageJsonContent.hasOwnProperty( 'version' ) ) {
-		throw new Error( {
-			message: 'The "package.json" file has no "version" field.'
-		} );
+		throw new Error( 'The "package.json" file has no "version" field.' );
 	} else {
 		if ( semver.valid( packageJsonContent.version ) === null ) {
-			throw new Error( {
-				message: 'The "package.json" file has an invalid "version" field.'
-			} );
+			throw new Error( 'The "package.json" file has an invalid "version" field.' );
 		}
 	}
 
 	// Check the 'repository' field
 	if ( !packageJsonContent.hasOwnProperty( 'repository' ) ) {
-		throw new Error( {
-			message: 'The "package.json" file has no "repository" field.'
-		} );
+		throw new Error( 'The "package.json" file has no "repository" field.' );
 	} else {
 		if ( !packageJsonContent.repository.hasOwnProperty( 'url' ) ) {
-			throw new Error( {
-				message: 'The "package.json" file has no "repository.url" field.'
-			} );
+			throw new Error(  'The "package.json" file has no "repository.url" field.' );
 		}
 	}
 

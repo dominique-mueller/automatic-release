@@ -48,7 +48,7 @@ async function main() {
 
 	} catch( error ) {
 		hasFinishedSuccessfully = false;
-		console.log( chalk.red( `    ${ figures.cross } ${ error.message }` ) );
+		console.log( chalk.red( `    ${ figures.cross } ${ error }` ) );
 		if ( error.hasOwnProperty( 'details' ) ) {
 			console.log( chalk.red( `      ${ error.details }` ) );
 		}
@@ -66,6 +66,14 @@ async function main() {
 		console.log( chalk.red( `Did not finish, aborted due to errors.` ) );
 	}
 	console.log( '' );
+
+	// Exit
+
+	if ( hasFinishedSuccessfully ) {
+		process.exit( 0 );
+	} else {
+		process.exit( 1 );
+	}
 
 };
 
