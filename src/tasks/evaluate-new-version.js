@@ -22,7 +22,7 @@ module.exports = function( oldVersion ) {
 
 			// Catch errors
 			if ( error ) {
-				reject( {
+				throw new Error( {
 					message: 'An error occured while evaluating the next version.',
 					details: error
 				} );
