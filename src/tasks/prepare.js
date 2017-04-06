@@ -32,9 +32,7 @@ module.exports = async function() {
 
 	// Finally, check for environment variables
 	if ( process.env.GH_TOKEN === undefined ) {
-		throw new Error( {
-			message: 'The "GH_TOKEN" environment variable cannot be found.'
-		} );
+		throw new Error( 'The "GH_TOKEN" environment variable cannot be found.' );
 	}
 	console.log( chalk.green( `    ${ figures.tick } The "GH_TOKEN" environment variable exists.` ) );
 
