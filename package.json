@@ -32,6 +32,9 @@
 	"bin": {
 		"automatic-release": "./bin/automatic-release.js"
 	},
+	"scripts": {
+		"list-deployed-files": "pkgfiles --sort=name"
+	},
 	"dependencies": {
 		"chalk": "1.1.x",
 		"concat-stream": "1.6.x",
@@ -42,5 +45,8 @@
 		"github-url-from-git": "1.5.x",
 		"semver": "5.3.x",
 		"simple-git": "1.69.x"
+	},
+	"devDependencies": {
+		"pkgfiles": "2.3.x"
 	}
 }
