@@ -11,10 +11,24 @@ branches:
     - develop
 
 before_install:
+  - if [ $TRAVIS_BRANCH == "master" ]; then
+      git clone "https://github.com/$TRAVIS_REPO_SLUG.git" "$TRAVIS_REPO_SLUG";
+      cd "$TRAVIS_REPO_SLUG";
+      git checkout -qf "$TRAVIS_COMMIT";
+    fi
   - npm install -g npm
 install:
+  - npm prune
   - npm install
+  - npm update
 
+before_deploy:
+  - git config --global user.name "dominique-mueller";
+  - git config --global user.email "dominique.m.mueller@gmail.com";
+  - git config credential.helper "store --file=.git/credentials";
+  - echo "https://$GH_TOKEN:@github.com" > .git/credentials;
+  - git checkout master
+  - node ./bin/automatic-release.js # Run itself
 deploy:
   provider: npm
   email: dominique.m.mueller@gmail.com
@@ -22,3 +36,5 @@ deploy:
   on:
     branch: master
     repo: dominique-mueller/automatic-release
+after_deploy:
+  - npm run list-deployed-files
