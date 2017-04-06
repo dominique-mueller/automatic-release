@@ -15,7 +15,7 @@ module.exports = function() {
 
 			// Catch errors
 			if ( error ) {
-				reject( {
+				throw new Error( {
 					message: 'Error while reading the "package.json" file.',
 					details: error
 				} );
@@ -26,7 +26,7 @@ module.exports = function() {
 			try {
 				parsedData = JSON.parse( data );
 			} catch( error ) {
-				reject( {
+				throw new Error( {
 					message: 'Error while parsing the "package.json" file content.',
 					details: error
 				} );

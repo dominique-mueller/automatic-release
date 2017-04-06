@@ -38,7 +38,7 @@ module.exports = async function() {
 
 			// Catch library errors
 			if ( error ) {
-				reject( {
+				throw new Error( {
 					message: 'An error occured while creating a new release in GitHub.',
 					details: error
 				} );
@@ -46,7 +46,7 @@ module.exports = async function() {
 
 			// Catch GitHub errors
 			if ( responses.length > 0 && responses[ 0 ].state === 'rejected' ) {
-				reject( {
+				throw new Error( {
 					message: 'An error occured while creating a new release in GitHub.',
 					details: `${ responses[ 0 ].state }: ${ responses[ 0 ].reason }`
 				} );
