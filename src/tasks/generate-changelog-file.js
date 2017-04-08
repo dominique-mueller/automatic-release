@@ -43,7 +43,7 @@ module.exports = function( repositoryUrl ) {
 			}, {}, {}, {
 				transform: customTransformFunction, // Custom transform (shows all commit types)
 				mainTemplate: fs.readFileSync( path.resolve( __dirname, './../templates/changelog-main.hbs' ), 'utf-8' ),
-				commitPartial: fs.readFileSync( path.resolve( __dirname, './../templates/changelog-commits.hbs' ), 'utf-8' ),
+				commitPartial: fs.readFileSync( path.resolve( __dirname, './../templates/changelog-commit.hbs' ), 'utf-8' ),
 				headerPartial: fs.readFileSync( path.resolve( __dirname, './../templates/changelog-header.hbs' ), 'utf-8' ),
 				footerTemplate: fs.readFileSync( path.resolve( __dirname, './../templates/changelog-footer.hbs' ), 'utf-8' )
 			} )
@@ -52,9 +52,9 @@ module.exports = function( repositoryUrl ) {
 			}, ( data ) => {
 
 				// Wait for the changelog stream to be done, then prepend and append additional information
-				changelogFileStream.write( `# Changelog\n\nAlso see the [release page]( ${ repositoryUrl }/releases ).\n\n` );
+				changelogFileStream.write( `# Changelog\n\nAlso see the **[release page]( ${ repositoryUrl }/releases )**.\n\n` );
 				changelogFileStream.write( data );
-				changelogFileStream.write( '<br>\n\n---\n\n<br>\n\n*Changelog generated automatically.*\n' );
+				changelogFileStream.write( '<br>\n---\n\n<small>*Changelog generated automatically by [automatic-release](https://github.com/dominique-mueller/automatic-release).*</small>\n' );
 				changelogFileStream.end();
 
 			} ) );

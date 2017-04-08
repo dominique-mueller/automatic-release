@@ -12,32 +12,41 @@ const pkgJson = require( path.resolve( process.cwd(), 'package.json' ) );
  * Transform function for the changelog generator.
  */
 module.exports = function( commit ) {
-	let issues = [];
 
 	commit.notes.forEach( function( note ) {
 		note.title = 'BREAKING CHANGES';
 	} );
 
-	if ( commit.type === 'feat' ) {
-		commit.type = 'Features';
-	} else if ( commit.type === 'fix' ) {
-		commit.type = 'Bug Fixes';
-	} else if ( commit.type === 'perf' ) {
-		commit.type = 'Performance Improvements';
-	} else if ( commit.type === 'revert' ) {
-		commit.type = 'Reverts';
-	} else if ( commit.type === 'docs' ) {
-		commit.type = 'Documentation';
-	} else if ( commit.type === 'style' ) {
-		commit.type = 'Styles';
-	} else if ( commit.type === 'refactor' ) {
-		commit.type = 'Code Refactoring';
-	} else if ( commit.type === 'test' ) {
-		commit.type = 'Tests';
-	} else if ( commit.type === 'chore' ) {
-		commit.type = 'Chores';
-	} else {
-		return;
+	switch( commit.type ) {
+		case 'feat':
+			commit.type = 'Features';
+			break;
+		case 'fix':
+			commit.type = 'Bug Fixes';
+			break;
+		case 'perf':
+			commit.type = 'Performance Improvements';
+			break;
+		case 'style':
+			commit.type = 'Styles';
+			break;
+		case 'docs':
+			commit.type = 'Documentation';
+			break;
+		case 'refactor':
+			commit.type = 'Refactoring';
+			break;
+		case 'test':
+			commit.type = 'Tests'
+			break;
+		case 'chore':
+			commit.type = 'Chores';
+			break;
+		case 'revert':
+			commit.type = 'Reverts';
+			break;
+		default:
+			return; // Skip commits without commit message convention (e.g. release commits)
 	}
 
 	if ( commit.scope === '*' ) {
@@ -48,6 +57,7 @@ module.exports = function( commit ) {
 		commit.hash = commit.hash.substring( 0, 7 );
 	}
 
+	let issues = [];
 	if ( typeof commit.subject === 'string' ) {
 
 		// Get url to the github issues page
@@ -61,7 +71,7 @@ module.exports = function( commit ) {
 
 	}
 
-	// remove references that already appear in the subject
+	// Remove references that already appear in the subject
 	commit.references = commit.references.filter( ( reference ) => {
 		return issues.indexOf( reference.issue ) === -1;
 	} );

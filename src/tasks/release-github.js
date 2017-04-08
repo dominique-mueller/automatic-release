@@ -34,7 +34,7 @@ module.exports = async function() {
 		}, {}, {}, {
 			transform: customTransformFunction, // Custom transform (shows all commit types)
 			mainTemplate: fs.readFileSync( path.resolve( __dirname, './../templates/changelog-main.hbs' ), 'utf-8' ),
-			commitPartial: fs.readFileSync( path.resolve( __dirname, './../templates/changelog-commits.hbs' ), 'utf-8' ),
+			commitPartial: fs.readFileSync( path.resolve( __dirname, './../templates/changelog-commit.hbs' ), 'utf-8' ),
 			headerPartial: '', // Empty header for release notes
 			footerTemplate: fs.readFileSync( path.resolve( __dirname, './../templates/changelog-footer.hbs' ), 'utf-8' )
 		}, ( error, responses ) => {
