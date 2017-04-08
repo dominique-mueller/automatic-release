@@ -54,7 +54,7 @@ module.exports = function( repositoryUrl ) {
 				// Wait for the changelog stream to be done, then prepend and append additional information
 				changelogFileStream.write( `# Changelog\n\nAlso see the **[release page]( ${ repositoryUrl }/releases )**.\n\n` );
 				changelogFileStream.write( data );
-				changelogFileStream.write( '<br>\n---\n\n<small>*Changelog generated automatically by [automatic-release](https://github.com/dominique-mueller/automatic-release).*</small>\n' );
+				changelogFileStream.write( '<br>\n\n---\n\n<sup>*Changelog generated automatically by [automatic-release](https://github.com/dominique-mueller/automatic-release).*</sup>\n' );
 				changelogFileStream.end();
 
 			} ) );

@@ -43,6 +43,7 @@
 		"conventional-recommended-bump": "1.0.x",
 		"figures": "2.0.x",
 		"github-url-from-git": "1.5.x",
+		"github-remove-all-releases": "1.0.x",
 		"semver": "5.3.x",
 		"simple-git": "1.70.x"
 	},
