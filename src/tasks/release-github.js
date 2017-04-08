@@ -27,8 +27,11 @@ module.exports = async function() {
 			type: 'oauth',
 			token: githubApiToken // GITHUB TOKEN ENVIRONMENT VARIABLE
 		}, {
-			preset: 'angular'
-		}, {}, {}, {}, {
+			preset: 'angular',
+			releaseCount: 0 // Regenerate the whole thing every time
+		}, {
+			linkCompare: false // We use a custom link
+		}, {}, {}, {
 			transform: customTransformFunction, // Custom transform (shows all commit types)
 			mainTemplate: fs.readFileSync( path.resolve( __dirname, './../templates/changelog-main.hbs' ), 'utf-8' ),
 			commitPartial: fs.readFileSync( path.resolve( __dirname, './../templates/changelog-commits.hbs' ), 'utf-8' ),
