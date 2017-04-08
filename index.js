@@ -44,7 +44,7 @@ async function main() {
 		await gitCommitTagPush( newVersion );
 
 		// Publish release on GitHub
-		await releaseGithub();
+		await releaseGithub( repositoryUrl );
 
 	} catch( error ) {
 		hasFinishedSuccessfully = false;
