@@ -4,6 +4,14 @@ Also see the **[release page]( https://github.com/dominique-mueller/automatic-re
 
 <br>
 
+## [1.0.4](https://github.com/dominique-mueller/automatic-release/releases/tag/1.0.4) / 2017-04-08
+
+### Bug Fixes
+
+* **github-release:** Clean all releases, then create all releases from scratch ([#11](https://github.com/dominique-mueller/automatic-release/issues/11)) ([12448ae](https://github.com/dominique-mueller/automatic-release/commit/12448ae))
+
+<br>
+
 ## [1.0.3](https://github.com/dominique-mueller/automatic-release/releases/tag/1.0.3) / 2017-04-08
 
 ### Bug Fixes
@@ -50,6 +58,7 @@ Also see the **[release page]( https://github.com/dominique-mueller/automatic-re
 * Add initial version ([d09f9d0](https://github.com/dominique-mueller/automatic-release/commit/d09f9d0))
 
 <br>
+
 ---
 
-<small>*Changelog generated automatically by [automatic-release](https://github.com/dominique-mueller/automatic-release).*</small>
+<sup>*Changelog generated automatically by [automatic-release](https://github.com/dominique-mueller/automatic-release).*</sup>

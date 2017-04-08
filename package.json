@@ -1,7 +1,7 @@
 {
 	"name": "automatic-release",
 	"description": "Automates the full release process for Open Source projects on GitHub, using Travis CI and deploying to NPM.",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"author": {
 		"name": "Dominique Müller",
 		"email": "dominique.m.mueller@gmail.com",
