@@ -2,6 +2,8 @@
 
 # automatic-release
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/dominique-mueller/automatic-release.svg)](https://greenkeeper.io/)
+
 **Automates the full release process for Open Source projects on GitHub, using Travis CI and deploying to NPM.**
 
 [![npm version](https://img.shields.io/npm/v/automatic-release.svg?maxAge=3600&style=flat)](https://www.npmjs.com/package/automatic-release)
