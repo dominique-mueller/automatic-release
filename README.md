@@ -7,8 +7,8 @@
 [![npm version](https://img.shields.io/npm/v/automatic-release.svg?maxAge=3600&style=flat)](https://www.npmjs.com/package/automatic-release)
 [![dependency status](https://img.shields.io/david/dominique-mueller/automatic-release.svg?maxAge=3600&style=flat)](https://david-dm.org/dominique-mueller/automatic-release)
 [![dev dependency status](https://img.shields.io/david/dev/dominique-mueller/automatic-release.svg?maxAge=3600&style=flat)](https://david-dm.org/dominique-mueller/automatic-release?type=dev)
-[![Known Vulnerabilities](https://snyk.io/test/github/dominique-mueller/automatic-release/badge.svg)](https://snyk.io/test/github/dominique-mueller/automatic-release)
 [![travis ci build status](https://img.shields.io/travis/dominique-mueller/automatic-release/master.svg?maxAge=3600&style=flat)](https://travis-ci.org/dominique-mueller/automatic-release)
+[![Known Vulnerabilities](https://snyk.io/test/github/dominique-mueller/automatic-release/badge.svg)](https://snyk.io/test/github/dominique-mueller/automatic-release)
 [![license](https://img.shields.io/npm/l/automatic-release.svg?maxAge=3600&style=flat)](https://github.com/dominique-mueller/automatic-release/LICENSE)
 
 </div>
