@@ -4,6 +4,18 @@ Also see the **[release page]( https://github.com/dominique-mueller/automatic-re
 
 <br>
 
+## [1.0.5](https://github.com/dominique-mueller/automatic-release/releases/tag/1.0.5) / 2017-04-14
+
+### Bug Fixes
+
+* **github-release:** Fix error occuring while removing old github releases before creating new github releases ([#13](https://github.com/dominique-mueller/automatic-release/issues/13)) ([28efaf7](https://github.com/dominique-mueller/automatic-release/commit/28efaf7))
+
+### Chores
+
+* **travis:** Add Greenkeeper ([#12](https://github.com/dominique-mueller/automatic-release/issues/12)) ([7e08c13](https://github.com/dominique-mueller/automatic-release/commit/7e08c13))
+
+<br>
+
 ## [1.0.4](https://github.com/dominique-mueller/automatic-release/releases/tag/1.0.4) / 2017-04-08
 
 ### Bug Fixes
