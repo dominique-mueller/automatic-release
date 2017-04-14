@@ -36,11 +36,6 @@ module.exports = async function( repositoryUrl ) {
 				reject( 'An error occured while cleaning all releases on GitHub.' );
 			}
 
-			// Catch GitHub errors
-			if ( response.length > 0 && response[ 0 ].state === 'rejected' ) {
-				reject( `An error occured while cleaning all releases on GitHub. ${ response[ 0 ].state }: ${ response[ 0 ].reason }` );
-			}
-
 			// Create a new release on GitHub
 			conventionalGithubReleaser( {
 				type: 'oauth',
