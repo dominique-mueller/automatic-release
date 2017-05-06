@@ -45,7 +45,7 @@
 		"github-url-from-git": "1.5.x",
 		"github-remove-all-releases": "1.0.x",
 		"semver": "5.3.x",
-		"simple-git": "1.70.x"
+		"simple-git": "~1.71.0"
 	},
 	"devDependencies": {
 		"pkgfiles": "2.3.x"
