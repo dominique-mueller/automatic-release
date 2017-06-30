@@ -36,7 +36,7 @@
 		"list-deployed-files": "pkgfiles --sort=name"
 	},
 	"dependencies": {
-		"chalk": "1.1.x",
+		"chalk": "~2.0.0",
 		"concat-stream": "1.6.x",
 		"conventional-changelog": "1.1.x",
 		"conventional-github-releaser": "1.1.x",
