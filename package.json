@@ -44,7 +44,7 @@
 		"figures": "2.0.x",
 		"github-url-from-git": "1.5.x",
 		"github-remove-all-releases": "1.0.x",
-		"semver": "5.3.x",
+		"semver": "~5.4.0",
 		"simple-git": "1.70.x"
 	},
 	"devDependencies": {
