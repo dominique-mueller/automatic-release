@@ -36,7 +36,7 @@
 		"list-deployed-files": "pkgfiles --sort=name"
 	},
 	"dependencies": {
-		"chalk": "1.1.x",
+		"chalk": "2.1.x",
 		"concat-stream": "1.6.x",
 		"conventional-changelog": "1.1.x",
 		"conventional-github-releaser": "1.1.x",
@@ -44,8 +44,8 @@
 		"figures": "2.0.x",
 		"github-url-from-git": "1.5.x",
 		"github-remove-all-releases": "1.0.x",
-		"semver": "5.3.x",
-		"simple-git": "1.70.x"
+		"semver": "5.4.x",
+		"simple-git": "1.75.x"
 	},
 	"devDependencies": {
 		"pkgfiles": "2.3.x"
