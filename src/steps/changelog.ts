@@ -5,7 +5,7 @@ import * as conventionalChangelog from 'conventional-changelog';
 
 import * as changelogTransform from './../templates/changelog-transform';
 
-export function changelog( repositoryUrl: string ): Promise<void> {
+export function generateAndWriteChangelog( repositoryUrl: string ): Promise<void> {
 	return new Promise<void>( async( resolve: () => void, reject: ( error: Error ) => void ) => {
 
 		const changelog: string = await generateChangelog( repositoryUrl );

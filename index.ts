@@ -1,15 +1,24 @@
-import { information, AutomaticReleaseInformation } from './src/steps/information';
-import { changelog } from './src/steps/changelog';
-import { packageJson } from './src/steps/package-json';
+import { collectInformation, AutomaticReleaseInformation } from './src/steps/information';
+import { generateAndWriteChangelog } from './src/steps/changelog';
+import { updatePackageJson } from './src/steps/package-json';
+import { saveChangesToGit } from './src/steps/git';
+import { cleanAndCreateGithubReleases } from './src/steps/github';
 
+// TODO: Move to bin?
+// TODO: Logging + time
+// TODO: Clean process exit w/ code
 async function main() {
 
-	const details: AutomaticReleaseInformation = await information();
-	console.log( details );
+	// const details: AutomaticReleaseInformation = await collectInformation();
+	// console.log( details );
 
-	// await packageJson( details.newPackageJson );
+	// await updatePackageJson( details.newPackageJson );
 
-	// await changelog( details.newPackageJson.repository.url );
+	// await generateAndWriteChangelog( details.newPackageJson.repository.url );
+
+	// await saveChangesToGit( details.version.new );
+
+	// await cleanAndCreateGithubReleases( details.repository.owner, details.repository.name, details.githubToken );
 
 }
 

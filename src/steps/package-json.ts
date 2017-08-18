@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-export function packageJson( fileContent: any ): Promise<void> {
+export function updatePackageJson( fileContent: any ): Promise<void> {
 	return writePackageJsonFile( fileContent );
 }
 

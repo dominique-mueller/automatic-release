@@ -9,7 +9,7 @@ import * as parseGithubUrl from 'parse-github-url';
 
 export interface AutomaticReleaseInformation {
 	newPackageJson: any;
-	information: {
+	version: {
 		isFirst: boolean;
 		new: string;
 		old: string;
@@ -21,7 +21,7 @@ export interface AutomaticReleaseInformation {
 	githubToken: string;
 }
 
-export function information(): Promise<any> {
+export function collectInformation(): Promise<any> {
 	return new Promise( async( resolve: ( information: any ) => void, reject: ( error: Error ) => void ) => {
 
 		const information: any = {};
@@ -188,7 +188,7 @@ function getGithubToken( repoOwner: string, repoName: string ): Promise<string> 
 			timeout: 5000
 		} );
 		github.authenticate( {
-			type: 'token',
+			type: 'oauth',
 			token: githubToken
 		} );
 
