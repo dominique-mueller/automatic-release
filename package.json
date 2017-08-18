@@ -48,6 +48,7 @@
 		"simple-git": "1.75.x"
 	},
 	"devDependencies": {
+		"@types/node": "8.0.x",
 		"pkgfiles": "2.3.x"
 	}
 }
