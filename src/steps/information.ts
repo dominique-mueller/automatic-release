@@ -47,9 +47,8 @@ export function collectInformation(): Promise<any> {
 		};
 
 		// Get GitHub authorization details
-		// information.githubToken = await getGithubToken( information.repository.owner, information.repository.name );
+		information.githubToken = await getGithubToken( information.repository.owner, information.repository.name );
 
-		console.log( information );
 		resolve( information );
 
 	} );

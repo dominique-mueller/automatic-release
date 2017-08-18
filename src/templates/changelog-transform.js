@@ -2,10 +2,10 @@
 
 const path = require( 'path' );
 
-const githubUrlFromGit = require( 'github-url-from-git' );
+const parseGithubUrl = require( 'parse-github-url' );
 
 // Read package.json content initially
-const pkgJson = require( path.resolve( process.cwd(), 'package.json' ) );
+const packageJsonFile = require( path.resolve( process.cwd(), 'package.json' ) );
 
 /**
  * Default export:
@@ -61,7 +61,7 @@ module.exports = function( commit ) {
 	if ( typeof commit.subject === 'string' ) {
 
 		// Get url to the github issues page
-		const githubIssueUrl = `${ githubUrlFromGit( pkgJson.repository.url ) }/issues/`;
+		const githubIssueUrl = `${ packageJsonFile.repository.url }/issues/`;
 		commit.subject = commit.subject.replace( /#([0-9]+)/g, function( _, issue ) {
 			issues.push( issue );
 			return '[#' + issue + '](' + githubIssueUrl + issue + ')';
