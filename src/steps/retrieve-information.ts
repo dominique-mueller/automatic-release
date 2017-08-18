@@ -4,33 +4,38 @@ import * as path from 'path';
 import * as git from 'simple-git';
 import * as semver from 'semver';
 import * as recommendedBump from 'conventional-recommended-bump';
+import * as GitHubApi from 'github';
+import * as parseGithubUrl from 'parse-github-url';
 
 export function retrieveInformation(): Promise<any> {
 	return new Promise( async( resolve: ( information: any ) => void, reject: ( error: Error ) => void ) => {
 
 		const information: any = {};
 
-		// Read package and version details
-		information.isFirstVersion = await !hasGitTags();
-		information.packageJson = await readPackageJsonFile();
-		information.packageJson = await validatePackageJsonFileContent( information.packageJson );
-		information.oldVersion = information.packageJson.version;
-		information.newVersion = information.isFirstVersion
-			? information.oldVersion
-			: await evaluateNewVersion( information.oldVersion );
-		information.packageJson.version = information.newVersion;
+		// Read package file
+		information.newPackageJson = await readPackageJsonFile();
+		information.newPackageJson = await validatePackageJsonFileContent( information.newPackageJson );
 
-		// Check for authorized GitHub Token
-		// TODO: Move into different file
-		// TODO: Verify validity??
-		if ( process.env.GH_TOKEN ) {
-			information.githubToken = process.env.GH_TOKEN.replace( /\s+/g, '' );
-		} else {
-			throw new Error( 'The "GH_TOKEN" environment variable cannot be found.' );
-		}
+		// Get version information
+		const isFirstVersion: boolean = await !hasGitTags();
+		information.version = {
+			isFirst: isFirstVersion,
+			old: information.newPackageJson.version,
+			new: isFirstVersion ? information.version.old : await evaluateNewVersion( information.newPackageJson.version )
+		};
+		information.newPackageJson.version = information.version.new;
+
+		// Get repository information
+		const details: any = parseGithubUrl( information.newPackageJson.repository.url );
+		information.repository = {
+			owner: details.owner,
+			name: details.name
+		};
+
+		// Get GitHub authorization details
+		information.githubToken = await getGithubToken( information.repository.owner, information.repository.name );
 
 		console.log( information );
-
 		resolve( information );
 
 	} );
@@ -39,7 +44,7 @@ export function retrieveInformation(): Promise<any> {
 
 
 export function hasGitTags(): Promise<boolean> {
-	return new Promise( ( resolve: ( flag: boolean ) => void, reject: ( error: Error ) => void ) => {
+	return new Promise<boolean>( ( resolve: ( flag: boolean ) => void, reject: ( error: Error ) => void ) => {
 
 		git().tags( ( error: Error, tagInformation: { latest: string | undefined, all: Array<string> } ) => {
 
@@ -146,6 +151,48 @@ export function evaluateNewVersion( oldVersion: string ): Promise<string> {
 
 			const newVersion: string = semver.inc( oldVersion, data.releaseType );
 			resolve( newVersion );
+
+		} );
+
+	} );
+}
+
+export function getGithubToken( repoOwner: string, repoName: string ): Promise<string> {
+	return new Promise<string>( ( resolve: ( githubToken: string ) => void, reject: ( error: Error ) => void ) => {
+
+		// Get GitHub token from environment variable
+		if ( !process.env.GH_TOKEN ) {
+			reject( new Error( 'The "GH_TOKEN" environment variable is not set.' ) ); // TODO: Handle error
+			return;
+		}
+		const githubToken: string = process.env.GH_TOKEN.replace( /\s+/g, '' );
+
+		// const githubToken: string = 'XXX'; // TODO: Remove me
+
+		// Create github client and authenticate (will never throw an error, even if the github token itself is invalid)
+		const github = new GitHubApi( {
+			timeout: 5000
+		} );
+		github.authenticate( {
+			type: 'token',
+			token: githubToken
+		} );
+
+		// We actually don't care about the collaborators, but we can use this API request to check that
+		// - the GitHub token is valid
+		// - we do have access to public repository information
+		// The authorization API itself, which would be much nicer here, is restricted to basic auth usage only :/
+		github.repos.getCollaborators( {
+			owner: repoOwner,
+			repo: repoName
+		}, ( error, data ) => {
+
+			if ( error ) {
+				reject( error ); // TODO: Handle error
+				return;
+			}
+
+			resolve( githubToken );
 
 		} );
 
