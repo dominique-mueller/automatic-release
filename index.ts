@@ -1,9 +1,15 @@
-import * as retrieveInformation from './src/steps/retrieve-information';
+import { information, AutomaticReleaseInformation } from './src/steps/information';
+import { changelog } from './src/steps/changelog';
+import { packageJson } from './src/steps/package-json';
 
 async function main() {
 
-	const data: any = await retrieveInformation.retrieveInformation();
-	// console.log( data );
+	const details: AutomaticReleaseInformation = await information();
+	console.log( details );
+
+	// await packageJson( details.newPackageJson );
+
+	// await changelog( details.newPackageJson.repository.url );
 
 }
 

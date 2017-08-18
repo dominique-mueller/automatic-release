@@ -3,11 +3,25 @@ import * as path from 'path';
 
 import * as git from 'simple-git';
 import * as semver from 'semver';
-import * as recommendedBump from 'conventional-recommended-bump';
+import * as conventionalRecommendedBump from 'conventional-recommended-bump';
 import * as GitHubApi from 'github';
 import * as parseGithubUrl from 'parse-github-url';
 
-export function retrieveInformation(): Promise<any> {
+export interface AutomaticReleaseInformation {
+	newPackageJson: any;
+	information: {
+		isFirst: boolean;
+		new: string;
+		old: string;
+	};
+	repository: {
+		owner: string;
+		name: string;
+	};
+	githubToken: string;
+}
+
+export function information(): Promise<any> {
 	return new Promise( async( resolve: ( information: any ) => void, reject: ( error: Error ) => void ) => {
 
 		const information: any = {};
@@ -33,7 +47,7 @@ export function retrieveInformation(): Promise<any> {
 		};
 
 		// Get GitHub authorization details
-		information.githubToken = await getGithubToken( information.repository.owner, information.repository.name );
+		// information.githubToken = await getGithubToken( information.repository.owner, information.repository.name );
 
 		console.log( information );
 		resolve( information );
@@ -43,7 +57,7 @@ export function retrieveInformation(): Promise<any> {
 
 
 
-export function hasGitTags(): Promise<boolean> {
+function hasGitTags(): Promise<boolean> {
 	return new Promise<boolean>( ( resolve: ( flag: boolean ) => void, reject: ( error: Error ) => void ) => {
 
 		git().tags( ( error: Error, tagInformation: { latest: string | undefined, all: Array<string> } ) => {
@@ -60,7 +74,7 @@ export function hasGitTags(): Promise<boolean> {
 	} );
 }
 
-export function readPackageJsonFile(): Promise<any> {
+function readPackageJsonFile(): Promise<any> {
 	return new Promise<any>( ( resolve: ( fileContent: any ) => void, reject: ( error: Error ) => void ) => {
 
 		fs.readFile( path.resolve( process.cwd(), 'package.json' ), 'utf-8', ( error: Error, fileContent: any ) => {
@@ -85,7 +99,7 @@ export function readPackageJsonFile(): Promise<any> {
 	} );
 }
 
-export function validatePackageJsonFileContent( fileContent: any ): Promise<any> {
+function validatePackageJsonFileContent( fileContent: any ): Promise<any> {
 	return new Promise<any>( async( resolve: ( correctedFileContent: any ) => void, reject: ( error: Error ) => void ) => {
 
 		const correctedFileContent: any = fileContent;
@@ -116,7 +130,7 @@ export function validatePackageJsonFileContent( fileContent: any ): Promise<any>
 	} );
 }
 
-export function getGitRemoteUrl(): Promise<any> {
+function getGitRemoteUrl(): Promise<any> {
 	return new Promise<any>( ( resolve: ( url: string ) => void, reject: ( error: Error ) => void ) => {
 
 		git().getRemotes( true, ( error: Error, remotes: any ) => {
@@ -137,10 +151,10 @@ export function getGitRemoteUrl(): Promise<any> {
 	} );
 }
 
-export function evaluateNewVersion( oldVersion: string ): Promise<string> {
+function evaluateNewVersion( oldVersion: string ): Promise<string> {
 	return new Promise<any>( ( resolve: ( newVersion: string ) => void, reject: ( error: Error ) => void ) => {
 
-		recommendedBump( {
+		conventionalRecommendedBump( {
 			preset: 'angular'
 		}, ( error: Error, data: { level: number, reason: string, releaseType: 'major' | 'minor' | 'patch' } ) => {
 
@@ -157,7 +171,7 @@ export function evaluateNewVersion( oldVersion: string ): Promise<string> {
 	} );
 }
 
-export function getGithubToken( repoOwner: string, repoName: string ): Promise<string> {
+function getGithubToken( repoOwner: string, repoName: string ): Promise<string> {
 	return new Promise<string>( ( resolve: ( githubToken: string ) => void, reject: ( error: Error ) => void ) => {
 
 		// Get GitHub token from environment variable
