@@ -7,5 +7,6 @@ export interface AutomaticReleaseInformation {
 	oldVersion?: string;
 	repositoryOwner?: string;
 	repositoryName?: string;
+	repositoryUrl?: string;
 	githubToken?: string;
 }

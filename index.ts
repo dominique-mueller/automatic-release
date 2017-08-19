@@ -17,10 +17,11 @@ async function main() {
 	const information: AutomaticReleaseInformation = await collectInformation();
 	console.log( information );
 
-	console.log( 'UPDATE PACKAGE FILE' );
-	await updatePackageJson( information.newVersion );
+	console.log( 'PACKAGE FILE' );
+	// await updatePackageJson( information.newVersion );
 
-	// await generateAndWriteChangelog( details.newPackageJson.repository.url );
+	console.log( 'CHANGELOG' );
+	await generateAndWriteChangelog( information.repositoryUrl );
 
 	// await saveChangesToGit( details.version.new );
 

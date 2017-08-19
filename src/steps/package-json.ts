@@ -18,5 +18,7 @@ export function updatePackageJson( newVersion: string ): Promise<void> {
 		packageJson.version = newVersion;
 		await writeFile( 'package.json', packageJson );
 
+		resolve();
+
 	} );
 }

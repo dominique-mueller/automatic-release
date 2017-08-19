@@ -39,6 +39,7 @@ export function collectInformation(): Promise<AutomaticReleaseInformation> {
 		const details: GithubUrl = parseGithubUrl( packageJson.repository.url );
 		information.repositoryOwner = details.owner;
 		information.repositoryName = details.name;
+		information.repositoryUrl = details.href;
 
 		// Get GitHub authorization details
 		information.githubToken = await getVerifiedGithubToken( information.repositoryOwner, information.repositoryName );
