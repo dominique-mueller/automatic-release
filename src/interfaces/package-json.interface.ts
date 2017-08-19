@@ -7,4 +7,5 @@ export interface PackageJson {
 		type?: string;
 		url?: string;
 	};
+	[ key: string ]: any;
 }

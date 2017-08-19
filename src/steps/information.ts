@@ -1,67 +1,49 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-import * as git from 'simple-git';
-import * as semver from 'semver';
 import * as conventionalRecommendedBump from 'conventional-recommended-bump';
+import * as git from 'simple-git';
 import * as GitHubApi from 'github';
 import * as parseGithubUrl from 'parse-github-url';
+import * as semver from 'semver';
 
-import { readFile } from './../utilities/read-file';
-import { writeFile } from './../utilities/write-file';
+import { AutomaticReleaseInformation } from './../interfaces/automatic-release-information.interface';
+import { GithubUrl } from './../interfaces/github-url.interface';
 import { GitRemote } from './../interfaces/git-remote.interface';
+import { GitTags } from './../interfaces/git-tags.interface';
 import { PackageJson } from './../interfaces/package-json.interface';
+import { readFile } from './../utilities/read-file';
+import { RecommendedBump } from './../interfaces/recommended-bump.interface';
+import { writeFile } from './../utilities/write-file';
 
-export interface AutomaticReleaseInformation {
-	newPackageJson: any;
-	version: {
-		isFirst: boolean;
-		new: string;
-		old: string;
-	};
-	repository: {
-		owner: string;
-		name: string;
-	};
-	githubToken: string;
-}
+/**
+ * Collect all information needed for the automatic release process; also validates and even corrects them (if possible).
+ *
+ * @returns - Promise, resolves with information
+ */
+export function collectInformation(): Promise<AutomaticReleaseInformation> {
+	return new Promise( async( resolve: ( information: AutomaticReleaseInformation ) => void, reject: ( error: Error ) => void ) => {
 
-
-
-export function collectInformation(): Promise<any> {
-	return new Promise( async( resolve: ( information: any ) => void, reject: ( error: Error ) => void ) => {
-
-		// Read, correct adn write the package.json file
+		// Read, correct and write the package.json file
 		const packageJson: PackageJson = await validateAndCorrectPackageJson( await readFile( 'package.json' ) );
 		await writeFile( 'package.json', packageJson );
-		console.log( packageJson );
 
-		// const information: any = {};
-
-		// Read package file
-		// information.newPackageJson = await readFile( 'package.json' );
-		// information.newPackageJson = await validatePackageJsonFileContent( information.newPackageJson );
+		const information: AutomaticReleaseInformation = {};
 
 		// Get version information
-		// const isFirstVersion: boolean = await !hasGitTags();
-		// information.version = {
-		// 	isFirst: isFirstVersion,
-		// 	old: information.newPackageJson.version,
-		// 	new: isFirstVersion ? information.version.old : await evaluateNewVersion( information.newPackageJson.version )
-		// };
-		// information.newPackageJson.version = information.version.new;
+		information.isFirstVersion = !( await hasGitTags() );
+		information.oldVersion = packageJson.version;
+		information.newVersion = information.isFirstVersion ? information.oldVersion : await getNewVersion( information.oldVersion );
 
-		// // Get repository information
-		// const details: any = parseGithubUrl( information.newPackageJson.repository.url );
-		// information.repository = {
-		// 	owner: details.owner,
-		// 	name: details.name
-		// };
+		// Get repository information
+		const details: GithubUrl = parseGithubUrl( packageJson.repository.url );
+		information.repositoryOwner = details.owner;
+		information.repositoryName = details.name;
 
-		// // Get GitHub authorization details
-		// information.githubToken = await getGithubToken( information.repository.owner, information.repository.name );
+		// Get GitHub authorization details
+		information.githubToken = await getVerifiedGithubToken( information.repositoryOwner, information.repositoryName );
 
-		// resolve( information );
+		resolve( information );
 
 	} );
 }
@@ -142,43 +124,51 @@ function getGitRemoteUrl(): Promise<string> {
 	} );
 }
 
-
+/**
+ * Check if any Git tags exist (implying whether a release has been created yet)
+ *
+ * @returns - Promise, resolves with a flag describing whether any Git tags exist
+ */
 function hasGitTags(): Promise<boolean> {
 	return new Promise<boolean>( ( resolve: ( flag: boolean ) => void, reject: ( error: Error ) => void ) => {
 
-		git().tags( ( error: Error, tagInformation: { latest: string | undefined, all: Array<string> } ) => {
+		// Get all git tags
+		git().tags( ( gitTagsError: Error | null, gitTags: GitTags ) => {
 
-			if ( error ) {
-				reject( error ); // TODO: Handle error
+			// Handle errors
+			if ( gitTagsError ) {
+				reject( gitTagsError ); // TODO: Handle error
 				return;
 			}
 
-			resolve( tagInformation.all.length !== 0 );
+			resolve( gitTags.all.length !== 0 );
 
 		} );
 
 	} );
 }
 
-
-
-
-
-
-
-function evaluateNewVersion( oldVersion: string ): Promise<string> {
+/**
+ * Evaluate the new version, based on the old version and the commits happening since then
+ *
+ * @param   oldVersion - Old version
+ * @returns            - Promise, resolves with new version
+ */
+function getNewVersion( oldVersion: string ): Promise<string> {
 	return new Promise<any>( ( resolve: ( newVersion: string ) => void, reject: ( error: Error ) => void ) => {
 
+		// Evaluate version bump
 		conventionalRecommendedBump( {
 			preset: 'angular'
-		}, ( error: Error, data: { level: number, reason: string, releaseType: 'major' | 'minor' | 'patch' } ) => {
+		}, ( error: Error | null, recommendedBump: RecommendedBump ) => {
 
+			// Handle errors
 			if ( error ) {
-				reject( error ); // TODO: Handle error
+				reject( error );
 				return;
 			}
 
-			const newVersion: string = semver.inc( oldVersion, data.releaseType );
+			const newVersion: string = semver.inc( oldVersion, recommendedBump.releaseType );
 			resolve( newVersion );
 
 		} );
@@ -186,19 +176,25 @@ function evaluateNewVersion( oldVersion: string ): Promise<string> {
 	} );
 }
 
-function getGithubToken( repoOwner: string, repoName: string ): Promise<string> {
+/**
+ * Get and verify the GitHub token
+ *
+ * @param   repositoryOwner - Repository owner
+ * @param   repositoryName  - Repository name
+ * @returns                 - Promise, resolves with the GitHub token
+ */
+function getVerifiedGithubToken( repositoryOwner: string, repositoryName: string ): Promise<string> {
 	return new Promise<string>( ( resolve: ( githubToken: string ) => void, reject: ( error: Error ) => void ) => {
 
 		// Get GitHub token from environment variable
-		if ( !process.env.GH_TOKEN ) {
-			reject( new Error( 'The "GH_TOKEN" environment variable is not set.' ) ); // TODO: Handle error
+		if ( !process.env.hasOwnProperty( 'GH_TOKEN' ) ) {
+			reject( new Error( 'The "GH_TOKEN" environment variable is not set.' ) );
 			return;
 		}
-		const githubToken: string = process.env.GH_TOKEN.replace( /\s+/g, '' );
+		const githubToken: string = process.env.GH_TOKEN;
 
-		// const githubToken: string = 'XXX'; // TODO: Remove me
-
-		// Create github client and authenticate (will never throw an error, even if the github token itself is invalid)
+		// Create a github client, then authenticate
+		// Weirdly enough, this seems to never throw an error, even when the github token itself is invalid
 		const github = new GitHubApi( {
 			timeout: 5000
 		} );
@@ -207,14 +203,13 @@ function getGithubToken( repoOwner: string, repoName: string ): Promise<string> 
 			token: githubToken
 		} );
 
-		// We actually don't care about the collaborators, but we can use this API request to check that
-		// - the GitHub token is valid
-		// - we do have access to public repository information
-		// The authorization API itself, which would be much nicer here, is restricted to basic auth usage only :/
+		// We actually don't care about the collaborators - but we can "miss-use" this API request to check that the GitHub token is valid
+		// and veryify that we actually do have access to public repository information (the correct GitHub token scope).
+		// While the GitHub authorization API would be more meaningful here, it is restricted to usage with basic-auth only ... :/
 		github.repos.getCollaborators( {
-			owner: repoOwner,
-			repo: repoName
-		}, ( error, data ) => {
+			owner: repositoryOwner,
+			repo: repositoryName
+		}, ( error: Error | null, collaborators: any ) => { // We don't care about the answer
 
 			if ( error ) {
 				reject( error ); // TODO: Handle error
