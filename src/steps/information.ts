@@ -1,6 +1,3 @@
-import * as fs from 'fs';
-import * as path from 'path';
-
 import * as conventionalRecommendedBump from 'conventional-recommended-bump';
 import * as git from 'simple-git';
 import * as GitHubApi from 'github';

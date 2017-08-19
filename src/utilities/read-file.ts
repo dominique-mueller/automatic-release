@@ -1,6 +1,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
+import { resolvePath } from './resolve-path';
+
 /**
  * Read a file
  *
@@ -12,9 +14,7 @@ export function readFile( filePath: string, isWithinLibrary: boolean = false ): 
 	return new Promise<string | any>( ( resolve: ( fileContent: string | any ) => void, reject: ( error: Error ) => void ) => {
 
 		// Resolve file path to an absolute one
-		const resolvedFilePath: string = isWithinLibrary
-			? path.resolve( __dirname, filePath )
-			: path.resolve( process.cwd(), filePath );
+		const resolvedFilePath: string = resolvePath( filePath, isWithinLibrary );
 
 		// Read file asynchronously
 		fs.readFile( resolvedFilePath, 'utf-8', ( readFileError: Error | null, fileContent: string ) => {

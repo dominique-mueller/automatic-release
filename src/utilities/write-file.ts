@@ -1,6 +1,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
+import { resolvePath } from './resolve-path';
+
 /**
  * Write content into a file
  *
@@ -13,9 +15,7 @@ export function writeFile( filePath: string, fileContent: string | Object, isWit
 	return new Promise<void>( ( resolve: () => void, reject: ( error: Error ) => void ) => {
 
 		// Resolve file path to an absolute one
-		const resolvedFilePath: string = isWithinLibrary
-			? path.resolve( __dirname, filePath )
-			: path.resolve( process.cwd(), filePath );
+		const resolvedFilePath: string = resolvePath( filePath, isWithinLibrary )
 
 		// Automatically stringify objects
 		const preparedFileContent: string = ( typeof fileContent === 'string' )
