@@ -13,10 +13,12 @@ import { AutomaticReleaseInformation } from './src/interfaces/automatic-release-
 // TODO: Clean process exit w/ code
 async function main() {
 
+	console.log( 'COLLECT INFO' );
 	const information: AutomaticReleaseInformation = await collectInformation();
 	console.log( information );
 
-	// await updatePackageJson( details.newPackageJson );
+	console.log( 'UPDATE PACKAGE FILE' );
+	await updatePackageJson( information.newVersion );
 
 	// await generateAndWriteChangelog( details.newPackageJson.repository.url );
 

@@ -1,27 +1,22 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-export function updatePackageJson( fileContent: any ): Promise<void> {
-	return writePackageJsonFile( fileContent );
-}
+import { PackageJson } from './../interfaces/package-json.interface';
+import { readFile } from './../utilities/read-file';
+import { writeFile } from './../utilities/write-file';
 
+/**
+ * Update package json file
+ *
+ * @param   newVersion - New version
+ * @returns            - Promise
+ */
+export function updatePackageJson( newVersion: string ): Promise<void> {
+	return new Promise<void>( async( resolve: () => void, reject: ( error: Error ) => void ) => {
 
-
-function writePackageJsonFile( fileContent: any ): Promise<void> {
-	return new Promise<void>( ( resolve: () => void, reject: ( error: Error ) => void ) => {
-
-		const preparedFileContent: string = `${ JSON.stringify( fileContent, null, '	' ) }\n`;
-
-		fs.writeFile( path.resolve( process.cwd(), 'package.json' ), preparedFileContent, 'utf-8', ( error: Error ) => {
-
-			if ( error ) {
-				reject( error ); // TODO: Handle error
-				return;
-			}
-
-			resolve();
-
-		} );
+		const packageJson: PackageJson = await readFile( 'package.json' );
+		packageJson.version = newVersion;
+		await writeFile( 'package.json', packageJson );
 
 	} );
 }
