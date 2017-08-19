@@ -87,7 +87,7 @@ function generateChangelog( repositoryUrl: string ): Promise<string> {
  *
  * @returns - Promise, resolves with the template files' content
  */
-function readChangelogTemplateFiles(): Promise<{ [ key: string ]: string }> {
+export function readChangelogTemplateFiles(): Promise<{ [ key: string ]: string }> {
 	return new Promise<{ [ key: string ]: string }>(
 		async( resolve: ( templates: { [ key: string ]: string } ) => void, reject: ( error: Error ) => void ) => {
 
