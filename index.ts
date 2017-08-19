@@ -4,10 +4,15 @@ import { updatePackageJson } from './src/steps/package-json';
 import { saveChangesToGit } from './src/steps/git';
 import { cleanAndCreateGithubReleases } from './src/steps/github';
 
+import { readFile } from './src/utilities/read-file';
+
 // TODO: Move to bin?
 // TODO: Logging + time
 // TODO: Clean process exit w/ code
 async function main() {
+
+	const data: any = await readFile( 'package.json' );
+	console.log( data );
 
 	// const details: AutomaticReleaseInformation = await collectInformation();
 	// console.log( details );
