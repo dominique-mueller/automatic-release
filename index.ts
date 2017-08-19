@@ -11,10 +11,7 @@ import { readFile } from './src/utilities/read-file';
 // TODO: Clean process exit w/ code
 async function main() {
 
-	const data: any = await readFile( 'package.json' );
-	console.log( data );
-
-	// const details: AutomaticReleaseInformation = await collectInformation();
+	const details: AutomaticReleaseInformation = await collectInformation();
 	// console.log( details );
 
 	// await updatePackageJson( details.newPackageJson );

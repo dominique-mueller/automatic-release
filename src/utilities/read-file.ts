@@ -8,8 +8,8 @@ import * as path from 'path';
  * @param   [isWithinLibrary=false] - Flag, describing whether the file lies within this library or within the project using this library
  * @returns                         - Promise, resolves with File content (parsed if JSON)
  */
-export function readFile( filePath: string, isWithinLibrary: boolean = false ): Promise<string | Object> {
-	return new Promise<string | Object>( ( resolve: ( fileContent: string | Object ) => void, reject: ( error: Error ) => void ) => {
+export function readFile( filePath: string, isWithinLibrary: boolean = false ): Promise<string | any> {
+	return new Promise<string | any>( ( resolve: ( fileContent: string | any ) => void, reject: ( error: Error ) => void ) => {
 
 		// Resolve file path to an absolute one
 		const resolvedFilePath: string = isWithinLibrary
@@ -17,7 +17,7 @@ export function readFile( filePath: string, isWithinLibrary: boolean = false ): 
 			: path.resolve( process.cwd(), filePath );
 
 		// Read file asynchronously
-		fs.readFile( resolvedFilePath, 'utf-8', ( readFileError: Error, fileContent: string ) => {
+		fs.readFile( resolvedFilePath, 'utf-8', ( readFileError: Error | null, fileContent: string ) => {
 
 			// Handle errors
 			if ( readFileError ) {
@@ -26,7 +26,7 @@ export function readFile( filePath: string, isWithinLibrary: boolean = false ): 
 			}
 
 			// Automatically parse JSON files into JavaScript objects
-			let parsedFileContent: string | Object = fileContent;
+			let parsedFileContent: string | any = fileContent;
 			if ( path.extname( resolvedFilePath ).replace( '.', '' ).toLowerCase() === 'json' ) {
 
 				// Safely try to parse the file as JSON

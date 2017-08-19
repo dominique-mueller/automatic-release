@@ -7,6 +7,11 @@ import * as conventionalRecommendedBump from 'conventional-recommended-bump';
 import * as GitHubApi from 'github';
 import * as parseGithubUrl from 'parse-github-url';
 
+import { readFile } from './../utilities/read-file';
+import { writeFile } from './../utilities/write-file';
+import { GitRemote } from './../interfaces/git-remote.interface';
+import { PackageJson } from './../interfaces/package-json.interface';
+
 export interface AutomaticReleaseInformation {
 	newPackageJson: any;
 	version: {
@@ -21,39 +26,121 @@ export interface AutomaticReleaseInformation {
 	githubToken: string;
 }
 
+
+
 export function collectInformation(): Promise<any> {
 	return new Promise( async( resolve: ( information: any ) => void, reject: ( error: Error ) => void ) => {
 
-		const information: any = {};
+		// Read, correct adn write the package.json file
+		const packageJson: PackageJson = await validateAndCorrectPackageJson( await readFile( 'package.json' ) );
+		await writeFile( 'package.json', packageJson );
+		console.log( packageJson );
+
+		// const information: any = {};
 
 		// Read package file
-		information.newPackageJson = await readPackageJsonFile();
-		information.newPackageJson = await validatePackageJsonFileContent( information.newPackageJson );
+		// information.newPackageJson = await readFile( 'package.json' );
+		// information.newPackageJson = await validatePackageJsonFileContent( information.newPackageJson );
 
 		// Get version information
-		const isFirstVersion: boolean = await !hasGitTags();
-		information.version = {
-			isFirst: isFirstVersion,
-			old: information.newPackageJson.version,
-			new: isFirstVersion ? information.version.old : await evaluateNewVersion( information.newPackageJson.version )
-		};
-		information.newPackageJson.version = information.version.new;
+		// const isFirstVersion: boolean = await !hasGitTags();
+		// information.version = {
+		// 	isFirst: isFirstVersion,
+		// 	old: information.newPackageJson.version,
+		// 	new: isFirstVersion ? information.version.old : await evaluateNewVersion( information.newPackageJson.version )
+		// };
+		// information.newPackageJson.version = information.version.new;
 
-		// Get repository information
-		const details: any = parseGithubUrl( information.newPackageJson.repository.url );
-		information.repository = {
-			owner: details.owner,
-			name: details.name
-		};
+		// // Get repository information
+		// const details: any = parseGithubUrl( information.newPackageJson.repository.url );
+		// information.repository = {
+		// 	owner: details.owner,
+		// 	name: details.name
+		// };
 
-		// Get GitHub authorization details
-		information.githubToken = await getGithubToken( information.repository.owner, information.repository.name );
+		// // Get GitHub authorization details
+		// information.githubToken = await getGithubToken( information.repository.owner, information.repository.name );
 
-		resolve( information );
+		// resolve( information );
 
 	} );
 }
 
+/**
+ * Try to validate and - if necessary / possible also correct - the package json content
+ *
+ * @param   content - Original package json content
+ * @returns         - Corrected package json content
+ */
+function validateAndCorrectPackageJson( content: PackageJson ): Promise<PackageJson> {
+	return new Promise<PackageJson>( async( resolve: ( correctedContent: PackageJson ) => void, reject: ( error: Error ) => void ) => {
+
+		const correctedContent: PackageJson = content;
+
+		// Check the 'version' field
+		if ( !correctedContent.hasOwnProperty( 'version' ) ) {
+			correctedContent.version = '1.0.0'; // TODO: Log info or warning
+		}
+		if ( semver.valid( correctedContent.version ) === null ) { // 'null' means invalid
+			reject( new Error( 'The "package.json" file has a version which is invalid.' ) ); // TODO: Writing
+			return;
+		}
+		if ( semver.prerelease( correctedContent.version ) !== null ) { // 'null' means no pre-release components exist
+			reject( new Error( 'The "package.json" file has a version which implies a pre-release; this library only supports full releases.' ) ); // TODO: Writing
+			return;
+		}
+
+		// Check the 'repository' field
+		if ( !correctedContent.hasOwnProperty( 'repository' ) ) { // TODO: Log info or warning
+			correctedContent.repository = {
+				type: 'git'
+			};
+		}
+		if ( !correctedContent.repository.hasOwnProperty( 'url' ) ) { // TODO: Log info or warning
+			try {
+				correctedContent.repository.url = await getGitRemoteUrl();
+			} catch ( repositoryUrlError ) {
+				reject( repositoryUrlError );
+				return;
+			}
+		}
+
+		resolve( correctedContent );
+
+	} );
+}
+
+/**
+ * Get the Git remote URL from the git project settings / configuration (if possible)
+ *
+ * @returns - Promise, resolves with the git remote URL
+ */
+function getGitRemoteUrl(): Promise<string> {
+	return new Promise<string>( ( resolve: ( url: string ) => void, reject: ( error: Error ) => void ) => {
+
+		// Get all remotes (verbose=true also gives us the URLs)
+		git().getRemotes( true, ( gitGetRemotesError: Error | null, gitRemotes: Array<GitRemote> ) => {
+
+			// Handle errors
+			if ( gitGetRemotesError ) {
+				reject( gitGetRemotesError );
+				return;
+			}
+
+			// List of git remotes is '[ { name: '', refs: {} } ]' wheh no remotes are available
+			if ( gitRemotes[ 0 ].name === '' || !gitRemotes[ 0 ].refs.hasOwnProperty( 'fetch' ) ) {
+				reject( new Error( 'No git remotes found.' ) );
+				return;
+			}
+
+			// Return the normalized git path
+			const normalizedGitPath: string = gitRemotes[ 0 ].refs.fetch.replace( '.git', '' );
+			resolve( normalizedGitPath );
+
+		} );
+
+	} );
+}
 
 
 function hasGitTags(): Promise<boolean> {
@@ -73,82 +160,11 @@ function hasGitTags(): Promise<boolean> {
 	} );
 }
 
-function readPackageJsonFile(): Promise<any> {
-	return new Promise<any>( ( resolve: ( fileContent: any ) => void, reject: ( error: Error ) => void ) => {
 
-		fs.readFile( path.resolve( process.cwd(), 'package.json' ), 'utf-8', ( error: Error, fileContent: any ) => {
 
-			if ( error ) {
-				reject( error ); // TODO: Handle error
-				return;
-			}
 
-			let parsedFileContent: any;
-			try {
-				parsedFileContent = JSON.parse( fileContent );
-			} catch( parseError ) {
-				reject( parseError ); // TODO: Handle error
-				return;
-			}
 
-			resolve( parsedFileContent );
 
-		} );
-
-	} );
-}
-
-function validatePackageJsonFileContent( fileContent: any ): Promise<any> {
-	return new Promise<any>( async( resolve: ( correctedFileContent: any ) => void, reject: ( error: Error ) => void ) => {
-
-		const correctedFileContent: any = fileContent;
-
-		// Check the 'version' field
-		if ( !fileContent.hasOwnProperty( 'version' ) ) {
-			correctedFileContent.version = '1.0.0'; // TODO: Log info or warning
-		}
-		if ( semver.valid( fileContent.version ) === null ) {
-			reject( new Error( 'The "package.json" file has an invalid version.' ) ); // TODO: Writing
-		}
-		if ( semver.prerelease( fileContent.version ) !== null ) {
-			reject( new Error( 'The "package.json" file has a pre-release version, this library only supports full releases.' ) ); // TODO: Writing
-		}
-
-		// Check the 'repository' field
-		if ( !fileContent.hasOwnProperty( 'repository' ) ) { // TODO: Log info or warning
-			correctedFileContent.repository = {
-				type: 'git'
-			};
-		}
-		if ( !fileContent.repository.hasOwnProperty( 'url' ) ) { // TODO: Log info or warning
-			correctedFileContent.repository.url = await getGitRemoteUrl(); // TODO: Re-throw error
-		}
-
-		resolve( correctedFileContent );
-
-	} );
-}
-
-function getGitRemoteUrl(): Promise<any> {
-	return new Promise<any>( ( resolve: ( url: string ) => void, reject: ( error: Error ) => void ) => {
-
-		git().getRemotes( true, ( error: Error, remotes: any ) => {
-
-			if ( error ) {
-				reject( error ); // TODO: Handle error
-				return;
-			}
-
-			if ( remotes.length > 0 && remotes[ 0 ].hasOwnProperty( 'refs' ) && remotes[ 0 ].refs.hasOwnProperty( 'fetch' ) ) {
-				resolve( remotes[ 0 ].refs.fetch.replace( '.git', '' ) );
-			} else {
-				reject( new Error( 'No remotes found.' ) ); // TODO: Handle error
-			}
-
-		} );
-
-	} );
-}
 
 function evaluateNewVersion( oldVersion: string ): Promise<string> {
 	return new Promise<any>( ( resolve: ( newVersion: string ) => void, reject: ( error: Error ) => void ) => {

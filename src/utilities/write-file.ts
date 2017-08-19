@@ -9,7 +9,7 @@ import * as path from 'path';
  * @param   [isWithinLibrary=false] - Flag, describing whether the file lies within this library or within the project using this library
  * @returns                         - Promise
  */
-function writeFile( filePath: string, fileContent: string | Object, isWithinLibrary: boolean = false ): Promise<void> {
+export function writeFile( filePath: string, fileContent: string | Object, isWithinLibrary: boolean = false ): Promise<void> {
 	return new Promise<void>( ( resolve: () => void, reject: ( error: Error ) => void ) => {
 
 		// Resolve file path to an absolute one
@@ -22,12 +22,12 @@ function writeFile( filePath: string, fileContent: string | Object, isWithinLibr
 			? fileContent
 			: `${ JSON.stringify( fileContent, null, '	' ) }\n`; // Indentation using tabs, empty line at the end
 
-		// Write file asynchronously
-		fs.writeFile( resolvedFilePath, preparedFileContent, 'utf-8', ( error: Error ) => { // Implicitely creates the file if necessary
+		// Write file asynchronously; implicitely creates the file if necessary
+		fs.writeFile( resolvedFilePath, preparedFileContent, 'utf-8', ( writeFileError: Error | null ) => {
 
 			// Handle errors
-			if ( error ) {
-				reject( error ); // TODO: Handle error
+			if ( writeFileError ) {
+				reject( writeFileError );
 				return;
 			}
 
