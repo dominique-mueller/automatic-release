@@ -5,21 +5,23 @@ import * as githubReleaser from 'conventional-github-releaser';
 import * as githubRemoveAllReleases from 'github-remove-all-releases';
 
 import { readChangelogTemplateFiles } from './changelog';
-import * as changelogTransform from './../templates/changelog-transform';
+import { changelogTransformer } from './../templates/changelog-transform';
 
 /**
  * Create all GitHub releases
  *
- * @param   owner       - Repository owner
- * @param   name        - Repository name
- * @param   githubToken - GitHub token
- * @returns             - Promise
+ * @param   repositoryOwner - Repository owner
+ * @param   repositoyName   - Repository name
+ * @param   repositoryUrl   - Repository URL
+ * @param   githubToken     - GitHub token
+ * @returns                 - Promise
  */
-export function createAllGithubReleases( owner: string, name: string, githubToken: string ): Promise<void> {
+export function createAllGithubReleases( repositoryOwner: string, repositoyName: string, repositoryUrl: string, githubToken: string ):
+	Promise<void> {
 	return new Promise<void>( async( resolve: () => void, reject: ( error: Error ) => void ) => {
 
-		await deleteAllGithubReleases( owner, name, githubToken );
-		await createGithubReleases( githubToken );
+		await deleteAllGithubReleases( repositoryOwner, repositoyName, githubToken );
+		await createGithubReleases( repositoryUrl, githubToken );
 
 		resolve();
 
@@ -29,10 +31,11 @@ export function createAllGithubReleases( owner: string, name: string, githubToke
 /**
  * Create all GitHub releases
  *
- * @param   githubToken - GitHub token
- * @returns             - Promise
+ * @param   repositoryUrl - Repository URL
+ * @param   githubToken   - GitHub token
+ * @returns               - Promise
  */
-function createGithubReleases( githubToken: string ): Promise<void> {
+function createGithubReleases( repositoryUrl: string, githubToken: string ): Promise<void> {
 	return new Promise<void>( async( resolve: () => void, reject: ( error: Error ) => void ) => {
 
 		// Read in changelog template files
@@ -48,7 +51,7 @@ function createGithubReleases( githubToken: string ): Promise<void> {
 		}, {
 			linkCompare: false // We use a custom link
 		}, {}, {}, {
-			transform: changelogTransform, // Custom transform (shows all commit types)
+			transform: changelogTransformer( repositoryUrl ), // Custom transform (shows all commit types)
 			mainTemplate: changelogTemplates.mainTemplate,
 			commitPartial: changelogTemplates.commitTemplate,
 			headerPartial: '', // No header for release notes

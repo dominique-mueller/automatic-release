@@ -4,7 +4,7 @@ import * as conventionalChangelog from 'conventional-changelog';
 
 import { readFile } from './../utilities/read-file';
 import { writeFile } from './../utilities/write-file';
-import * as changelogTransform from './../templates/changelog-transform';
+import { changelogTransformer } from './../templates/changelog-transform';
 
 /**
  * Generate and write the changelog
@@ -49,7 +49,7 @@ function generateChangelog( repositoryUrl: string ): Promise<string> {
 		}, {
 			linkCompare: false // We use a custom link
 		}, {}, {}, {
-			transform: changelogTransform, // Custom transform (shows all commit types)
+			transform: changelogTransformer( repositoryUrl ), // Custom transform (shows all commit types)
 			mainTemplate: changelogTemplates.mainTemplate,
 			commitPartial: changelogTemplates.commitTemplate,
 			headerPartial: changelogTemplates.headerTemplate,

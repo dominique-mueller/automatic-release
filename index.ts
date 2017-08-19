@@ -12,20 +12,20 @@ import { updatePackageJson } from './src/steps/package-json';
 async function main() {
 
 	console.log( 'COLLECT INFO' );
-	const information: AutomaticReleaseInformation = await collectInformation();
-	console.log( information );
+	const info: AutomaticReleaseInformation = await collectInformation();
+	console.log( info );
 
 	console.log( 'PACKAGE FILE' );
-	// await updatePackageJson( information.newVersion );
+	// await updatePackageJson( info.newVersion );
 
 	console.log( 'CHANGELOG' );
-	// await generateAndWriteChangelog( information.repositoryUrl );
+	await generateAndWriteChangelog( info.repositoryUrl );
 
 	console.log( 'GIT' );
-	// await saveChangesToGit( information.newVersion );
+	// await saveChangesToGit( info.newVersion );
 
 	console.log( 'GITHUB RELEASE' );
-	// await createAllGithubReleases( information.repositoryOwner, information.repositoryName, information.githubToken );
+	// await createAllGithubReleases( info.repositoryOwner, info.repositoryName, info.repositoryUrl, info.githubToken );
 
 }
 
