@@ -6,9 +6,6 @@ import { readFile } from './src/utilities/read-file';
 import { saveChangesToGit } from './src/steps/git';
 import { updatePackageJson } from './src/steps/package-json';
 
-// TODO: Move to bin?
-// TODO: Logging + time
-// TODO: Clean process exit w/ code
 async function main() {
 
 	console.log( 'COLLECT INFO' );

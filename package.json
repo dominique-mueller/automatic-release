@@ -28,25 +28,33 @@
 		"npm",
 		"node"
 	],
-	"main": "./index.js",
+	"main": "index.js",
+	"types": "index.d.ts",
 	"bin": {
-		"automatic-release": "./bin/automatic-release.js"
+		"automatic-release": "bin/automatic-release.js"
 	},
 	"scripts": {
-		"list-deployed-files": "pkgfiles --sort=name"
+		"build": "npm run build:clean && npm run build:run && npm run build:copy",
+		"build:run": "tsc -p tsconfig.json",
+		"build:clean": "rimraf -r dist/**",
+		"build:copy": "copyfiles \"bin/**\" \"docs/**\" package.json CHANGELOG.md LICENSE README.md dist",
+		"list-published-files": "cd dist && irish-pub && cd .."
 	},
 	"dependencies": {
 		"conventional-changelog": "1.1.x",
 		"conventional-github-releaser": "1.1.x",
 		"conventional-recommended-bump": "1.0.x",
+		"github-remove-all-releases": "1.0.x",
 		"github": "9.2.x",
 		"parse-github-url": "1.0.x",
-		"github-remove-all-releases": "1.0.x",
 		"semver": "5.4.x",
 		"simple-git": "1.75.x"
 	},
 	"devDependencies": {
 		"@types/node": "8.0.x",
-		"pkgfiles": "2.3.x"
+		"copyfiles": "1.2.x",
+		"irish-pub": "0.2.x",
+		"rimraf": "2.6.x",
+		"typescript": "2.4.x"
 	}
 }
