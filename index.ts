@@ -13,19 +13,18 @@ async function main() {
 
 	console.log( 'COLLECT INFO' );
 	const info: AutomaticReleaseInformation = await collectInformation();
-	console.log( info );
 
 	console.log( 'PACKAGE FILE' );
-	// await updatePackageJson( info.newVersion );
+	await updatePackageJson( info.newVersion );
 
 	console.log( 'CHANGELOG' );
 	await generateAndWriteChangelog( info.repositoryUrl );
 
 	console.log( 'GIT' );
-	// await saveChangesToGit( info.newVersion );
+	await saveChangesToGit( info.newVersion );
 
 	console.log( 'GITHUB RELEASE' );
-	// await createAllGithubReleases( info.repositoryOwner, info.repositoryName, info.repositoryUrl, info.githubToken );
+	await createAllGithubReleases( info.repositoryOwner, info.repositoryName, info.repositoryUrl, info.githubToken );
 
 }
 
