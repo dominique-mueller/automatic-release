@@ -21,27 +21,34 @@ import { writeFile } from './../utilities/write-file';
 export function collectInformation(): Promise<AutomaticReleaseInformation> {
 	return new Promise( async( resolve: ( information: AutomaticReleaseInformation ) => void, reject: ( error: Error ) => void ) => {
 
-		// Read, correct and write the package.json file
-		const packageJson: PackageJson = await validateAndCorrectPackageJson( await readFile( 'package.json' ) );
-		await writeFile( 'package.json', packageJson );
+		try {
 
-		const information: AutomaticReleaseInformation = {};
+			// Read, correct and write the package.json file
+			const packageJson: PackageJson = await validateAndCorrectPackageJson( await readFile( 'package.json' ) );
+			await writeFile( 'package.json', packageJson );
 
-		// Get version information
-		information.isFirstVersion = !( await hasGitTags() );
-		information.oldVersion = packageJson.version;
-		information.newVersion = information.isFirstVersion ? information.oldVersion : await getNewVersion( information.oldVersion );
+			const information: AutomaticReleaseInformation = {};
 
-		// Get repository information
-		const details: GithubUrl = parseGithubUrl( packageJson.repository.url );
-		information.repositoryOwner = details.owner;
-		information.repositoryName = details.name;
-		information.repositoryUrl = details.href;
+			// Get version information
+			information.isFirstVersion = !( await hasGitTags() );
+			information.oldVersion = packageJson.version;
+			information.newVersion = information.isFirstVersion ? information.oldVersion : await getNewVersion( information.oldVersion );
 
-		// Get GitHub authorization details
-		information.githubToken = await getGithubToken( information.repositoryOwner, information.repositoryName );
+			// Get repository information
+			const details: GithubUrl = parseGithubUrl( packageJson.repository.url );
+			information.repositoryOwner = details.owner;
+			information.repositoryName = details.name;
+			information.repositoryUrl = details.href;
 
-		resolve( information );
+			// Get GitHub authorization details
+			information.githubToken = await getGithubToken( information.repositoryOwner, information.repositoryName );
+
+			resolve( information );
+
+		} catch ( error ) {
+			reject( error );
+			return;
+		}
 
 	} );
 }
@@ -62,25 +69,26 @@ function validateAndCorrectPackageJson( content: PackageJson ): Promise<PackageJ
 			correctedContent.version = '1.0.0'; // TODO: Log info or warning
 		}
 		if ( semver.valid( correctedContent.version ) === null ) { // 'null' means invalid
-			reject( new Error( 'The "package.json" file has a version which is invalid.' ) ); // TODO: Writing
+			reject( new Error( `The "package.json" file defines the version "${ correctedContent.version }"; regarding semantic versioning this is not a valid version number.` ) );
 			return;
 		}
 		if ( semver.prerelease( correctedContent.version ) !== null ) { // 'null' means no pre-release components exist
-			reject( new Error( 'The "package.json" file has a version which implies a pre-release; this library only supports full releases.' ) ); // TODO: Writing
+			reject( new Error( `The "package.json" file defines the version "${ correctedContent.version }"; pre-release versions are not supported by automatic-release.` ) );
 			return;
 		}
 
 		// Check the 'repository' field
-		if ( !correctedContent.hasOwnProperty( 'repository' ) ) { // TODO: Log info or warning
-			correctedContent.repository = {
+		if ( !correctedContent.hasOwnProperty( 'repository' ) ) {
+			correctedContent.repository = { // TODO: Log info or warning
 				type: 'git'
 			};
 		}
-		if ( !correctedContent.repository.hasOwnProperty( 'url' ) ) { // TODO: Log info or warning
+		if ( !correctedContent.repository.hasOwnProperty( 'url' ) ) {
 			try {
-				correctedContent.repository.url = await getGitRemoteUrl();
+				correctedContent.repository.url = await getGitRemoteUrl(); // TODO: Log info or warning
 			} catch ( repositoryUrlError ) {
-				reject( repositoryUrlError );
+				// We don't really care about the actual reason or this error, this here just would have been nice for auto-correction
+				reject( new Error( 'The "package.json" file defines no repository URL (and retrieving it from the Git project configuration failed).' ) );
 				return;
 			}
 		}
@@ -103,13 +111,13 @@ function getGitRemoteUrl(): Promise<string> {
 
 			// Handle errors
 			if ( gitGetRemotesError ) {
-				reject( gitGetRemotesError );
+				reject( new Error( `An error has occured while retrieving the project's Git remotes. [ gitGetRemotesError.message ]` ) );
 				return;
 			}
 
 			// List of git remotes is '[ { name: '', refs: {} } ]' wheh no remotes are available
 			if ( gitRemotes[ 0 ].name === '' || !gitRemotes[ 0 ].refs.hasOwnProperty( 'fetch' ) ) {
-				reject( new Error( 'No git remotes found.' ) );
+				reject( new Error( 'No remotes for the Git project found.' ) );
 				return;
 			}
 
@@ -135,7 +143,7 @@ function hasGitTags(): Promise<boolean> {
 
 			// Handle errors
 			if ( gitTagsError ) {
-				reject( gitTagsError );
+				reject( new Error( `An error has occured while retrieving the project's Git tags. [${ gitTagsError.message }]` ) );
 				return;
 			}
 
@@ -153,7 +161,7 @@ function hasGitTags(): Promise<boolean> {
  * @returns            - Promise, resolves with new version
  */
 function getNewVersion( oldVersion: string ): Promise<string> {
-	return new Promise<any>( ( resolve: ( newVersion: string ) => void, reject: ( error: Error ) => void ) => {
+	return new Promise<string>( ( resolve: ( newVersion: string ) => void, reject: ( error: Error ) => void ) => {
 
 		// Evaluate version bump
 		conventionalRecommendedBump( {
@@ -162,7 +170,7 @@ function getNewVersion( oldVersion: string ): Promise<string> {
 
 			// Handle errors
 			if ( error ) {
-				reject( error );
+				reject( new Error( `An error occured while evaluating the next version. [${ error.message }]` ) );
 				return;
 			}
 
@@ -207,10 +215,10 @@ function getGithubToken( repositoryOwner: string, repositoryName: string ): Prom
 		github.repos.getCollaborators( {
 			owner: repositoryOwner,
 			repo: repositoryName
-		}, ( error: Error | null, collaborators: any ) => { // We don't care about the answer
+		}, ( error: any | null, collaborators: any ) => { // We don't care about the answer
 
 			if ( error ) {
-				reject( error );
+				reject( new Error( `An error occured while trying to verify the GitHub token. [${ error.headers.status }: "${ JSON.parse( error.message ).message }"]` ) );
 				return;
 			}
 
