@@ -218,7 +218,7 @@ function getGithubToken( repositoryOwner: string, repositoryName: string ): Prom
 		}, ( error: any | null, collaborators: any ) => { // We don't care about the answer
 
 			if ( error ) {
-				reject( new Error( `An error occured while trying to verify the GitHub token. [${ error.headers.status }: "${ JSON.parse( error.message ).message }"]` ) );
+				reject( new Error( `An error occured while verifying the GitHub token. [${ error.headers.status }: "${ JSON.parse( error.message ).message }"]` ) );
 				return;
 			}
 

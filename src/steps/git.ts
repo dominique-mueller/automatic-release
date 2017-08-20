@@ -13,31 +13,38 @@ import { resolvePath } from './../utilities/resolve-path';
 export function saveChangesToGit( newVersion: string ): Promise<void> {
 	return new Promise<void>( ( resolve: () => void, reject: ( error: Error ) => void ) => {
 
-		git()
+		try {
 
-			// Stage changed files, then commit
-			.add( resolvePath( 'package.json' ) )
-			.add( resolvePath( 'CHANGELOG.md' ) )
-			.commit( `Release ${ newVersion } [skip ci]` )
+			git()
 
-			// Create a tag
-			.addAnnotatedTag( newVersion, `Release of version ${ newVersion }.` )
+				// Stage changed files, then commit
+				.add( resolvePath( 'package.json' ) )
+				.add( resolvePath( 'CHANGELOG.md' ) )
+				.commit( `Release ${ newVersion } [skip ci]` )
 
-			// Push to origin/master
-			.push( 'origin', 'master', {
-				'--follow-tags': null // 'null' means true / enabled
-			} )
+				// Create a tag
+				.addAnnotatedTag( newVersion, `Release of version ${ newVersion }.` )
 
-			// Update the develop branch (and return back to master)
-			.checkout( 'develop' )
-			.mergeFromTo( 'master', 'develop' )
-			.push( 'origin', 'develop' )
-			.checkout( 'master' )
+				// Push to origin/master
+				.push( 'origin', 'master', {
+					'--follow-tags': null // 'null' means true / enabled
+				} )
 
-			// Continue
-			.exec( () => {
-				resolve();
-			} );
+				// Update the develop branch (and return back to master)
+				.checkout( 'develop' )
+				.mergeFromTo( 'master', 'develop' )
+				.push( 'origin', 'develop' )
+				.checkout( 'master' )
+
+				// Continue
+				.exec( () => {
+					resolve();
+				} );
+
+		} catch ( error ) {
+			reject( new Error( `An error occured while saving the changes to Git. [${ ( <Error> error ).message }]` ) );
+			return;
+		}
 
 	} );
 }
