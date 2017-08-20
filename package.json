@@ -44,9 +44,9 @@
 		"conventional-changelog": "1.1.x",
 		"conventional-github-releaser": "1.1.x",
 		"conventional-recommended-bump": "1.0.x",
+		"github-remove-all-releases": "1.0.x",
 		"github": "9.2.x",
 		"parse-github-url": "1.0.x",
-		"github-remove-all-releases": "1.0.x",
 		"semver": "5.4.x",
 		"simple-git": "1.75.x"
 	},
@@ -54,6 +54,7 @@
 		"@types/node": "8.0.x",
 		"copyfiles": "1.2.x",
 		"irish-pub": "0.2.x",
-		"rimraf": "2.6.x"
+		"rimraf": "2.6.x",
+		"typescript": "2.4.x"
 	}
 }
