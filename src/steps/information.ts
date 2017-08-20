@@ -28,8 +28,9 @@ export function collectInformation(): Promise<AutomaticReleaseInformation> {
 		const information: AutomaticReleaseInformation = {};
 
 		// Get version information
+		information.isFirstVersion = !( await hasGitTags() );
 		information.oldVersion = packageJson.version;
-		information.newVersion = await getNewVersion( information.oldVersion );
+		information.newVersion = information.isFirstVersion ? information.oldVersion : await getNewVersion( information.oldVersion );
 
 		// Get repository information
 		const details: GithubUrl = parseGithubUrl( packageJson.repository.url );
@@ -38,7 +39,7 @@ export function collectInformation(): Promise<AutomaticReleaseInformation> {
 		information.repositoryUrl = details.href;
 
 		// Get GitHub authorization details
-		information.githubToken = await getVerifiedGithubToken( information.repositoryOwner, information.repositoryName );
+		information.githubToken = await getGithubToken( information.repositoryOwner, information.repositoryName );
 
 		resolve( information );
 
@@ -122,6 +123,30 @@ function getGitRemoteUrl(): Promise<string> {
 }
 
 /**
+ * Check if any Git tags exist (implying whether a release has been created yet)
+ *
+ * @returns - Promise, resolves with a flag describing whether any Git tags exist
+ */
+function hasGitTags(): Promise<boolean> {
+	return new Promise<boolean>( ( resolve: ( flag: boolean ) => void, reject: ( error: Error ) => void ) => {
+
+		// Get all git tags
+		git().tags( ( gitTagsError: Error | null, gitTags: GitTags ) => {
+
+			// Handle errors
+			if ( gitTagsError ) {
+				reject( gitTagsError );
+				return;
+			}
+
+			resolve( gitTags.all.length !== 0 );
+
+		} );
+
+	} );
+}
+
+/**
  * Evaluate the new version, based on the old version and the commits happening since then
  *
  * @param   oldVersion - Old version
@@ -156,7 +181,7 @@ function getNewVersion( oldVersion: string ): Promise<string> {
  * @param   repositoryName  - Repository name
  * @returns                 - Promise, resolves with the GitHub token
  */
-function getVerifiedGithubToken( repositoryOwner: string, repositoryName: string ): Promise<string> {
+function getGithubToken( repositoryOwner: string, repositoryName: string ): Promise<string> {
 	return new Promise<string>( ( resolve: ( githubToken: string ) => void, reject: ( error: Error ) => void ) => {
 
 		// Get GitHub token from environment variable
