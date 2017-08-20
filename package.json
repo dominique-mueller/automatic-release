@@ -28,12 +28,17 @@
 		"npm",
 		"node"
 	],
-	"main": "./index.js",
+	"main": "index.js",
+	"types": "index.d.ts",
 	"bin": {
-		"automatic-release": "./bin/automatic-release.js"
+		"automatic-release": "bin/automatic-release.js"
 	},
 	"scripts": {
-		"list-deployed-files": "pkgfiles --sort=name"
+		"build": "npm run build:clean && npm run build:run && npm run build:copy",
+		"build:run": "tsc -p tsconfig.json",
+		"build:clean": "rimraf -r dist/**",
+		"build:copy": "copyfiles \"bin/**\" \"docs/**\" package.json CHANGELOG.md LICENSE README.md dist",
+		"list-published-files": "cd dist && irish-pub && cd .."
 	},
 	"dependencies": {
 		"conventional-changelog": "1.1.x",
@@ -47,6 +52,8 @@
 	},
 	"devDependencies": {
 		"@types/node": "8.0.x",
-		"pkgfiles": "2.3.x"
+		"copyfiles": "1.2.x",
+		"irish-pub": "0.2.x",
+		"rimraf": "2.6.x"
 	}
 }

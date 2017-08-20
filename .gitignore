@@ -1,5 +1,17 @@
 # Dependencies
-node_modules
+/node_modules
+
+# Build
+/dist
+
+# Development
+/.vscode
 
 # Logs
 *.log
+
+# Other
+*.todo
+*.old
+*.temp
+*.tmp
