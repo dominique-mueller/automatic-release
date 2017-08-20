@@ -22,7 +22,8 @@ export function collectInformation(): Promise<AutomaticReleaseInformation> {
 	return new Promise( async( resolve: ( information: AutomaticReleaseInformation ) => void, reject: ( error: Error ) => void ) => {
 
 		// Read, correct and write the package.json file
-		const packageJson: PackageJson = await readFile( 'package.json' );
+		const packageJson: PackageJson = await validateAndCorrectPackageJson( await readFile( 'package.json' ) );
+		await writeFile( 'package.json', packageJson );
 
 		const information: AutomaticReleaseInformation = {};
 
@@ -37,9 +38,85 @@ export function collectInformation(): Promise<AutomaticReleaseInformation> {
 		information.repositoryUrl = details.href;
 
 		// Get GitHub authorization details
-		information.githubToken = await getGithubToken( information.repositoryOwner, information.repositoryName );
+		information.githubToken = await getVerifiedGithubToken( information.repositoryOwner, information.repositoryName );
 
 		resolve( information );
+
+	} );
+}
+
+/**
+ * Try to validate and - if necessary / possible also correct - the package json content
+ *
+ * @param   content - Original package json content
+ * @returns         - Corrected package json content
+ */
+function validateAndCorrectPackageJson( content: PackageJson ): Promise<PackageJson> {
+	return new Promise<PackageJson>( async( resolve: ( correctedContent: PackageJson ) => void, reject: ( error: Error ) => void ) => {
+
+		const correctedContent: PackageJson = content;
+
+		// Check the 'version' field
+		if ( !correctedContent.hasOwnProperty( 'version' ) ) {
+			correctedContent.version = '1.0.0'; // TODO: Log info or warning
+		}
+		if ( semver.valid( correctedContent.version ) === null ) { // 'null' means invalid
+			reject( new Error( 'The "package.json" file has a version which is invalid.' ) ); // TODO: Writing
+			return;
+		}
+		if ( semver.prerelease( correctedContent.version ) !== null ) { // 'null' means no pre-release components exist
+			reject( new Error( 'The "package.json" file has a version which implies a pre-release; this library only supports full releases.' ) ); // TODO: Writing
+			return;
+		}
+
+		// Check the 'repository' field
+		if ( !correctedContent.hasOwnProperty( 'repository' ) ) { // TODO: Log info or warning
+			correctedContent.repository = {
+				type: 'git'
+			};
+		}
+		if ( !correctedContent.repository.hasOwnProperty( 'url' ) ) { // TODO: Log info or warning
+			try {
+				correctedContent.repository.url = await getGitRemoteUrl();
+			} catch ( repositoryUrlError ) {
+				reject( repositoryUrlError );
+				return;
+			}
+		}
+
+		resolve( correctedContent );
+
+	} );
+}
+
+/**
+ * Get the Git remote URL from the git project settings / configuration (if possible)
+ *
+ * @returns - Promise, resolves with the git remote URL
+ */
+function getGitRemoteUrl(): Promise<string> {
+	return new Promise<string>( ( resolve: ( url: string ) => void, reject: ( error: Error ) => void ) => {
+
+		// Get all remotes (verbose=true also gives us the URLs)
+		git().getRemotes( true, ( gitGetRemotesError: Error | null, gitRemotes: Array<GitRemote> ) => {
+
+			// Handle errors
+			if ( gitGetRemotesError ) {
+				reject( gitGetRemotesError );
+				return;
+			}
+
+			// List of git remotes is '[ { name: '', refs: {} } ]' wheh no remotes are available
+			if ( gitRemotes[ 0 ].name === '' || !gitRemotes[ 0 ].refs.hasOwnProperty( 'fetch' ) ) {
+				reject( new Error( 'No git remotes found.' ) );
+				return;
+			}
+
+			// Return the normalized git path
+			const normalizedGitPath: string = gitRemotes[ 0 ].refs.fetch.replace( '.git', '' );
+			resolve( normalizedGitPath );
+
+		} );
 
 	} );
 }
@@ -79,7 +156,7 @@ function getNewVersion( oldVersion: string ): Promise<string> {
  * @param   repositoryName  - Repository name
  * @returns                 - Promise, resolves with the GitHub token
  */
-function getGithubToken( repositoryOwner: string, repositoryName: string ): Promise<string> {
+function getVerifiedGithubToken( repositoryOwner: string, repositoryName: string ): Promise<string> {
 	return new Promise<string>( ( resolve: ( githubToken: string ) => void, reject: ( error: Error ) => void ) => {
 
 		// Get GitHub token from environment variable
@@ -88,7 +165,33 @@ function getGithubToken( repositoryOwner: string, repositoryName: string ): Prom
 			return;
 		}
 		const githubToken: string = process.env.GH_TOKEN;
-		resolve( githubToken );
+
+		// Create a github client, then authenticate
+		// Weirdly enough, this seems to never throw an error, even when the github token itself is invalid
+		const github = new GitHubApi( {
+			timeout: 5000
+		} );
+		github.authenticate( {
+			type: 'oauth',
+			token: githubToken
+		} );
+
+		// We actually don't care about the collaborators - but we can "miss-use" this API request to check that the GitHub token is valid
+		// and veryify that we actually do have access to public repository information (the correct GitHub token scope).
+		// While the GitHub authorization API would be more meaningful here, it is restricted to usage with basic-auth only ... :/
+		github.repos.getCollaborators( {
+			owner: repositoryOwner,
+			repo: repositoryName
+		}, ( error: Error | null, collaborators: any ) => { // We don't care about the answer
+
+			if ( error ) {
+				reject( error );
+				return;
+			}
+
+			resolve( githubToken );
+
+		} );
 
 	} );
 }
