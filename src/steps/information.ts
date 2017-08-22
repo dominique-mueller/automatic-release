@@ -1,4 +1,6 @@
+import * as chalk from 'chalk';
 import * as conventionalRecommendedBump from 'conventional-recommended-bump';
+import * as figures from 'figures';
 import * as git from 'simple-git';
 import * as GitHubApi from 'github';
 import * as parseGithubUrl from 'parse-github-url';
@@ -66,7 +68,8 @@ function validateAndCorrectPackageJson( content: PackageJson ): Promise<PackageJ
 
 		// Check the 'version' field
 		if ( !correctedContent.hasOwnProperty( 'version' ) ) {
-			correctedContent.version = '1.0.0'; // TODO: Log info or warning
+			correctedContent.version = '1.0.0';
+			console.log( chalk.yellow( `    !! There was no version defined in the "package.json" file, thus "1.0.0" is assumed.` ) );
 		}
 		if ( semver.valid( correctedContent.version ) === null ) { // 'null' means invalid
 			reject( new Error( `The "package.json" file defines the version "${ correctedContent.version }"; regarding semantic versioning this is not a valid version number.` ) );
@@ -79,13 +82,14 @@ function validateAndCorrectPackageJson( content: PackageJson ): Promise<PackageJ
 
 		// Check the 'repository' field
 		if ( !correctedContent.hasOwnProperty( 'repository' ) ) {
-			correctedContent.repository = { // TODO: Log info or warning
+			correctedContent.repository = {
 				type: 'git'
 			};
 		}
 		if ( !correctedContent.repository.hasOwnProperty( 'url' ) ) {
 			try {
-				correctedContent.repository.url = await getGitRemoteUrl(); // TODO: Log info or warning
+				correctedContent.repository.url = await getGitRemoteUrl();
+				console.log( chalk.yellow( `    !! There was no repository URL defined in the "package.json" file, thus "${ correctedContent.repository.url }" is assumed.` ) );
 			} catch ( repositoryUrlError ) {
 				// We don't really care about the actual reason or this error, this here just would have been nice for auto-correction
 				reject( new Error( 'The "package.json" file defines no repository URL (and retrieving it from the Git project configuration failed).' ) );

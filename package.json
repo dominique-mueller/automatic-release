@@ -41,9 +41,11 @@
 		"list-published-files": "cd dist && irish-pub && cd .."
 	},
 	"dependencies": {
+		"chalk": "2.1.x",
 		"conventional-changelog": "1.1.x",
 		"conventional-github-releaser": "1.1.x",
 		"conventional-recommended-bump": "1.0.x",
+		"figures": "2.0.x",
 		"github-remove-all-releases": "1.0.x",
 		"github": "9.2.x",
 		"parse-github-url": "1.0.x",
