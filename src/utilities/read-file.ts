@@ -17,11 +17,11 @@ export function readFile( filePath: string, isWithinLibrary: boolean = false ): 
 		const resolvedFilePath: string = resolvePath( filePath, isWithinLibrary );
 
 		// Read file asynchronously
-		fs.readFile( resolvedFilePath, 'utf-8', ( readFileError: Error | null, fileContent: string ) => {
+		fs.readFile( resolvedFilePath, 'utf-8', ( readFileError: NodeJS.ErrnoException | null, fileContent: string ) => {
 
 			// Handle errors
 			if ( readFileError ) {
-				reject( readFileError );
+				reject( new Error( `An error occured while reading the file "${ resolvedFilePath }". [Code "${ readFileError.code }", Number "${ readFileError.errno }"]` ) );
 				return;
 			}
 
@@ -33,7 +33,7 @@ export function readFile( filePath: string, isWithinLibrary: boolean = false ): 
 				try {
 					parsedFileContent = JSON.parse( fileContent );
 				} catch ( jsonParseError ) {
-					reject( jsonParseError );
+					reject( new Error( `An error occured while parsing the file "${ resolvedFilePath }" as JSON. [${ ( <Error> jsonParseError ).message }]` ) );
 					return;
 				}
 
