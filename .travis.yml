@@ -10,7 +10,6 @@ branches:
     - develop
     - feature/travis
     - /^greenkeeper/.*$/
-    - feature/logging
 
 before_install:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
@@ -24,8 +23,6 @@ install:
 script:
   - npm run build:run
   - npm run build:copy
-  - npm install -g ts-node typescript
-  - ts-node index.ts
 
 before_deploy:
   - git config --global user.name "dominique-mueller";
