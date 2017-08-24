@@ -37,7 +37,8 @@
 		"build": "npm run build:clean && npm run build:run && npm run build:copy",
 		"build:run": "tsc -p tsconfig.json",
 		"build:clean": "rimraf -r dist/**",
-		"build:copy": "copyfiles \"bin/**\" \"docs/**\" package.json CHANGELOG.md LICENSE README.md dist",
+		"build:copy": "copyfiles \"src/**/*.hbs\" \"bin/**\" dist",
+		"post-automatic-release": "copyfiles \"docs/**\" package.json CHANGELOG.md LICENSE README.md dist",
 		"list-published-files": "cd dist && irish-pub && cd .."
 	},
 	"dependencies": {

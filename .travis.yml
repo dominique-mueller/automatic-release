@@ -22,6 +22,7 @@ install:
 
 script:
   - npm run build:run
+  - npm run build:copy
 
 before_deploy:
   - git config --global user.name "dominique-mueller";
@@ -30,7 +31,7 @@ before_deploy:
   - echo "https://$GH_TOKEN:@github.com" > .git/credentials;
   - git checkout master
   - node dist/bin/automatic-release.js # Run itself
-  - npm run build:copy # Copy other files afterwards
+  - npm run post-automatic-release # Copy package and changelog files
   - cd dist # Publish from the dist folder
 deploy:
   provider: npm
