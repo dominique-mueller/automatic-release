@@ -24,7 +24,7 @@ install:
 script:
   - npm run build:run
   - npm run build:copy
-  - npm install -g ts-node
+  - npm install -g ts-node typescript
   - ts-node index.ts
 
 before_deploy:
