@@ -10,6 +10,7 @@ branches:
     - develop
     - feature/travis
     - /^greenkeeper/.*$/
+    - feature/logging
 
 before_install:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
