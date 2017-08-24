@@ -13,7 +13,7 @@ async function main(): Promise<void> {
 	return new Promise<void>( async( resolve: () => void, reject: ( error: Error ) => void ) => {
 
 		console.log( '' );
-		console.log( chalk.white.underline( 'Automatic Release' ) );
+		console.log( chalk.white.bold.underline( 'AUTOMATIC RELEASE' ) );
 
 		const startTime = new Date().getTime();
 
@@ -62,11 +62,10 @@ async function main(): Promise<void> {
 
 			console.log( '' );
 			if ( info.isFirstVersion ) {
-				console.log( chalk.bold.green( `Release of first version X.Y.Z successful! [${ processTime } seconds]` ) );
+				console.log( chalk.bold.green( `Release of version X.Y.Z successful (first release)! [${ processTime } seconds]` ) );
 			} else {
-				console.log( chalk.bold.green( `Release of version X.Y.Z (previously X.Y.Z) successful! [${ processTime } seconds]` ) );
+				console.log( chalk.bold.green( `Release of version X.Y.Z successful (previously X.Y.Z)! [${ processTime } seconds]` ) );
 			}
-			console.log( '' );
 
 			resolve();
 
@@ -74,7 +73,6 @@ async function main(): Promise<void> {
 
 			console.log( '' );
 			console.log( chalk.bold.red( ( <Error> error ).message ) );
-			console.log( '' );
 
 			reject( error );
 
