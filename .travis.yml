@@ -23,6 +23,7 @@ install:
 script:
   - npm run build:run
   - npm run build:copy
+  - npm start
 
 before_deploy:
   - git config --global user.name "dominique-mueller";
