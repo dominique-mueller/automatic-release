@@ -23,11 +23,11 @@ export function writeFile( filePath: string, fileContent: string | Object, isWit
 			: `${ JSON.stringify( fileContent, null, '	' ) }\n`; // Indentation using tabs, empty line at the end
 
 		// Write file asynchronously; implicitely creates the file if necessary
-		fs.writeFile( resolvedFilePath, preparedFileContent, 'utf-8', ( writeFileError: Error | null ) => {
+		fs.writeFile( resolvedFilePath, preparedFileContent, 'utf-8', ( writeFileError: NodeJS.ErrnoException | null ) => {
 
 			// Handle errors
 			if ( writeFileError ) {
-				reject( writeFileError );
+				reject( new Error( `An error occured while reading the file "${ resolvedFilePath }". [Code "${ writeFileError.code }", Number "${ writeFileError.errno }"]` ) );
 				return;
 			}
 

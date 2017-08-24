@@ -14,11 +14,18 @@ import { writeFile } from './../utilities/write-file';
 export function updatePackageJson( newVersion: string ): Promise<void> {
 	return new Promise<void>( async( resolve: () => void, reject: ( error: Error ) => void ) => {
 
-		const packageJson: PackageJson = await readFile( 'package.json' );
-		packageJson.version = newVersion;
-		await writeFile( 'package.json', packageJson );
+		try {
 
-		resolve();
+			const packageJson: PackageJson = await readFile( 'package.json' );
+			packageJson.version = newVersion;
+			await writeFile( 'package.json', packageJson );
+
+			resolve();
+
+		} catch ( error ) {
+			reject( error );
+			return;
+		}
 
 	} );
 }

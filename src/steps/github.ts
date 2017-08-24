@@ -20,10 +20,18 @@ export function createAllGithubReleases( repositoryOwner: string, repositoyName:
 	Promise<void> {
 	return new Promise<void>( async( resolve: () => void, reject: ( error: Error ) => void ) => {
 
-		await deleteAllGithubReleases( repositoryOwner, repositoyName, githubToken );
-		await createGithubReleases( repositoryUrl, githubToken );
+		try {
 
-		resolve();
+			await deleteAllGithubReleases( repositoryOwner, repositoyName, githubToken );
+			const changelogTemplates: { [ key: string ]: string } = await readChangelogTemplateFiles();
+			await createGithubReleases( changelogTemplates, repositoryUrl, githubToken );
+
+			resolve();
+
+		} catch ( error ) {
+			reject( error );
+			return;
+		}
 
 	} );
 }
@@ -31,15 +39,13 @@ export function createAllGithubReleases( repositoryOwner: string, repositoyName:
 /**
  * Create all GitHub releases
  *
- * @param   repositoryUrl - Repository URL
- * @param   githubToken   - GitHub token
- * @returns               - Promise
+ * @param   changelogTemplates - Changelog templates
+ * @param   repositoryUrl      - Repository URL
+ * @param   githubToken        - GitHub token
+ * @returns                    - Promise
  */
-function createGithubReleases( repositoryUrl: string, githubToken: string ): Promise<void> {
+function createGithubReleases( changelogTemplates: { [ key: string ]: string }, repositoryUrl: string, githubToken: string ): Promise<void> {
 	return new Promise<void>( async( resolve: () => void, reject: ( error: Error ) => void ) => {
-
-		// Read in changelog template files
-		const changelogTemplates: { [ key: string ]: string } = await readChangelogTemplateFiles();
 
 		// Create a new release on GitHub
 		githubReleaser( {
@@ -60,7 +66,7 @@ function createGithubReleases( repositoryUrl: string, githubToken: string ): Pro
 
 			// Catch library errors
 			if ( error ) {
-				reject( error );
+				reject( new Error( `An error occured while creating GitHub releases. [${ error.message }]` ) );
 				return;
 			}
 
@@ -91,7 +97,7 @@ function deleteAllGithubReleases( owner: string, name: string, githubToken: stri
 
 			// Catch library errors (except missing releases)
 			if ( error && error.toString() !== 'Error: No releases found' ) {
-				reject( error );
+				reject( new Error( `An error occured while deleting GitHub releases. [${ error.message }]` ) );
 				return;
 			}
 

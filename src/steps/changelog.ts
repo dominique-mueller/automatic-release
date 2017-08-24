@@ -16,10 +16,18 @@ import { changelogTransformer } from './../templates/changelog-transform';
 export function generateAndWriteChangelog( repositoryUrl: string ): Promise<void> {
 	return new Promise<void>( async( resolve: () => void, reject: ( error: Error ) => void ) => {
 
-		const changelog: string = await generateChangelog( repositoryUrl );
-		await writeFile( 'CHANGELOG.md', changelog );
+		try {
 
-		resolve();
+			const changelogTemplates: { [ key: string ]: string } = await readChangelogTemplateFiles();
+			const changelog: string = await generateChangelog( changelogTemplates, repositoryUrl );
+			await writeFile( 'CHANGELOG.md', changelog );
+
+			resolve();
+
+		} catch ( error ) {
+			reject( error );
+			return;
+		}
 
 	} );
 }
@@ -27,15 +35,14 @@ export function generateAndWriteChangelog( repositoryUrl: string ): Promise<void
 /**
  * Generate the changelog
  *
- * @param   repositoryUrl - Repository URL
- * @returns               - Promise, resolves with changelog
+ * @param   changelogTemplates - Changelog templates
+ * @param   repositoryUrl      - Repository URL
+ * @returns                    - Promise, resolves with changelog
  */
-function generateChangelog( repositoryUrl: string ): Promise<string> {
+function generateChangelog( changelogTemplates: { [ key: string ]: string },repositoryUrl: string ): Promise<string> {
 	return new Promise<string>( async( resolve: ( changelogContent: string ) => void, reject: ( error: Error ) => void ) => {
 
 		// Read in changelog template files
-		const changelogTemplates: { [ key: string ]: string } = await readChangelogTemplateFiles();
-
 		const changelogChunks: Array<string> = [];
 
 		// Header information
@@ -58,7 +65,7 @@ function generateChangelog( repositoryUrl: string ): Promise<string> {
 
 		// Handle errors
 		changelogStream.on( 'error', ( error: Error ) => {
-			reject( error );
+			reject( new Error( `An error occured while generating the changelog. [${ error.message }]` ) );
 			return;
 		} );
 
@@ -91,23 +98,30 @@ export function readChangelogTemplateFiles(): Promise<{ [ key: string ]: string 
 	return new Promise<{ [ key: string ]: string }>(
 		async( resolve: ( templates: { [ key: string ]: string } ) => void, reject: ( error: Error ) => void ) => {
 
-		// Read template files
-		const [ mainTemplate, commitTemplate, headerTemplate, footerTemplate ] = await Promise.all( [
-			readFile( './../templates/changelog-main.hbs', true ),
-			readFile( './../templates/changelog-commit.hbs', true ),
-			readFile( './../templates/changelog-header.hbs', true ),
-			readFile( './../templates/changelog-footer.hbs', true )
-		] );
+		try {
 
-		// Assign tempaltes
-		const templates: { [ key: string ]: string } = {
-			mainTemplate,
-			commitTemplate,
-			headerTemplate,
-			footerTemplate
-		};
+			// Read template files
+			const [ mainTemplate, commitTemplate, headerTemplate, footerTemplate ] = await Promise.all( [
+				readFile( './../templates/changelog-main.hbs', true ),
+				readFile( './../templates/changelog-commit.hbs', true ),
+				readFile( './../templates/changelog-header.hbs', true ),
+				readFile( './../templates/changelog-footer.hbs', true )
+			] );
 
-		resolve( templates );
+			// Assign tempaltes
+			const templates: { [ key: string ]: string } = {
+				mainTemplate,
+				commitTemplate,
+				headerTemplate,
+				footerTemplate
+			};
+
+			resolve( templates );
+
+		} catch ( error ) {
+			reject( error );
+			return;
+		}
 
 	} );
 }
