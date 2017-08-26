@@ -1,4 +1,4 @@
-import { collectInformation } from './information';
+import { collectInformation } from '../../../src/steps/information';
 
 import * as conventionalRecommendedBump from 'conventional-recommended-bump';
 import * as git from 'simple-git';
@@ -6,26 +6,21 @@ import * as GitHubApi from 'github';
 import * as parseGithubUrl from 'parse-github-url';
 import * as semver from 'semver';
 
-import * as log from './../log';
-import * as readFile from './../utilities/read-file';
-import * as writeFile from './../utilities/write-file';
-import { PackageJson } from '../interfaces/package-json.interface';
-import { AutomaticReleaseInformation } from '../interfaces/automatic-release-information.interface';
-import { GitTags } from '../interfaces/git-tags.interface';
-import { RecommendedBump } from '../interfaces/recommended-bump.interface';
+import * as log from '../../../src/log';
+import * as readFile from '../../../src/utilities/read-file';
+import * as writeFile from '../../../src/utilities/write-file';
+import { PackageJson } from '../../../src/interfaces/package-json.interface';
+import { AutomaticReleaseInformation } from '../../../src/interfaces/automatic-release-information.interface';
+import { GitTags } from '../../../src/interfaces/git-tags.interface';
+import { RecommendedBump } from '../../../src/interfaces/recommended-bump.interface';
 
 jest.mock( 'simple-git', () => {
 	return ( basePath: string ) => {
 		return {
 			tags: ( callback: ( gitTagsError: Error | null, gitTags: GitTags ) => void ) => {
 				callback( null, {
-					latest: '1.1.0',
-					all: [
-						'1.0.0',
-						'1.0.1',
-						'1.0.2',
-						'1.1.0'
-					]
+					latest: 'undefined',
+					all: []
 				} );
 			}
 		};
@@ -83,7 +78,7 @@ describe( 'Collect information', () => {
 
 	} );
 
-	it ( 'should run through successfully', ( done ) => {
+	it ( 'should release first version', ( done ) => {
 
 		collectInformation()
 			.then( ( information: AutomaticReleaseInformation ) => {
@@ -91,9 +86,9 @@ describe( 'Collect information', () => {
 				expect( readFile.readFile ).toHaveBeenCalledWith( 'package.json' );
 				expect( writeFile.writeFile ).toHaveBeenCalledWith( 'package.json', validPackageJson );
 
-				expect( information.isFirstVersion ).toBe( false );
-				expect( information.oldVersion ).toBe( '1.1.0' );
-				expect( information.newVersion ).toBe( '1.1.1' );
+				expect( information.isFirstVersion ).toBe( true );
+				expect( information.oldVersion ).toBe( '1.0.0' );
+				expect( information.newVersion ).toBe( '1.0.0' );
 
 				expect( information.repositoryOwner ).toBe( 'john-doe' );
 				expect( information.repositoryName ).toBe( 'test-library' );
@@ -112,7 +107,7 @@ describe( 'Collect information', () => {
 const validPackageJson: PackageJson = {
 	name: 'test-library',
 	description: 'Lorem ipsum dolor sit amet.',
-	version: '1.1.0',
+	version: '1.0.0',
 	repository: {
 		"type": "git",
 		"url": "https://github.com/john-doe/test-library"
