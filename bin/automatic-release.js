@@ -2,6 +2,13 @@
 
 'use strict';
 
-require( './../index.js' );
+const automaticRelease = require( './../index.js' ).automaticRelease;
 
-// TODO: Call main(), handle exit code
+// Run
+automaticRelease()
+	.then( () => {
+		process.exit( 0 );
+	} )
+	.catch( () => {
+		process.exit( 1 );
+	} )
