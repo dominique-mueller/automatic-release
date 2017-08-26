@@ -7,7 +7,7 @@ import { readFile } from './src/utilities/read-file';
 import { saveChangesToGit } from './src/steps/git';
 import { updatePackageJson } from './src/steps/package-json';
 
-async function automaticRelease(): Promise<void> {
+export async function automaticRelease(): Promise<void> {
 	return new Promise<void>( async( resolve: () => void, reject: ( error: Error ) => void ) => {
 
 		log();
