@@ -2,9 +2,10 @@ import * as stream from 'stream';
 
 import * as conventionalChangelog from 'conventional-changelog';
 
+import { changelogTransformer } from './../templates/changelog-transform';
+import { log } from './../log';
 import { readFile } from './../utilities/read-file';
 import { writeFile } from './../utilities/write-file';
-import { changelogTransformer } from './../templates/changelog-transform';
 
 /**
  * Generate and write the changelog
@@ -18,8 +19,11 @@ export function generateAndWriteChangelog( repositoryUrl: string ): Promise<void
 
 		try {
 
+			log( 'substep', 'Generage changelog' );
 			const changelogTemplates: { [ key: string ]: string } = await readChangelogTemplateFiles();
 			const changelog: string = await generateChangelog( changelogTemplates, repositoryUrl );
+
+			log( 'substep', 'Write the "CHANGELOG.md" file' );
 			await writeFile( 'CHANGELOG.md', changelog );
 
 			resolve();

@@ -4,8 +4,9 @@ import * as path from 'path';
 import * as githubReleaser from 'conventional-github-releaser';
 import * as githubRemoveAllReleases from 'github-remove-all-releases';
 
-import { readChangelogTemplateFiles } from './changelog';
 import { changelogTransformer } from './../templates/changelog-transform';
+import { log } from './../log';
+import { readChangelogTemplateFiles } from './changelog';
 
 /**
  * Create all GitHub releases
@@ -22,7 +23,10 @@ export function createAllGithubReleases( repositoryOwner: string, repositoyName:
 
 		try {
 
+			log( 'substep', 'Delete all existing GitHub releases' );
 			await deleteAllGithubReleases( repositoryOwner, repositoyName, githubToken );
+
+			log( 'substep', 'Create all GitHub releases' );
 			const changelogTemplates: { [ key: string ]: string } = await readChangelogTemplateFiles();
 			await createGithubReleases( changelogTemplates, repositoryUrl, githubToken );
 
