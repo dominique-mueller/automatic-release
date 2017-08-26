@@ -8,6 +8,7 @@ import { AutomaticReleaseInformation } from './../interfaces/automatic-release-i
 import { GithubUrl } from './../interfaces/github-url.interface';
 import { GitRemote } from './../interfaces/git-remote.interface';
 import { GitTags } from './../interfaces/git-tags.interface';
+import { log } from './../log';
 import { PackageJson } from './../interfaces/package-json.interface';
 import { readFile } from './../utilities/read-file';
 import { RecommendedBump } from './../interfaces/recommended-bump.interface';
@@ -24,23 +25,30 @@ export function collectInformation(): Promise<AutomaticReleaseInformation> {
 		try {
 
 			// Read, correct and write the package.json file
-			const packageJson: PackageJson = await validateAndCorrectPackageJson( await readFile( 'package.json' ) );
+			log( 'substep', 'Read the "package.json" file' );
+			const originalPackageJson: PackageJson = await readFile( 'package.json' );
+			log( 'substep', 'Validate & correct (if necessary) the "package.json" file' );
+			const packageJson: PackageJson = await validateAndCorrectPackageJson( originalPackageJson );
+			log( 'substep', 'Write the updated "package.json" file' );
 			await writeFile( 'package.json', packageJson );
 
 			const information: AutomaticReleaseInformation = {};
 
 			// Get version information
+			log( 'substep', 'Retrieve versioning details' );
 			information.isFirstVersion = !( await hasGitTags() );
 			information.oldVersion = packageJson.version;
 			information.newVersion = information.isFirstVersion ? information.oldVersion : await getNewVersion( information.oldVersion );
 
 			// Get repository information
-			const details: GithubUrl = parseGithubUrl( packageJson.repository.url );
-			information.repositoryOwner = details.owner;
-			information.repositoryName = details.name;
-			information.repositoryUrl = details.href;
+			log( 'substep', 'Get repository information' );
+			const githubUrl: GithubUrl = parseGithubUrl( packageJson.repository.url );
+			information.repositoryOwner = githubUrl.owner;
+			information.repositoryName = githubUrl.name;
+			information.repositoryUrl = githubUrl.href;
 
 			// Get GitHub authorization details
+			log( 'substep', 'Read & validate GitHub API token' );
 			information.githubToken = await getGithubToken( information.repositoryOwner, information.repositoryName );
 
 			resolve( information );
@@ -66,7 +74,8 @@ function validateAndCorrectPackageJson( content: PackageJson ): Promise<PackageJ
 
 		// Check the 'version' field
 		if ( !correctedContent.hasOwnProperty( 'version' ) ) {
-			correctedContent.version = '1.0.0'; // TODO: Log info or warning
+			correctedContent.version = '1.0.0';
+			log( 'note', 'There was no version defined in the "package.json" file, thus "1.0.0" is assumed.' );
 		}
 		if ( semver.valid( correctedContent.version ) === null ) { // 'null' means invalid
 			reject( new Error( `The "package.json" file defines the version "${ correctedContent.version }"; regarding semantic versioning this is not a valid version number.` ) );
@@ -79,13 +88,14 @@ function validateAndCorrectPackageJson( content: PackageJson ): Promise<PackageJ
 
 		// Check the 'repository' field
 		if ( !correctedContent.hasOwnProperty( 'repository' ) ) {
-			correctedContent.repository = { // TODO: Log info or warning
+			correctedContent.repository = {
 				type: 'git'
 			};
 		}
 		if ( !correctedContent.repository.hasOwnProperty( 'url' ) ) {
 			try {
-				correctedContent.repository.url = await getGitRemoteUrl(); // TODO: Log info or warning
+				correctedContent.repository.url = await getGitRemoteUrl();
+				log( 'note', `There was no repository URL defined in the "package.json" file, thus "${ correctedContent.repository.url }" is assumed.` );
 			} catch ( repositoryUrlError ) {
 				// We don't really care about the actual reason or this error, this here just would have been nice for auto-correction
 				reject( new Error( 'The "package.json" file defines no repository URL (and retrieving it from the Git project configuration failed).' ) );

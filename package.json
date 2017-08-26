@@ -34,19 +34,21 @@
 		"automatic-release": "bin/automatic-release.js"
 	},
 	"scripts": {
-		"build": "npm run build:clean && npm run build:run && npm run build:copy",
-		"build:run": "tsc -p tsconfig.json",
 		"build:clean": "rimraf -r dist/**",
 		"build:copy": "copyfiles \"src/**/*.hbs\" \"bin/**\" dist",
+		"build:run": "tsc -p tsconfig.json",
+		"build": "npm run build:clean && npm run build:run && npm run build:copy",
+		"list-published-files": "cd dist && irish-pub && cd ..",
 		"post-automatic-release": "copyfiles \"docs/**\" package.json CHANGELOG.md LICENSE README.md dist",
-		"list-published-files": "cd dist && irish-pub && cd .."
+		"start": "node ./dist/bin/automatic-release.js"
 	},
 	"dependencies": {
+		"chalk": "2.1.x",
 		"conventional-changelog": "1.1.x",
 		"conventional-github-releaser": "1.1.x",
 		"conventional-recommended-bump": "1.0.x",
 		"github-remove-all-releases": "1.0.x",
-		"github": "9.2.x",
+		"github": "10.0.x",
 		"parse-github-url": "1.0.x",
 		"semver": "5.4.x",
 		"simple-git": "1.75.x"
