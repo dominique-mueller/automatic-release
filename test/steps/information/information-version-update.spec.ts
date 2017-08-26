@@ -19,8 +19,13 @@ jest.mock( 'simple-git', () => {
 		return {
 			tags: ( callback: ( gitTagsError: Error | null, gitTags: GitTags ) => void ) => {
 				callback( null, {
-					latest: 'undefined',
-					all: []
+					latest: '1.1.0',
+					all: [
+						'1.0.0',
+						'1.0.1',
+						'1.0.2',
+						'1.1.0'
+					]
 				} );
 			}
 		};
@@ -78,7 +83,7 @@ describe( 'Collect information', () => {
 
 	} );
 
-	it ( 'should release first version', ( done ) => {
+	it ( 'should release updated version', ( done ) => {
 
 		collectInformation()
 			.then( ( information: AutomaticReleaseInformation ) => {
@@ -86,9 +91,9 @@ describe( 'Collect information', () => {
 				expect( readFile.readFile ).toHaveBeenCalledWith( 'package.json' );
 				expect( writeFile.writeFile ).toHaveBeenCalledWith( 'package.json', validPackageJson );
 
-				expect( information.isFirstVersion ).toBe( true );
-				expect( information.oldVersion ).toBe( '1.0.0' );
-				expect( information.newVersion ).toBe( '1.0.0' );
+				expect( information.isFirstVersion ).toBe( false );
+				expect( information.oldVersion ).toBe( '1.1.0' );
+				expect( information.newVersion ).toBe( '1.1.1' );
 
 				expect( information.repositoryOwner ).toBe( 'john-doe' );
 				expect( information.repositoryName ).toBe( 'test-library' );
@@ -107,7 +112,7 @@ describe( 'Collect information', () => {
 const validPackageJson: PackageJson = {
 	name: 'test-library',
 	description: 'Lorem ipsum dolor sit amet.',
-	version: '1.0.0',
+	version: '1.1.0',
 	repository: {
 		"type": "git",
 		"url": "https://github.com/john-doe/test-library"
