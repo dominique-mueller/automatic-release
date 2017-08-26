@@ -10,6 +10,6 @@
 	"transform": {
 		"^.+\\.tsx?$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
 	},
-	"testRegex": "test.spec.ts",
+	"testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|js)$",
 	"verbose": true
 }
