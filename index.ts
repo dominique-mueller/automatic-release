@@ -42,9 +42,9 @@ async function main(): Promise<void> {
 
 			log();
 			if ( info.isFirstVersion ) {
-				log( 'success', `Release of version X.Y.Z successful (first release)! [${ processTime } seconds]` );
+				log( 'success', `Release of version ${ info.newVersion } successful (first release)! [${ processTime } seconds]` );
 			} else {
-				log( 'success', `Release of version X.Y.Z successful (previously X.Y.Z)! [${ processTime } seconds]` );
+				log( 'success', `Release of version ${ info.newVersion } successful (previously ${ info.oldVersion })! [${ processTime } seconds]` );
 			}
 			log();
 
