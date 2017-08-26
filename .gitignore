@@ -1,8 +1,9 @@
 # Dependencies
 /node_modules
 
-# Build
+# Build & coverage
 /dist
+/coverage
 
 # Development
 /.vscode
