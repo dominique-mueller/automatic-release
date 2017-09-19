@@ -21,21 +21,21 @@ export async function automaticRelease(): Promise<void> {
 			log( 'step', 'Collect information' );
 			const info: AutomaticReleaseInformation = await collectInformation();
 
-			// log();
-			// log( 'step', 'Update "package.json" file' );
-			// await updatePackageJson( info.newVersion );
+			log();
+			log( 'step', 'Update "package.json" file' );
+			await updatePackageJson( info.newVersion );
 
-			// log();
-			// log( 'step', 'Generate "CHANGELOG.md" file' );
-			// await generateAndWriteChangelog( info.repositoryUrl );
+			log();
+			log( 'step', 'Generate "CHANGELOG.md" file' );
+			await generateAndWriteChangelog( info.repositoryUrl );
 
-			// log();
-			// log( 'step', 'Save changes to Git' );
-			// await saveChangesToGit( info.newVersion );
+			log();
+			log( 'step', 'Save changes to Git' );
+			await saveChangesToGit( info.newVersion );
 
-			// log();
-			// log( 'step', 'Create GitHub release' );
-			// await createAllGithubReleases( info.repositoryOwner, info.repositoryName, info.repositoryUrl, info.githubToken );
+			log();
+			log( 'step', 'Create GitHub release' );
+			await createAllGithubReleases( info.repositoryOwner, info.repositoryName, info.repositoryUrl, info.githubToken );
 
 			const finishTime = new Date().getTime();
 			const processTime = ( ( finishTime - startTime ) / 1000 ).toFixed( 2 );
