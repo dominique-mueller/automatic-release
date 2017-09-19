@@ -1,7 +1,7 @@
 /**
  * Setup GitHub mock
  */
-export function setupGithubMock(): void {
+export function setupGithubMock( shouldFail: boolean = false ): void {
 
 	jest.doMock( 'github', () => {
 		return function( options ) {
@@ -11,7 +11,18 @@ export function setupGithubMock(): void {
 				},
 				repos: {
 					getCollaborators: ( params, callback: ( error: any | null, collaborators: any ) => void ) => {
-						callback( null, {} );
+						if ( shouldFail ) {
+							callback( {
+								headers: {
+									status: '500'
+								},
+								message: JSON.stringify( {
+									message: 'An error occured.'
+								} )
+							}, null );
+						} else {
+							callback( null, {} );
+						}
 					}
 				}
 			}

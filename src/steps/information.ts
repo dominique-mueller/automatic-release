@@ -121,7 +121,7 @@ function getGitRemoteUrl(): Promise<string> {
 
 			// Handle errors
 			if ( gitGetRemotesError ) {
-				reject( new Error( `An error has occured while retrieving the project's Git remotes. [ gitGetRemotesError.message ]` ) );
+				reject( new Error( `An error has occured while retrieving the project's Git remotes. [${ gitGetRemotesError.message }]` ) );
 				return;
 			}
 

@@ -1,30 +1,40 @@
+import { GitRemote } from '../src/interfaces/git-remote.interface';
 import { GitTags } from '../src/interfaces/git-tags.interface';
 
 /**
  * Setup simple git mock
- *
- * @param [initial=true] - Flag, describing whether to mock a git repository with or without tags
  */
-export function setupSimpleGitMock( initial: boolean = true ): void {
+export function setupSimpleGitMock(
+	shouldTagsFail: boolean = false,
+	shouldGetRemotesFail: boolean = false,
+	shouldGetRemotesByEmpty: boolean = false,
+	initial: boolean = true
+): void {
 
 	jest.doMock( 'simple-git', () => {
 		return ( basePath: string ) => {
 
+			const api: any = {};
+
 			if ( initial ) {
 
-				return {
-					tags: ( callback: ( gitTagsError: Error | null, gitTags: GitTags ) => void ) => {
+				api.tags = ( callback: ( gitTagsError: Error | null, gitTags: GitTags ) => void ) => {
+					if ( shouldTagsFail ) {
+						callback( new Error( 'An error occured.' ), null );
+					} else {
 						callback( null, {
 							latest: undefined,
 							all: []
 						} );
 					}
-				};
+				}
 
 			} else {
 
-				return {
-					tags: ( callback: ( gitTagsError: Error | null, gitTags: GitTags ) => void ) => {
+				api.tags = ( callback: ( gitTagsError: Error | null, gitTags: GitTags ) => void ) => {
+					if ( shouldTagsFail ) {
+						callback( new Error( 'An error occured.' ), null );
+					} else {
 						callback( null, {
 							latest: '1.1.0',
 							all: [
@@ -35,10 +45,31 @@ export function setupSimpleGitMock( initial: boolean = true ): void {
 							]
 						} );
 					}
-				};
+				}
 
 			}
 
+			api.getRemotes = ( verbose: boolean, callback: ( gitGetRemotesError: Error | null, gitRemotes: Array<GitRemote> ) => void ) => {
+				if ( shouldGetRemotesFail ) {
+					callback( new Error( 'An error occured.' ), null );
+				} else if ( shouldGetRemotesByEmpty ) {
+					callback( null, [ {
+						name: '',
+						refs: {}
+					} ] );
+				} else {
+					callback( null, [ {
+						name: 'origin',
+						refs: {
+							fetch: 'https://github.com/john-doe/test-library',
+							push: 'https://github.com/john-doe/test-library'
+						}
+					} ] );
+
+				}
+			}
+
+			return api;
 
 		};
 	} );
