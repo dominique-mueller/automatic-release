@@ -4,7 +4,7 @@
 export interface GitRemote {
 	name: string;
 	refs: {
-		fetch: string;
-		push: string;
+		fetch?: string;
+		push?: string;
 	};
 }
