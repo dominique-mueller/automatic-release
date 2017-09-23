@@ -31,7 +31,8 @@ describe( 'Automatic Release', () => {
     it ( 'should run through', () => {
 
         git( projectPath )
-            .init();
+            .init()
+            .addRemote( 'origin', 'https://github.com/dominique-mueller/automatic-release-test' );
 
     } );
 
