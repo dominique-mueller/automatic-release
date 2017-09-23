@@ -11,26 +11,32 @@ import { setupWriteFileMock } from '../../test/write-file.mock';
  */
 describe( 'Collect information', () => {
 
-	beforeEach( () => {
+	beforeAll( () => {
 
-		jest.resetModules();
-		process.env.GH_TOKEN = 'ABCDE777';
-
-		// Setup mocks & spies
+		// Hide logging output
 		jest.spyOn( console, 'log' ).mockImplementation( () => {
 			return;
 		} );
 
 	} );
 
+	beforeEach( () => {
+
+		jest.resetModules();
+		process.env.GH_TOKEN = 'ABCDE777';
+
+	} );
+
 	afterEach( () => {
+
 		delete process.env.GH_TOKEN;
+
 	} );
 
 	it ( 'should collection information for first version', async() => {
 
 		// Setup mocks & spies
-		setupSimpleGitMock( false, false, false, true );
+		setupSimpleGitMock( false, false, false, false );
 		setupGithubMock( false );
 		setupConventionalRecommendedBumpMock( false );
 		const readFileSpy = jest.fn();
@@ -59,7 +65,7 @@ describe( 'Collect information', () => {
 	it ( 'should collect information for updated version', async() => {
 
 		// Setup mocks & spies
-		setupSimpleGitMock( false, false, false, false );
+		setupSimpleGitMock( false, false, false, true );
 		setupGithubMock( false );
 		setupConventionalRecommendedBumpMock( false );
 		const readFileSpy = jest.fn();
@@ -88,7 +94,7 @@ describe( 'Collect information', () => {
 	it ( 'should assume "1.0.0" as the initial version (if not defined otherwhise)', async() => {
 
 		// Setup mocks & spies
-		setupSimpleGitMock( false, false, false, true );
+		setupSimpleGitMock( false, false, false, false );
 		setupGithubMock( false );
 		setupConventionalRecommendedBumpMock( false );
 		setupReadFileMock( getPackageJson( 'invalid-no-version' ) );
@@ -107,10 +113,10 @@ describe( 'Collect information', () => {
 	it ( 'should derive repository information from Git (if necessary)', async() => {
 
 		// Setup mocks & spies
-		setupSimpleGitMock( false, false, false, true );
+		setupSimpleGitMock( false, false, false, false );
 		setupGithubMock( false );
 		setupConventionalRecommendedBumpMock( false );
-		setupReadFileMock( getPackageJson( 'invalid-repository' ) );
+		setupReadFileMock( getPackageJson( 'invalid-no-repository' ) );
 		const writeFileSpy = jest.fn();
 		setupWriteFileMock( writeFileSpy );
 
@@ -126,7 +132,7 @@ describe( 'Collect information', () => {
 	it ( 'should throw an error when using an invalid version', async() => {
 
 		// Setup mocks & spies
-		setupSimpleGitMock( false, false, false, true );
+		setupSimpleGitMock( false, false, false, false );
 		setupGithubMock( false );
 		setupConventionalRecommendedBumpMock( false );
 		setupReadFileMock( getPackageJson( 'invalid-wrong-version' ) );
@@ -149,7 +155,7 @@ describe( 'Collect information', () => {
 	it ( 'should throw an error when using a pre-release version', async() => {
 
 		// Setup mocks & spies
-		setupSimpleGitMock( false, false, false, true );
+		setupSimpleGitMock( false, false, false, false );
 		setupGithubMock( false );
 		setupConventionalRecommendedBumpMock( false );
 		setupReadFileMock( getPackageJson( 'invalid-prerelease-version' ) );
@@ -172,10 +178,10 @@ describe( 'Collect information', () => {
 	it ( 'should throw an error when deriving repository information fails', async() => {
 
 		// Setup mocks & spies
-		setupSimpleGitMock( false, true, false, true );
+		setupSimpleGitMock( false, true, false, false );
 		setupGithubMock( true );
 		setupConventionalRecommendedBumpMock( false );
-		setupReadFileMock( getPackageJson( 'invalid-repository' ) );
+		setupReadFileMock( getPackageJson( 'invalid-no-repository' ) );
 		setupWriteFileMock();
 
 		const collectInformation = await import( './information' );
@@ -195,10 +201,10 @@ describe( 'Collect information', () => {
 	it ( 'should throw an error when deriving repository information fails, due to missing remotes', async() => {
 
 		// Setup mocks & spies
-		setupSimpleGitMock( false, false, true, true );
+		setupSimpleGitMock( false, false, true, false );
 		setupGithubMock( true );
 		setupConventionalRecommendedBumpMock( false );
-		setupReadFileMock( getPackageJson( 'invalid-repository' ) );
+		setupReadFileMock( getPackageJson( 'invalid-no-repository' ) );
 		setupWriteFileMock();
 
 		const collectInformation = await import( './information' );
@@ -218,7 +224,7 @@ describe( 'Collect information', () => {
 	it ( 'should throw an error when retrieving git tags fails', async() => {
 
 		// Setup mocks & spies
-		setupSimpleGitMock( true, false, false, true );
+		setupSimpleGitMock( true, false, false, false );
 		setupGithubMock( false );
 		setupConventionalRecommendedBumpMock( false );
 		setupReadFileMock( getPackageJson( 'valid-initial' ) );
@@ -241,7 +247,7 @@ describe( 'Collect information', () => {
 	it ( 'should throw an error when evaluating the recommended next version fails', async() => {
 
 		// Setup mocks & spies
-		setupSimpleGitMock( false, false, false, false );
+		setupSimpleGitMock( false, false, false, true );
 		setupGithubMock( false );
 		setupConventionalRecommendedBumpMock( true );
 		setupReadFileMock( getPackageJson( 'valid-update' ) );
@@ -265,7 +271,7 @@ describe( 'Collect information', () => {
 
 		// Setup mocks & spies
 		delete process.env.GH_TOKEN; // Unset again
-		setupSimpleGitMock( false, false, false, true );
+		setupSimpleGitMock( false, false, false, false );
 		setupGithubMock( false );
 		setupConventionalRecommendedBumpMock( false );
 		setupReadFileMock( getPackageJson( 'valid-initial' ) );
@@ -288,7 +294,7 @@ describe( 'Collect information', () => {
 	it ( 'should throw an error when the GitHub API token is invalid', async() => {
 
 		// Setup mocks & spies
-		setupSimpleGitMock( false, false, false, true );
+		setupSimpleGitMock( false, false, false, false );
 		setupGithubMock( true );
 		setupConventionalRecommendedBumpMock( false );
 		setupReadFileMock( getPackageJson( 'valid-initial' ) );
@@ -371,7 +377,7 @@ function getPackageJson( type: string ): PackageJson {
 				}
 			};
 
-		case 'invalid-repository':
+		case 'invalid-no-repository':
 			return {
 				name: 'test-library',
 				description: 'Lorem ipsum dolor sit amet.',
