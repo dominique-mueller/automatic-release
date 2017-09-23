@@ -3,7 +3,7 @@
  *
  * @param [spy] - Spy
  */
-export function setupWriteFileMock( spy?: any ): void {
+export function setupWriteFileMock( shouldFailWriting: boolean = false, spy?: any ): void {
 
 	jest.doMock( '../src/utilities/write-file', () => {
 		return {
@@ -11,7 +11,11 @@ export function setupWriteFileMock( spy?: any ): void {
 				if ( spy ) {
 					spy( filePath, fileContent, isWithinLibrary );
 				}
-				return;
+				if ( shouldFailWriting ) {
+					throw new Error( 'An error occured.' );
+				} else {
+					return;
+				}
 			}
 		};
 	} );

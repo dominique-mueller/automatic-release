@@ -9,7 +9,7 @@ import { setupWriteFileMock } from '../../test/write-file.mock';
 /**
  * Collect information - Unit Test
  */
-describe( 'Collect information', () => {
+describe( '[STEP 1] Collect information', () => {
 
 	beforeAll( () => {
 
@@ -40,9 +40,9 @@ describe( 'Collect information', () => {
 		setupGithubMock( false );
 		setupConventionalRecommendedBumpMock( false );
 		const readFileSpy = jest.fn();
-		setupReadFileMock( getPackageJson( 'valid-initial' ), readFileSpy );
+		setupReadFileMock( getPackageJson( 'valid-initial' ), false, readFileSpy );
 		const writeFileSpy = jest.fn();
-		setupWriteFileMock( writeFileSpy );
+		setupWriteFileMock( false, writeFileSpy );
 
 		const collectInformation = await import( './information' );
 		const information: AutomaticReleaseInformation = await collectInformation.collectInformation();
@@ -69,9 +69,9 @@ describe( 'Collect information', () => {
 		setupGithubMock( false );
 		setupConventionalRecommendedBumpMock( false );
 		const readFileSpy = jest.fn();
-		setupReadFileMock( getPackageJson( 'valid-update' ), readFileSpy );
+		setupReadFileMock( getPackageJson( 'valid-update' ), false, readFileSpy );
 		const writeFileSpy = jest.fn();
-		setupWriteFileMock( writeFileSpy );
+		setupWriteFileMock( false, writeFileSpy );
 
 		const collectInformation = await import( './information' );
 		const information: AutomaticReleaseInformation = await collectInformation.collectInformation();
@@ -99,7 +99,7 @@ describe( 'Collect information', () => {
 		setupConventionalRecommendedBumpMock( false );
 		setupReadFileMock( getPackageJson( 'invalid-no-version' ) );
 		const writeFileSpy = jest.fn();
-		setupWriteFileMock( writeFileSpy );
+		setupWriteFileMock( false, writeFileSpy );
 
 		const collectInformation = await import( './information' );
 		const information: AutomaticReleaseInformation = await collectInformation.collectInformation();
@@ -118,7 +118,7 @@ describe( 'Collect information', () => {
 		setupConventionalRecommendedBumpMock( false );
 		setupReadFileMock( getPackageJson( 'invalid-no-repository' ) );
 		const writeFileSpy = jest.fn();
-		setupWriteFileMock( writeFileSpy );
+		setupWriteFileMock( false, writeFileSpy );
 
 		const collectInformation = await import( './information' );
 		const information: AutomaticReleaseInformation = await collectInformation.collectInformation();
@@ -129,6 +129,60 @@ describe( 'Collect information', () => {
 
 	} );
 
+	it ( 'should throw an error when reading the "package.json" file fails', async() => {
+
+		// Setup mocks & spies
+		setupSimpleGitMock( false, false, false, false );
+		setupGithubMock( false );
+		setupConventionalRecommendedBumpMock( false );
+		const readFileSpy = jest.fn();
+		setupReadFileMock( getPackageJson( 'valid-initial' ), true, readFileSpy );
+		const writeFileSpy = jest.fn();
+		setupWriteFileMock( false, writeFileSpy );
+
+		const collectInformation = await import( './information' );
+		let information: AutomaticReleaseInformation | null = null;
+		let errorMessage: string | null = null;
+		try {
+			information = await collectInformation.collectInformation();
+		} catch ( error ) {
+			errorMessage = error.message;
+		}
+
+		expect( information ).toBeNull();
+		expect( errorMessage ).toBe( 'An error occured.' );
+		expect( readFileSpy ).toHaveBeenCalledWith( 'package.json', false );
+        expect( writeFileSpy ).not.toHaveBeenCalled();
+
+	} );
+
+	it ( 'should throw an error when writing the updated "package.json" file fails', async() => {
+
+		// Setup mocks & spies
+		setupSimpleGitMock( false, false, false, false );
+		setupGithubMock( false );
+		setupConventionalRecommendedBumpMock( false );
+		const readFileSpy = jest.fn();
+		setupReadFileMock( getPackageJson( 'valid-initial' ), false, readFileSpy );
+		const writeFileSpy = jest.fn();
+		setupWriteFileMock( true, writeFileSpy );
+
+		const collectInformation = await import( './information' );
+		let information: AutomaticReleaseInformation | null = null;
+		let errorMessage: string | null = null;
+		try {
+			information = await collectInformation.collectInformation();
+		} catch ( error ) {
+			errorMessage = error.message;
+		}
+
+		expect( information ).toBeNull();
+		expect( errorMessage ).toBe( 'An error occured.' );
+		expect( readFileSpy ).toHaveBeenCalledWith( 'package.json', false );
+        expect( writeFileSpy ).toHaveBeenCalledWith( 'package.json', getPackageJson( 'valid-initial' ), false );
+
+	} );
+
 	it ( 'should throw an error when using an invalid version', async() => {
 
 		// Setup mocks & spies
@@ -136,19 +190,19 @@ describe( 'Collect information', () => {
 		setupGithubMock( false );
 		setupConventionalRecommendedBumpMock( false );
 		setupReadFileMock( getPackageJson( 'invalid-wrong-version' ) );
-		setupWriteFileMock();
+		setupWriteFileMock( false );
 
 		const collectInformation = await import( './information' );
 		let information: AutomaticReleaseInformation | null = null;
-		let informationError: string | null = null;
+		let errorMessage: string | null = null;
 		try {
 			information = await collectInformation.collectInformation();
 		} catch ( error ) {
-			informationError = error.message;
+			errorMessage = error.message;
 		}
 
 		expect( information ).toBeNull();
-		expect( informationError ).toBe( `The "package.json" file defines the version "${ getPackageJson( 'invalid-wrong-version' ).version }"; regarding semantic versioning this is not a valid version number.` );
+		expect( errorMessage ).toBe( `The "package.json" file defines the version "${ getPackageJson( 'invalid-wrong-version' ).version }"; regarding semantic versioning this is not a valid version number.` );
 
 	} );
 
@@ -159,19 +213,19 @@ describe( 'Collect information', () => {
 		setupGithubMock( false );
 		setupConventionalRecommendedBumpMock( false );
 		setupReadFileMock( getPackageJson( 'invalid-prerelease-version' ) );
-		setupWriteFileMock();
+		setupWriteFileMock( false );
 
 		const collectInformation = await import( './information' );
 		let information: AutomaticReleaseInformation | null = null;
-		let informationError: string | null = null;
+		let errorMessage: string | null = null;
 		try {
 			information = await collectInformation.collectInformation();
 		} catch ( error ) {
-			informationError = error.message;
+			errorMessage = error.message;
 		}
 
 		expect( information ).toBeNull();
-		expect( informationError ).toBe( `The "package.json" file defines the version "${ getPackageJson( 'invalid-prerelease-version' ).version }"; pre-release versions are not supported by automatic-release.` );
+		expect( errorMessage ).toBe( `The "package.json" file defines the version "${ getPackageJson( 'invalid-prerelease-version' ).version }"; pre-release versions are not supported by automatic-release.` );
 
 	} );
 
@@ -182,19 +236,19 @@ describe( 'Collect information', () => {
 		setupGithubMock( true );
 		setupConventionalRecommendedBumpMock( false );
 		setupReadFileMock( getPackageJson( 'invalid-no-repository' ) );
-		setupWriteFileMock();
+		setupWriteFileMock( false );
 
 		const collectInformation = await import( './information' );
 		let information: AutomaticReleaseInformation | null = null;
-		let informationError: string | null = null;
+		let errorMessage: string | null = null;
 		try {
 			information = await collectInformation.collectInformation();
 		} catch ( error ) {
-			informationError = error.message;
+			errorMessage = error.message;
 		}
 
 		expect( information ).toBeNull();
-		expect( informationError ).toBe( 'The "package.json" file defines no repository URL (and retrieving it from the Git project configuration failed).' );
+		expect( errorMessage ).toBe( 'The "package.json" file defines no repository URL (and retrieving it from the Git project configuration failed).' );
 
 	} );
 
@@ -205,19 +259,19 @@ describe( 'Collect information', () => {
 		setupGithubMock( true );
 		setupConventionalRecommendedBumpMock( false );
 		setupReadFileMock( getPackageJson( 'invalid-no-repository' ) );
-		setupWriteFileMock();
+		setupWriteFileMock( false );
 
 		const collectInformation = await import( './information' );
 		let information: AutomaticReleaseInformation | null = null;
-		let informationError: string | null = null;
+		let errorMessage: string | null = null;
 		try {
 			information = await collectInformation.collectInformation();
 		} catch ( error ) {
-			informationError = error.message;
+			errorMessage = error.message;
 		}
 
 		expect( information ).toBeNull();
-		expect( informationError ).toBe( 'The "package.json" file defines no repository URL (and retrieving it from the Git project configuration failed).' );
+		expect( errorMessage ).toBe( 'The "package.json" file defines no repository URL (and retrieving it from the Git project configuration failed).' );
 
 	} );
 
@@ -228,19 +282,19 @@ describe( 'Collect information', () => {
 		setupGithubMock( false );
 		setupConventionalRecommendedBumpMock( false );
 		setupReadFileMock( getPackageJson( 'valid-initial' ) );
-		setupWriteFileMock();
+		setupWriteFileMock( false );
 
 		const collectInformation = await import( './information' );
 		let information: AutomaticReleaseInformation | null = null;
-		let informationError: string | null = null;
+		let errorMessage: string | null = null;
 		try {
 			information = await collectInformation.collectInformation();
 		} catch ( error ) {
-			informationError = error.message;
+			errorMessage = error.message;
 		}
 
 		expect( information ).toBeNull();
-		expect( informationError ).toBe( 'An error has occured while retrieving the project\'s Git tags. [An error occured.]' );
+		expect( errorMessage ).toBe( 'An error has occured while retrieving the project\'s Git tags. [An error occured.]' );
 
 	} );
 
@@ -251,19 +305,19 @@ describe( 'Collect information', () => {
 		setupGithubMock( false );
 		setupConventionalRecommendedBumpMock( true );
 		setupReadFileMock( getPackageJson( 'valid-update' ) );
-		setupWriteFileMock();
+		setupWriteFileMock( false );
 
 		const collectInformation = await import( './information' );
 		let information: AutomaticReleaseInformation | null = null;
-		let informationError: string | null = null;
+		let errorMessage: string | null = null;
 		try {
 			information = await collectInformation.collectInformation();
 		} catch ( error ) {
-			informationError = error.message;
+			errorMessage = error.message;
 		}
 
 		expect( information ).toBeNull();
-		expect( informationError ).toBe( 'An error occured while evaluating the next version. [An error occured.]' );
+		expect( errorMessage ).toBe( 'An error occured while evaluating the next version. [An error occured.]' );
 
 	} );
 
@@ -275,19 +329,19 @@ describe( 'Collect information', () => {
 		setupGithubMock( false );
 		setupConventionalRecommendedBumpMock( false );
 		setupReadFileMock( getPackageJson( 'valid-initial' ) );
-		setupWriteFileMock();
+		setupWriteFileMock( false );
 
 		const collectInformation = await import( './information' );
 		let information: AutomaticReleaseInformation | null = null;
-		let informationError: string | null = null;
+		let errorMessage: string | null = null;
 		try {
 			information = await collectInformation.collectInformation();
 		} catch ( error ) {
-			informationError = error.message;
+			errorMessage = error.message;
 		}
 
 		expect( information ).toBeNull();
-		expect( informationError ).toBe( 'The "GH_TOKEN" environment variable is not set.' );
+		expect( errorMessage ).toBe( 'The "GH_TOKEN" environment variable is not set.' );
 
 	} );
 
@@ -298,19 +352,19 @@ describe( 'Collect information', () => {
 		setupGithubMock( true );
 		setupConventionalRecommendedBumpMock( false );
 		setupReadFileMock( getPackageJson( 'valid-initial' ) );
-		setupWriteFileMock();
+		setupWriteFileMock( false );
 
 		const collectInformation = await import( './information' );
 		let information: AutomaticReleaseInformation | null = null;
-		let informationError: string | null = null;
+		let errorMessage: string | null = null;
 		try {
 			information = await collectInformation.collectInformation();
 		} catch ( error ) {
-			informationError = error.message;
+			errorMessage = error.message;
 		}
 
 		expect( information ).toBeNull();
-		expect( informationError ).toBe( 'An error occured while verifying the GitHub token. [500: "An error occured."]' );
+		expect( errorMessage ).toBe( 'An error occured while verifying the GitHub token. [500: "An error occured."]' );
 
 	} );
 
