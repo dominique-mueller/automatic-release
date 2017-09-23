@@ -11,20 +11,26 @@ import { setupWriteFileMock } from '../../test/write-file.mock';
  */
 describe( 'Collect information', () => {
 
-	beforeEach( () => {
+	beforeAll( () => {
 
-		jest.resetModules();
-		process.env.GH_TOKEN = 'ABCDE777';
-
-		// Setup mocks & spies
+		// Hide logging output
 		jest.spyOn( console, 'log' ).mockImplementation( () => {
 			return;
 		} );
 
 	} );
 
+	beforeEach( () => {
+
+		jest.resetModules();
+		process.env.GH_TOKEN = 'ABCDE777';
+
+	} );
+
 	afterEach( () => {
+
 		delete process.env.GH_TOKEN;
+
 	} );
 
 	it ( 'should collection information for first version', async() => {
@@ -110,7 +116,7 @@ describe( 'Collect information', () => {
 		setupSimpleGitMock( false, false, false, false );
 		setupGithubMock( false );
 		setupConventionalRecommendedBumpMock( false );
-		setupReadFileMock( getPackageJson( 'invalid-repository' ) );
+		setupReadFileMock( getPackageJson( 'invalid-no-repository' ) );
 		const writeFileSpy = jest.fn();
 		setupWriteFileMock( writeFileSpy );
 
@@ -175,7 +181,7 @@ describe( 'Collect information', () => {
 		setupSimpleGitMock( false, true, false, false );
 		setupGithubMock( true );
 		setupConventionalRecommendedBumpMock( false );
-		setupReadFileMock( getPackageJson( 'invalid-repository' ) );
+		setupReadFileMock( getPackageJson( 'invalid-no-repository' ) );
 		setupWriteFileMock();
 
 		const collectInformation = await import( './information' );
@@ -198,7 +204,7 @@ describe( 'Collect information', () => {
 		setupSimpleGitMock( false, false, true, false );
 		setupGithubMock( true );
 		setupConventionalRecommendedBumpMock( false );
-		setupReadFileMock( getPackageJson( 'invalid-repository' ) );
+		setupReadFileMock( getPackageJson( 'invalid-no-repository' ) );
 		setupWriteFileMock();
 
 		const collectInformation = await import( './information' );
@@ -371,7 +377,7 @@ function getPackageJson( type: string ): PackageJson {
 				}
 			};
 
-		case 'invalid-repository':
+		case 'invalid-no-repository':
 			return {
 				name: 'test-library',
 				description: 'Lorem ipsum dolor sit amet.',
