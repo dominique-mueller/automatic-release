@@ -25,9 +25,9 @@ describe( 'Automatic Release', () => {
 			return {
 
 				// Switch the working directory (used by 'git-raw-commits')
-				execFile: ( fileName: string, args: any, options: any ): child_process.ChildProcess => {
-					const newOptions: any = Object.assign( options, {
-						cwd: 'dist-test'
+				execFile: ( fileName: string, args: Array<string>, options: child_process.ExecFileOptions ): child_process.ChildProcess => {
+					const newOptions: child_process.ExecFileOptions = Object.assign( options, {
+						cwd: projectPath
 					} );
 					return child_process.execFile( fileName, args, newOptions );
 				},
