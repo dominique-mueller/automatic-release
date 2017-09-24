@@ -19,23 +19,23 @@ describe( 'Automatic Release', () => {
 	// Setup
 	beforeAll( async() => {
 
-		// const child_process
-		jest.spyOn( child_process, 'execFile' ).mockImplementationOnce( ( fileName: string, args: any, options: any ) => {
-			console.info( '~~~~~~' );
-			console.info( fileName );
-			console.info( args );
-			console.info( options );
-			// const newArgs = args;
-			// if ( fileName === 'git' ) {
-			// 	newArgs.push( `-C ${ projectPath }` );
-			// }
-			// const newArgs: any = args;
-			// newArgs.cwd = projectPath;
-			const newArgs: any = Object.assign( args, {
-				cwd: 'dist-test'
-			} );
-			console.info( newArgs );
-			return child_process.execFile( fileName, args, options );
+		jest.resetModules();
+
+		jest.doMock( 'child_process', () => {
+			return {
+
+				// Switch the working directory (used by 'git-raw-commits')
+				execFile: ( fileName: string, args: any, options: any ): child_process.ChildProcess => {
+					const newOptions: any = Object.assign( options, {
+						cwd: 'dist-test'
+					} );
+					return child_process.execFile( fileName, args, newOptions );
+				},
+
+				// Simply forward (used by 'simple-git')
+				spawn: child_process.spawn
+
+			}
 		} );
 
 		// Hide logging output
