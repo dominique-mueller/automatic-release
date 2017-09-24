@@ -7,12 +7,14 @@ import * as git from 'simple-git';
 describe( 'Automatic Release', () => {
 
     const projectPath: string = path.resolve( process.cwd(), 'dist-test' );
+    let originalProcessCwd: any;
 
     // Setup
     beforeAll( async() => {
 
         await del( projectPath );
         fs.mkdirSync( projectPath );
+
         fs.writeFileSync( path.resolve( projectPath, 'package.json' ), JSON.stringify( {
             name: 'test-library',
             description: 'Lorem ipsum dolor sit amet.',
@@ -23,9 +25,15 @@ describe( 'Automatic Release', () => {
             }
         }, null, '  ' ) );
 
+        originalProcessCwd = process.cwd
+        process.cwd = () => projectPath;
+
     } );
 
     afterAll( () => {
+
+        process.cwd = originalProcessCwd;
+
     } );
 
     it ( 'should run through', () => {
@@ -33,6 +41,8 @@ describe( 'Automatic Release', () => {
         git( projectPath )
             .init()
             .addRemote( 'origin', 'https://github.com/dominique-mueller/automatic-release-test' );
+
+        expect( process.cwd() ).toBe( projectPath );
 
     } );
 
