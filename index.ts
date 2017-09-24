@@ -10,22 +10,22 @@ import { updatePackageJson } from './src/steps/package-json';
 export async function automaticRelease(): Promise<void> {
 	return new Promise<void>( async( resolve: () => void, reject: ( error: Error ) => void ) => {
 
-		// log();
-		// log( 'title', 'AUTOMATIC RELEASE' );
-		// log();
+		log();
+		log( 'title', 'AUTOMATIC RELEASE' );
+		log();
 
 		const startTime = new Date().getTime();
 
 		try {
 
-			// log( 'step', 'Collect information' );
+			log( 'step', 'Collect information' );
 			const info: AutomaticReleaseInformation = await collectInformation();
 
-			console.info( info );
+			console.info( info ); // TODO: Remove me
 
 			log();
 			log( 'step', 'Update "package.json" file' );
-			// await updatePackageJson( info.newVersion );
+			await updatePackageJson( info.newVersion );
 
 			log();
 			log( 'step', 'Generate "CHANGELOG.md" file' );
