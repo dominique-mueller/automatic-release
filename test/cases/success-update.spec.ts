@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import * as child_process from 'child_process';
 
 import * as del from 'del';
 import * as git from 'simple-git';
@@ -17,6 +18,25 @@ describe( 'Automatic Release', () => {
 
 	// Setup
 	beforeAll( async() => {
+
+		// const child_process
+		jest.spyOn( child_process, 'execFile' ).mockImplementationOnce( ( fileName: string, args: any, options: any ) => {
+			console.info( '~~~~~~' );
+			console.info( fileName );
+			console.info( args );
+			console.info( options );
+			// const newArgs = args;
+			// if ( fileName === 'git' ) {
+			// 	newArgs.push( `-C ${ projectPath }` );
+			// }
+			// const newArgs: any = args;
+			// newArgs.cwd = projectPath;
+			const newArgs: any = Object.assign( args, {
+				cwd: 'dist-test'
+			} );
+			console.info( newArgs );
+			return child_process.execFile( fileName, args, options );
+		} );
 
 		// Hide logging output
 		jest.spyOn( console, 'log' ).mockImplementation( () => {

@@ -29,7 +29,7 @@ export async function automaticRelease(): Promise<void> {
 
 			log();
 			log( 'step', 'Generate "CHANGELOG.md" file' );
-			// await generateAndWriteChangelog( info.repositoryUrl );
+			await generateAndWriteChangelog( info.repositoryUrl );
 
 			log();
 			log( 'step', 'Save changes to Git' );
