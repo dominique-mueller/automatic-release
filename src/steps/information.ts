@@ -27,6 +27,7 @@ export function collectInformation(): Promise<AutomaticReleaseInformation> {
 			// Read, correct and write the package.json file
 			log( 'substep', 'Read the "package.json" file' );
 			const originalPackageJson: PackageJson = await readFile( 'package.json' );
+			console.log( originalPackageJson );
 			log( 'substep', 'Validate & correct (if necessary) the "package.json" file' );
 			const packageJson: PackageJson = await validateAndCorrectPackageJson( originalPackageJson );
 			log( 'substep', 'Write the updated "package.json" file' );
@@ -117,7 +118,7 @@ function getGitRemoteUrl(): Promise<string> {
 	return new Promise<string>( ( resolve: ( url: string ) => void, reject: ( error: Error ) => void ) => {
 
 		// Get all remotes (verbose=true also gives us the URLs)
-		git().getRemotes( true, ( gitGetRemotesError: Error | null, gitRemotes: Array<GitRemote> ) => {
+		git( process.cwd() ).getRemotes( true, ( gitGetRemotesError: Error | null, gitRemotes: Array<GitRemote> ) => {
 
 			// Handle errors
 			if ( gitGetRemotesError ) {
@@ -149,7 +150,7 @@ function hasGitTags(): Promise<boolean> {
 	return new Promise<boolean>( ( resolve: ( flag: boolean ) => void, reject: ( error: Error ) => void ) => {
 
 		// Get all git tags
-		git().tags( ( gitTagsError: Error | null, gitTags: GitTags ) => {
+		git( process.cwd() ).tags( ( gitTagsError: Error | null, gitTags: GitTags ) => {
 
 			// Handle errors
 			if ( gitTagsError ) {

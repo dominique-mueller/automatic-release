@@ -16,7 +16,7 @@ export function saveChangesToGit( newVersion: string ): Promise<void> {
 
 		try {
 
-			git()
+			git( process.cwd() )
 
 				.exec( () => {
 					log( 'substep', 'Commit all changes (CI will be skipped)' );

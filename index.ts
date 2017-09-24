@@ -10,32 +10,34 @@ import { updatePackageJson } from './src/steps/package-json';
 export async function automaticRelease(): Promise<void> {
 	return new Promise<void>( async( resolve: () => void, reject: ( error: Error ) => void ) => {
 
-		log();
-		log( 'title', 'AUTOMATIC RELEASE' );
-		log();
+		// log();
+		// log( 'title', 'AUTOMATIC RELEASE' );
+		// log();
 
 		const startTime = new Date().getTime();
 
 		try {
 
-			log( 'step', 'Collect information' );
+			// log( 'step', 'Collect information' );
 			const info: AutomaticReleaseInformation = await collectInformation();
+
+			console.info( info );
 
 			log();
 			log( 'step', 'Update "package.json" file' );
-			await updatePackageJson( info.newVersion );
+			// await updatePackageJson( info.newVersion );
 
 			log();
 			log( 'step', 'Generate "CHANGELOG.md" file' );
-			await generateAndWriteChangelog( info.repositoryUrl );
+			// await generateAndWriteChangelog( info.repositoryUrl );
 
 			log();
 			log( 'step', 'Save changes to Git' );
-			await saveChangesToGit( info.newVersion );
+			// await saveChangesToGit( info.newVersion );
 
 			log();
 			log( 'step', 'Create GitHub release' );
-			await createAllGithubReleases( info.repositoryOwner, info.repositoryName, info.repositoryUrl, info.githubToken );
+			// await createAllGithubReleases( info.repositoryOwner, info.repositoryName, info.repositoryUrl, info.githubToken );
 
 			const finishTime = new Date().getTime();
 			const processTime = ( ( finishTime - startTime ) / 1000 ).toFixed( 2 );
