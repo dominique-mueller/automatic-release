@@ -58,7 +58,7 @@
 		"@types/node": "8.0.x",
 		"copyfiles": "1.2.x",
 		"irish-pub": "0.2.x",
-		"jest": "20.0.x",
+		"jest": "~21.2.0",
 		"rimraf": "2.6.x",
 		"ts-jest": "20.0.x",
 		"typescript": "2.4.x"
