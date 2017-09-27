@@ -11,7 +11,7 @@ import { initGitRepository } from './../utilities/init-git-repository';
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
 
-describe( 'Automatic Release', () => {
+describe( 'Automatic Release: First Release', () => {
 
 	const projectPath: string = path.resolve( process.cwd(), 'dist-test' );
 	let originalProcessCwd: any;
@@ -55,16 +55,6 @@ describe( 'Automatic Release', () => {
 		originalProcessCwd = process.cwd
 		process.cwd = () => projectPath;
 
-	} );
-
-	afterAll( () => {
-
-		process.cwd = originalProcessCwd;
-
-	} );
-
-	it ( 'should make a first release', async() => {
-
 		// Prepare
 		fs.writeFileSync( path.resolve( projectPath, 'package.json' ), JSON.stringify( getInitialPackageJson(), null, '	' ), 'utf-8' );
 		await initGitRepository( projectPath );
@@ -74,18 +64,36 @@ describe( 'Automatic Release', () => {
 		const automaticRelease: () => Promise<void> = ( await import( './../../index' ) ).automaticRelease;
 		await automaticRelease();
 
-		// Get information
+	} );
+
+	afterAll( () => {
+
+		process.cwd = originalProcessCwd;
+
+	} );
+
+	it ( 'should update the "package.json" file', async() => {
+
+		const packageJson: PackageJson = JSON.parse( fs.readFileSync( path.resolve( projectPath, 'package.json' ), 'utf-8' ) );
+
+		// Check package.json
+		expect( packageJson.version ).toBe( getInitialPackageJson().version ); // First version
+
+	} );
+
+	// TODO: Refactor
+	it ( 'should write the "CHANGELOG.md" file', async() => {
+
+		// Get date
 		const today: Date = new Date();
 		const todayFormatted: string = `${ today.getFullYear() }-${ today.getMonth() + 1 }-${ today.getDate() }`
 			.replace( /(^|\D)(\d)(?!\d)/g, '$10$2' );
-		const packageJson: PackageJson = JSON.parse( fs.readFileSync( path.resolve( projectPath, 'package.json' ), 'utf-8' ) );
+
+		// Get informaiton
 		const changelog: string = fs.readFileSync( path.resolve( projectPath, 'CHANGELOG.md' ), 'utf-8' );
 		const changelogLines: Array<string> = changelog.split( /\r?\n/ );
 		const numberOfChangelogLines: number = changelogLines.length;
 		const listOfCommits: Array<any> = ( await getCommits( projectPath ) ).slice( 0, 2 ); // We're only interested in 2 commits
-
-		// Check package.json
-		expect( packageJson.version ).toBe( getInitialPackageJson().version ); // First version
 
 		// Check changelog
 		expect( numberOfChangelogLines ).toBe( 22 ); // Size
@@ -99,7 +107,7 @@ describe( 'Automatic Release', () => {
 		expect( changelogLines[ 5 ] ).toBe( '' );
 
 		// Check changelog, content
-		expect( changelogLines[ 6 ] ).toBe( `## [${ packageJson.version }](${ getInitialPackageJson().repository.url }/releases/tag/${ packageJson.version }) / ${ todayFormatted }` );
+		expect( changelogLines[ 6 ] ).toBe( `## [${ getInitialPackageJson().version }](${ getInitialPackageJson().repository.url }/releases/tag/${ getInitialPackageJson().version }) / ${ todayFormatted }` );
 		expect( changelogLines[ 7 ] ).toBe( '' );
 		expect( changelogLines[ 8 ] ).toBe( '### Features' );
 		expect( changelogLines[ 9 ] ).toBe( '' );
