@@ -46,14 +46,8 @@ export function initGitCommits( projectPath: string, type: 'major' | 'minor' | '
 			conventionalCommits.push( await commitForMajor( projectPath ) );
 		}
 
-		// Push commits
-		await new Promise<void>( ( resolve: () => void, reject: () => void ): void => {
-			git( projectPath )
-				.push( 'origin', 'develop' )
-				.exec( () => {
-					resolve();
-				} );
-		} );
+		// Push changes, then switch to master
+		await pushToRemote( projectPath );
 
 		// Add commit hashes
 		const gitCommits: Array<GitCommitLog> = ( await getGitCommits( projectPath ) ).slice( 2 ); // Ignore non-conventional commits
@@ -64,6 +58,26 @@ export function initGitCommits( projectPath: string, type: 'major' | 'minor' | '
 			} );
 
 		resolve( conventionalCommits );
+
+	} );
+}
+
+function pushToRemote( projectPath ): Promise<void> {
+	return new Promise( ( resolve: () => void, reject: () => void ): void => {
+
+		git( projectPath )
+
+			// Push initial state
+			.push( 'origin', 'develop' )
+
+			// Fake the 'release merge' (stay on master)
+			.checkout( 'master' )
+			.mergeFromTo( 'develop', 'master' )
+			.push( 'origin', 'master' )
+
+			.exec( () => {
+				resolve();
+			} );
 
 	} );
 }
@@ -203,7 +217,6 @@ function getGitCommits( projectPath ): Promise<Array<GitCommitLog>> {
 	return new Promise( ( resolve: ( commits: Array<GitCommitLog> ) => void, reject: () => void ): void => {
 
 		git( projectPath )
-			.checkout( 'develop' )
 			.log( ( error: Error | null, data: {
 				all: Array<GitCommitLog>;
 				latest: GitCommitLog,

@@ -4,14 +4,12 @@ import * as child_process from 'child_process';
 import { promisify } from 'util';
 
 import * as del from 'del';
-import * as git from 'simple-git';
 
 import { PackageJson } from '../../src/interfaces/package-json.interface';
 import { initGitCommits, GitConventionalCommit } from './../utilities/init-git-commits';
 import { initGitRepository } from './../utilities/init-git-repository';
 
 const readFileAsync = promisify( fs.readFile );
-const writeFileAsync = promisify( fs.writeFile );
 const mkdirAsync = promisify( fs.mkdir );
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
@@ -61,8 +59,7 @@ describe( 'Automatic Release: First Release', () => {
 		process.cwd = () => projectPath;
 
 		// Prepare repository
-		await writeFileAsync( path.resolve( projectPath, 'package.json' ), JSON.stringify( getInitialPackageJson(), null, '	' ), 'utf-8' );
-		await initGitRepository( projectPath );
+		await initGitRepository( projectPath, getInitialPackageJson() );
 		commits = await initGitCommits( projectPath, 'minor' ); // Will do 3 commits
 
 		// Run automatic release (the test cases will check the result)
@@ -91,8 +88,7 @@ describe( 'Automatic Release: First Release', () => {
 	it ( 'should write the "CHANGELOG.md" file', async() => {
 
 		// Get date
-		const today: Date = new Date();
-		const todayFormatted: string = `${ today.getFullYear() }-${ today.getMonth() + 1 }-${ today.getDate() }`.replace( /(^|\D)(\d)(?!\d)/g, '$10$2' );
+		const today: string = new Date().toISOString().split( 'T' )[ 0 ];
 
 		// Get changelog
 		const changelog: string = await readFileAsync( path.resolve( projectPath, 'CHANGELOG.md' ), 'utf-8' );
@@ -103,7 +99,7 @@ describe( 'Automatic Release: First Release', () => {
 		testChangelogFooter( changelogFooter );
 
 		// Check changelog content
-		expect( changelogContent[ 0 ] ).toBe( `## [${ getInitialPackageJson().version }](${ getInitialPackageJson().repository.url }/releases/tag/${ getInitialPackageJson().version }) / ${ todayFormatted }` );
+		expect( changelogContent[ 0 ] ).toBe( `## [${ getInitialPackageJson().version }](${ getInitialPackageJson().repository.url }/releases/tag/${ getInitialPackageJson().version }) / ${ today }` );
 		expect( changelogContent[ 1 ] ).toBe( '' );
 		expect( changelogContent[ 2 ] ).toBe( '### Features' );
 		expect( changelogContent[ 3 ] ).toBe( '' );

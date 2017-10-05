@@ -33,7 +33,7 @@ export async function automaticRelease(): Promise<void> {
 
 			log();
 			log( 'step', 'Save changes to Git' );
-			// await saveChangesToGit( info.newVersion );
+			await saveChangesToGit( info.newVersion );
 
 			log();
 			log( 'step', 'Create GitHub release' );

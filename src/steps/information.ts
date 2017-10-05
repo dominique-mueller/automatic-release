@@ -118,25 +118,26 @@ function getGitRemoteUrl(): Promise<string> {
 	return new Promise<string>( ( resolve: ( url: string ) => void, reject: ( error: Error ) => void ) => {
 
 		// Get all remotes (verbose=true also gives us the URLs)
-		git( process.cwd() ).getRemotes( true, ( gitGetRemotesError: Error | null, gitRemotes: Array<GitRemote> ) => {
+		git( process.cwd() )
+			.getRemotes( true, ( gitGetRemotesError: Error | null, gitRemotes: Array<GitRemote> ) => {
 
-			// Handle errors
-			if ( gitGetRemotesError ) {
-				reject( new Error( `An error has occured while retrieving the project's Git remotes. [${ gitGetRemotesError.message }]` ) );
-				return;
-			}
+				// Handle errors
+				if ( gitGetRemotesError ) {
+					reject( new Error( `An error has occured while retrieving the project's Git remotes. [${ gitGetRemotesError.message }]` ) );
+					return;
+				}
 
-			// List of git remotes is '[ { name: '', refs: {} } ]' wheh no remotes are available
-			if ( gitRemotes[ 0 ].name === '' || !gitRemotes[ 0 ].refs.hasOwnProperty( 'fetch' ) ) {
-				reject( new Error( 'No remotes for the Git project found.' ) );
-				return;
-			}
+				// List of git remotes is '[ { name: '', refs: {} } ]' wheh no remotes are available
+				if ( gitRemotes[ 0 ].name === '' || !gitRemotes[ 0 ].refs.hasOwnProperty( 'fetch' ) ) {
+					reject( new Error( 'No remotes for the Git project found.' ) );
+					return;
+				}
 
-			// Return the normalized git path
-			const normalizedGitPath: string = gitRemotes[ 0 ].refs.fetch.replace( '.git', '' );
-			resolve( normalizedGitPath );
+				// Return the normalized git path
+				const normalizedGitPath: string = gitRemotes[ 0 ].refs.fetch.replace( '.git', '' );
+				resolve( normalizedGitPath );
 
-		} );
+			} );
 
 	} );
 }
@@ -150,17 +151,18 @@ function hasGitTags(): Promise<boolean> {
 	return new Promise<boolean>( ( resolve: ( flag: boolean ) => void, reject: ( error: Error ) => void ) => {
 
 		// Get all git tags
-		git( process.cwd() ).tags( ( gitTagsError: Error | null, gitTags: GitTags ) => {
+		git( process.cwd() )
+				.tags( ( gitTagsError: Error | null, gitTags: GitTags ) => {
 
-			// Handle errors
-			if ( gitTagsError ) {
-				reject( new Error( `An error has occured while retrieving the project's Git tags. [${ gitTagsError.message }]` ) );
-				return;
-			}
+				// Handle errors
+				if ( gitTagsError ) {
+					reject( new Error( `An error has occured while retrieving the project's Git tags. [${ gitTagsError.message }]` ) );
+					return;
+				}
 
-			resolve( gitTags.all.length !== 0 );
+				resolve( gitTags.all.length !== 0 );
 
-		} );
+			} );
 
 	} );
 }

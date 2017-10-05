@@ -9,9 +9,6 @@ import * as path from 'path';
  */
 export function resolvePath( filePath: string, isWithinLibrary: boolean = false ) {
 
-	console.log( filePath );
-	console.log( process.cwd() );
-
 	return isWithinLibrary
 		? path.resolve( __dirname, filePath ) // Relative to library
 		: path.resolve( process.cwd(), filePath ); // Absolute path, based on the path of the project using this library
