@@ -56,6 +56,9 @@ function generateChangelog( changelogTemplates: { [ key: string ]: string },repo
 
 		// Generate changelog
 		const changelogStream: stream.Readable = conventionalChangelog( { // package.json file has to be updated before
+			pkg: {
+				path: path.resolve( process.cwd(), 'package.json' )
+			},
 			preset: 'angular',
 			releaseCount: 0 // Regenerate the whole thing every time
 		}, {

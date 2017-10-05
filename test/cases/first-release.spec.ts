@@ -47,15 +47,6 @@ describe( 'Automatic Release: First Release', () => {
 			}
 		} );
 
-		// When loading JSON files, load them from the dist-test folder instead (used by changelog generator)
-		jest.doMock( './../../node_modules/conventional-changelog-core/node_modules/load-json-file', () => {
-			return async( filePath: string ): Promise<any> => {
-				const newFilePath: string = path.join( projectPath, path.relative( originalProcessCwd(), filePath ) );
-				const fileContent: string = JSON.parse( await readFileAsync( newFilePath, 'utf-8' ) );
-				return fileContent;
-			}
-		} );
-
 		// Hide logging output
 		jest.spyOn( console, 'log' ).mockImplementation( () => {
 			return;
