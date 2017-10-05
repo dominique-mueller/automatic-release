@@ -60,7 +60,7 @@
 		"irish-pub": "0.2.x",
 		"jest": "20.0.x",
 		"rimraf": "2.6.x",
-		"ts-jest": "20.0.x",
+		"ts-jest": "~21.1.0",
 		"typescript": "2.4.x"
 	}
 }
