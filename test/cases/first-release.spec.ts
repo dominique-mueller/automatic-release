@@ -8,6 +8,7 @@ import * as del from 'del';
 import { PackageJson } from '../../src/interfaces/package-json.interface';
 import { initGitCommits, GitConventionalCommit } from './../utilities/init-git-commits';
 import { initGitRepository } from './../utilities/init-git-repository';
+import { run } from '../utilities/run';
 
 const readFileAsync = promisify( fs.readFile );
 const mkdirAsync = promisify( fs.mkdir );
@@ -111,6 +112,18 @@ describe( 'Automatic Release: First Release', () => {
 
 	} );
 
+	it ( 'should make the release commit and update the branches', async() => {
+
+		// Check release commit
+		const releaseCommit = ( await run( 'git show -s --format=%s', projectPath ) ).replace( /\r?\n/, '' );
+		expect( releaseCommit ).toBe( `Release ${ getInitialPackageJson().version } [skip ci]` );
+
+		// Check that develop and master branches are 'even' / up to date
+		const developMasterDiff = ( await run( 'git diff origin/develop origin/master', projectPath ) );
+		expect( developMasterDiff ).toBe( '' );
+
+	} );
+
 } );
 
 function testChangelogHeader( changelogHeader: Array<string>, repositoryUrl: string ): void {
@@ -146,16 +159,12 @@ function testChangelogEntry( changelogContentLine: string, commit: GitConvention
 }
 
 function parseChangelog( changelog: string ): Array<Array<string>> {
-	const changelogLines: Array<string> = splitByLinebreak( changelog );
+	const changelogLines: Array<string> = changelog.split( /\r?\n/ );
 	return [
 		changelogLines.slice( 0, 6 ),
 		changelogLines.slice( 6, -7 ),
 		changelogLines.slice( -7 )
 	];
-}
-
-function splitByLinebreak( content: string ): Array<string> {
-	return content.split( /\r?\n/ );
 }
 
 function getInitialPackageJson(): PackageJson {
