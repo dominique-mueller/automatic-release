@@ -12,12 +12,9 @@ export async function run( command: string, projectPath: string ): Promise<strin
 		} );
 
 		// Resolve
-		if ( stderr !== '' ) {
+		if ( stderr !== '' && !command.startsWith( 'git' ) ) {
 			console.error( stderr );
-			// reject( stderr );
-		}
-		if ( stdout !== '' ) {
-			console.info( stderr );
+			reject( stderr );
 		}
 		resolve( stdout );
 

@@ -61,7 +61,7 @@ async function commitForNone( projectPath: string ): Promise<GitConventionalComm
 	// Do commit
 	await run( `git add ${ changedFile }`, projectPath );
 	await run( `git commit -m "${ buildCommitMessage( commit ) }"`, projectPath );
-	commit.hash = await run( 'git show -s --format=%h', projectPath );
+	commit.hash = ( await run( 'git show -s --format=%h', projectPath ) ).replace( /\r?\n/, '' );
 
 	return commit;
 
@@ -86,7 +86,7 @@ async function commitForPatch( projectPath: string ): Promise<GitConventionalCom
 	// Do commit
 	await run( `git add ${ changedFile }`, projectPath );
 	await run( `git commit -m "${ buildCommitMessage( commit ) }"`, projectPath );
-	commit.hash = await run( 'git show -s --format=%h', projectPath );
+	commit.hash = ( await run( 'git show -s --format=%h', projectPath ) ).replace( /\r?\n/, '' );
 
 	return commit;
 
@@ -111,7 +111,7 @@ async function commitForMinor( projectPath: string ): Promise<GitConventionalCom
 	// Do commit
 	await run( `git add ${ changedFile }`, projectPath );
 	await run( `git commit -m "${ buildCommitMessage( commit ) }"`, projectPath );
-	commit.hash = await run( 'git show -s --format=%h', projectPath );
+	commit.hash = ( await run( 'git show -s --format=%h', projectPath ) ).replace( /\r?\n/, '' );
 
 	return commit
 
@@ -136,7 +136,7 @@ async function commitForMajor( projectPath: string ): Promise<GitConventionalCom
 	// Do commit
 	await run( `git add ${ changedFile }`, projectPath );
 	await run( `git commit -m "${ buildCommitMessage( commit ) }"`, projectPath );
-	commit.hash = await run( 'git show -s --format=%h', projectPath );
+	commit.hash = ( await run( 'git show -s --format=%h', projectPath ) ).replace( /\r?\n/, '' );
 
 	return commit;
 
