@@ -2,8 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { promisify } from 'util';
 
-import * as git from 'simple-git';
-import { GitTags } from '../../src/interfaces/git-tags.interface';
+import { run } from './run';
 
 const writeFileAsync = promisify( fs.writeFile );
 
@@ -16,77 +15,31 @@ export async function initGitRepository( projectPath: string, packageJsonContent
 	await writeFileAsync( path.resolve( projectPath, 'README.md' ), '# README', 'utf-8' );
 	await writeFileAsync( path.resolve( projectPath, 'package.json' ), JSON.stringify( packageJsonContent, null, '	' ), 'utf-8' );
 
-	// Setup initial git repository (branches, first commit)
-	await setupRepository( projectPath );
+	// Init git repository
+	await run( 'git init', projectPath );
+	await run( 'git config user.name Dominique Müller', projectPath );
+	await run( 'git config user.email dominique.m.mueller@gmail.com', projectPath );
+	await run( 'git config commit.gpgsign false', projectPath );
+	await run( 'git remote add origin https://github.com/dominique-mueller/automatic-release-test', projectPath );
 
-	// Delete all remote tags (locally none exist)
-	const gitTags: Array<string> = await getGitTags( projectPath );
-	if ( gitTags.length > 0 ) {
-		await Promise.all(
-			gitTags.map( async( gitTag: string ): Promise<void> => {
-				await deleteGitTag( projectPath, gitTag );
-			} )
-		);
-	}
+	// Initial commits
+	await run( 'git add .', projectPath );
+	await run( 'git commit -m "Initial commit"', projectPath );
+	await run( 'git push origin master --force', projectPath );
+	await run( 'git checkout -b develop', projectPath );
+	await run( 'git push origin develop --force', projectPath );
 
-}
-
-function setupRepository( projectPath ): Promise<void> {
-	return new Promise( ( resolve: () => void, reject: () => void ): void => {
-		git( projectPath )
-			.init()
-
-			// Configuration
-			.addConfig( 'user.name', 'Dominique Müller' )
-			.addConfig( 'user.email', 'dominique.m.mueller@gmail.com' )
-			.addConfig( 'commit.gpgsign', 'false' ) // Prevent popup window for GPG key
-			.addRemote( 'origin', 'https://github.com/dominique-mueller/automatic-release-test' )
-
-			// Initial commits
-			.add( '.' )
-			.commit( 'Initial commit' )
-			.push( 'origin', 'master', { '--force': null } )
-			.checkoutLocalBranch( 'develop' )
-			.push( 'origin', 'develop', { '--force': null } )
-
-			// Fetch remote tags
-			.fetch( [
-				'--tags'
-			] )
-
-			.exec( () => {
-				resolve();
-			} );
-	} );
-}
-
-function getGitTags( projectPath: string ): Promise<Array<string>> {
-	return new Promise( ( resolve: ( tags: Array<string> ) => void, reject: () => void ): void => {
-
-		// Get all git tags
-		git( projectPath )
-			.tags( ( gitTagsError: Error | null, gitTags: GitTags ) => {
-
-			resolve( gitTags.all );
-
+	// Delete tags (on remote)
+	await run( 'git fetch --tags', projectPath );
+	const tags: Array<string> = ( await run( 'git tag', projectPath ) )
+		.split( /\r?\n/ )
+		.filter( ( tag: string ) => {
+			return tag !== '';
 		} );
+	await Promise.all(
+		tags.map( async( tag: string ): Promise<void> => {
+			await await run( `git push --delete origin ${ tag }`, projectPath );
+		} )
+	);
 
-	} );
-}
-
-function deleteGitTag( projectPath: string, gitTag: string ): Promise<void> {
-	return new Promise( ( resolve: () => void, reject: () => void ): void => {
-
-		// Get all git tags
-		git( projectPath )
-			.push( [
-				'--delete',
-				'origin',
-				gitTag
-			] )
-			.exec( () => {
-				resolve();
-			} );
-
-	} );
 }

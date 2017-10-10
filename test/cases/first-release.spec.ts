@@ -74,7 +74,7 @@ describe( 'Automatic Release: First Release', () => {
 
 	} );
 
-	it ( 'should set the correct version in the "package.json" file', async() => {
+	xit ( 'should set the correct version in the "package.json" file', async() => {
 
 		// Read the package json file
 		const packageJsonFile: string = await readFileAsync( path.resolve( projectPath, 'package.json' ), 'utf-8' );
@@ -85,7 +85,7 @@ describe( 'Automatic Release: First Release', () => {
 
 	} );
 
-	it ( 'should write the "CHANGELOG.md" file', async() => {
+	xit ( 'should write the "CHANGELOG.md" file', async() => {
 
 		// Get date
 		const today: string = new Date().toISOString().split( 'T' )[ 0 ];
