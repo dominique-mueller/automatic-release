@@ -56,6 +56,9 @@ function createGithubReleases( changelogTemplates: { [ key: string ]: string }, 
 			type: 'oauth',
 			token: githubToken
 		}, {
+			pkg: {
+				path: path.resolve( process.cwd(), 'package.json' )
+			},
 			preset: 'angular',
 			releaseCount: 0 // Regenerate the whole thing every time
 		}, {
