@@ -21,6 +21,10 @@ export function getGithubReleases(): Promise<Array<GithubRelease>> {
 				return;
 			}
 
+			console.info( body );
+			console.info( '~~~~~~~' );
+			console.info( JSON.parse( body ) );
+
 			resolve( JSON.parse( body ) );
 
 		} );
