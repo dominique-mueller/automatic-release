@@ -11,6 +11,7 @@ export function getGithubReleases(): Promise<Array<GithubRelease>> {
 		request.get( {
 			url: 'https://api.github.com/repos/dominique-mueller/automatic-release-test/releases',
 			headers: {
+				Authorization: `token ${ process.env.GH_TOKEN }`,
 				'User-Agent': 'dominique-mueller'
 			}
 		}, ( error: string, response: any, body: string ) => {
