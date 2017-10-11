@@ -37,7 +37,7 @@ export async function automaticRelease(): Promise<void> {
 
 			log();
 			log( 'step', 'Create GitHub release' );
-			// await createAllGithubReleases( info.repositoryOwner, info.repositoryName, info.repositoryUrl, info.githubToken );
+			await createAllGithubReleases( info.repositoryOwner, info.repositoryName, info.repositoryUrl, info.githubToken );
 
 			const finishTime = new Date().getTime();
 			const processTime = ( ( finishTime - startTime ) / 1000 ).toFixed( 2 );
