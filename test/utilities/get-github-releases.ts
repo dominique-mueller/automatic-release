@@ -4,7 +4,7 @@ export function getGithubReleases() {
 	return new Promise( async( resolve: ( releases: Array<GithubRelease> ) => void, reject: ( error: string ) => void ): Promise<void> => {
 
 		request.get( {
-			url: 'https://api.github.com/repos/dominique-mueller/automatic-release/releases',
+			url: 'https://api.github.com/repos/dominique-mueller/automatic-release-test/releases',
 			headers: {
 				'User-Agent': 'dominique-mueller'
 			}

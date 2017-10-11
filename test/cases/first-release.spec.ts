@@ -9,6 +9,7 @@ import { PackageJson } from '../../src/interfaces/package-json.interface';
 import { initGitCommits, GitConventionalCommit } from './../utilities/init-git-commits';
 import { initGitRepository } from './../utilities/init-git-repository';
 import { run } from '../utilities/run';
+import { GithubRelease, getGithubReleases } from '../utilities/get-github-releases';
 
 const readFileAsync = promisify( fs.readFile );
 const mkdirAsync = promisify( fs.mkdir );
@@ -130,6 +131,28 @@ describe( 'Automatic Release: First Release', () => {
 		// Check that develop and master branches are 'even' / up to date
 		const developMasterDiff = ( await run( 'git diff origin/develop origin/master', projectPath ) );
 		expect( developMasterDiff ).toBe( '' );
+
+	} );
+
+	it ( 'should create the GitHub release', async() => {
+
+		const githubReleases: Array<GithubRelease> = await getGithubReleases();
+
+		expect( githubReleases.length ).toBe( 1 );
+		expect( githubReleases[ 0 ].tag_name ).toBe( getInitialPackageJson().version );
+		expect( githubReleases[ 0 ].name ).toBe( getInitialPackageJson().version );
+
+		const githubReleaseContent: Array<string> = githubReleases[ 0 ].body.split( /\r?\n/ );
+		console.info( githubReleaseContent );
+
+		// Check changelog content
+		expect( githubReleaseContent[ 0 ] ).toBe( '### Features' );
+		expect( githubReleaseContent[ 1 ] ).toBe( '' );
+		testChangelogEntry( githubReleaseContent[ 2 ], commits[ 1 ], getInitialPackageJson().repository.url );
+		expect( githubReleaseContent[ 3 ] ).toBe( '' );
+		expect( githubReleaseContent[ 4 ] ).toBe( '### Performance Improvements' );
+		expect( githubReleaseContent[ 5 ] ).toBe( '' );
+		testChangelogEntry( githubReleaseContent[ 6 ], commits[ 0 ], getInitialPackageJson().repository.url );
 
 	} );
 
