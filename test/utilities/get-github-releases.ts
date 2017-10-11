@@ -11,7 +11,7 @@ export function getGithubReleases(): Promise<Array<GithubRelease>> {
 		request.get( {
 			url: 'https://api.github.com/repos/dominique-mueller/automatic-release-test/releases',
 			headers: {
-				Authorization: `token ${ process.env.GH_TOKEN }`,
+				Authorization: `token ${ process.env.GH_TOKEN }`, // Reqired to increase the GitHub REST API rate limit
 				'User-Agent': 'dominique-mueller'
 			}
 		}, ( error: string, response: any, body: string ) => {
@@ -22,11 +22,15 @@ export function getGithubReleases(): Promise<Array<GithubRelease>> {
 				return;
 			}
 
-			console.info( body );
-			console.info( '~~~~~~~' );
-			console.info( JSON.parse( body ) );
+			const parsedBody: any = JSON.parse( body );
 
-			resolve( JSON.parse( body ) );
+			// Handle API issues (e.g. rate limiting)
+			if ( parsedBody.hasOwnProperty( 'message' ) ) {
+				reject( JSON.stringify( parsedBody ) );
+				return;
+			}
+
+			resolve( JSON.parse( parsedBody ) );
 
 		} );
 
