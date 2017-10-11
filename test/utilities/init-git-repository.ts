@@ -21,10 +21,14 @@ export async function initGitRepository( projectPath: string, packageJsonContent
 
 	// Init git repository
 	await run( 'git init', projectPath );
+	await run( 'git remote add origin https://github.com/dominique-mueller/automatic-release-test', projectPath );
+
+	// Setup user with authentication
 	await run( 'git config user.name Dominique Müller', projectPath );
 	await run( 'git config user.email dominique.m.mueller@gmail.com', projectPath );
+	await run( 'git config credential.helper "store --file=.git/credentials"', projectPath );
+	await run( 'echo "https://$GH_TOKEN:@github.com" > .git/credentials', projectPath );
 	await run( 'git config commit.gpgsign false', projectPath );
-	await run( 'git remote add origin https://github.com/dominique-mueller/automatic-release-test', projectPath );
 
 	// Initial commits
 	await run( 'git add .', projectPath );
