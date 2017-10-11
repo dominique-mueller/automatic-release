@@ -3,6 +3,7 @@ import * as path from 'path';
 import { promisify } from 'util';
 
 import { run } from './run';
+import { getGitTags } from './get-git-tags';
 
 const writeFileAsync = promisify( fs.writeFile );
 
@@ -31,11 +32,7 @@ export async function initGitRepository( projectPath: string, packageJsonContent
 
 	// Delete tags (on remote)
 	await run( 'git fetch --tags', projectPath );
-	const tags: Array<string> = ( await run( 'git tag', projectPath ) )
-		.split( /\r?\n/ )
-		.filter( ( tag: string ) => {
-			return tag !== '';
-		} );
+	const tags: Array<string> = await getGitTags( projectPath );
 	await Promise.all(
 		tags.map( async( tag: string ): Promise<void> => {
 			await await run( `git tag --delete ${ tag }`, projectPath ); // Delete locally

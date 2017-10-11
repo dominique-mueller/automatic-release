@@ -10,6 +10,7 @@ import { initGitCommits, GitConventionalCommit } from './../utilities/init-git-c
 import { initGitRepository } from './../utilities/init-git-repository';
 import { run } from '../utilities/run';
 import { GithubRelease, getGithubReleases } from '../utilities/get-github-releases';
+import { getGitTags } from '../utilities/get-git-tags';
 
 const readFileAsync = promisify( fs.readFile );
 const mkdirAsync = promisify( fs.mkdir );
@@ -122,14 +123,28 @@ describe( 'Automatic Release: First Release', () => {
 
 	} );
 
-	it ( 'should make the release commit and update the branches', async() => {
+	it ( 'should make the release commit', async() => {
 
 		// Check release commit
 		const releaseCommit = ( await run( 'git show -s --format=%s', projectPath ) ).replace( /\r?\n/, '' );
 		expect( releaseCommit ).toBe( `Release ${ getInitialPackageJson().version } [skip ci]` );
 
+	} );
+
+	it ( 'should create the release tag', async() => {
+
+		const gitTags: Array<string> = await getGitTags( projectPath );
+
+		expect( gitTags.length ).toBe( 1 );
+		expect( gitTags[ 0 ] ).toBe( getInitialPackageJson().version );
+
+	} );
+
+	it ( 'should update the branches', async() => {
+
 		// Check that develop and master branches are 'even' / up to date
 		const developMasterDiff = ( await run( 'git diff origin/develop origin/master', projectPath ) );
+
 		expect( developMasterDiff ).toBe( '' );
 
 	} );
@@ -143,7 +158,6 @@ describe( 'Automatic Release: First Release', () => {
 		expect( githubReleases[ 0 ].name ).toBe( getInitialPackageJson().version );
 
 		const githubReleaseContent: Array<string> = githubReleases[ 0 ].body.split( /\r?\n/ );
-		console.info( githubReleaseContent );
 
 		// Check changelog content
 		expect( githubReleaseContent[ 0 ] ).toBe( '### Features' );
