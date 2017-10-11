@@ -7,17 +7,11 @@ import { run } from './run';
 const writeFileAsync = promisify( fs.writeFile );
 
 /**
- * Git Conventional Commit interface
- */
-export interface GitConventionalCommit {
-	type?: string;
-	scope?: string;
-	message: string;
-	hash?: string;
-}
-
-/**
- * Make Git Changes
+ * Create initial commits
+ *
+ * @param   projectPath - Project path
+ * @param   type        - Release type to generate the commits for
+ * @returns             - List of commits
  */
 export async function initGitCommits( projectPath: string, type: 'major' | 'minor' | 'patch' | 'none' ): Promise<Array<GitConventionalCommit>> {
 
@@ -45,7 +39,10 @@ export async function initGitCommits( projectPath: string, type: 'major' | 'mino
 }
 
 /**
- * Commit for none
+ * Create commit with no effect on releases
+ *
+ * @param   projectPath - Project path
+ * @returns             - Commit
  */
 async function commitForNone( projectPath: string ): Promise<GitConventionalCommit> {
 
@@ -68,7 +65,10 @@ async function commitForNone( projectPath: string ): Promise<GitConventionalComm
 }
 
 /**
- * Commit for path
+ * Create commit for a patch release
+ *
+ * @param   projectPath - Project path
+ * @returns             - Commit
  */
 async function commitForPatch( projectPath: string ): Promise<GitConventionalCommit> {
 
@@ -93,7 +93,10 @@ async function commitForPatch( projectPath: string ): Promise<GitConventionalCom
 }
 
 /**
- * Commit for minor
+ * Create commit for a minor release
+ *
+ * @param   projectPath - Project path
+ * @returns             - Commit
  */
 async function commitForMinor( projectPath: string ): Promise<GitConventionalCommit> {
 
@@ -118,7 +121,10 @@ async function commitForMinor( projectPath: string ): Promise<GitConventionalCom
 }
 
 /**
- * Commit for major
+ * Create commit for a major release
+ *
+ * @param   projectPath - Project path
+ * @returns             - Commit
  */
 async function commitForMajor( projectPath: string ): Promise<GitConventionalCommit> {
 
@@ -154,4 +160,14 @@ function buildCommitMessage( commit: GitConventionalCommit ): string {
 	} else {
 		return commit.message;
 	}
+}
+
+/**
+ * Git Conventional Commit interface
+ */
+export interface GitConventionalCommit {
+	type?: string;
+	scope?: string;
+	message: string;
+	hash?: string;
 }

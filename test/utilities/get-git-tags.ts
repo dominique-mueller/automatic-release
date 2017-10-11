@@ -1,7 +1,10 @@
-import { run } from "./run";
+import { run } from './run';
 
 /**
  * Get git tags
+ *
+ * @param   projectPath - Project path
+ * @returns             - List of git tags
  */
 export async function getGitTags( projectPath: string ): Promise<Array<string>> {
 

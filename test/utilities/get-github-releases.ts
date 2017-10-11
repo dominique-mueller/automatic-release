@@ -1,6 +1,11 @@
 import * as request from 'request';
 
-export function getGithubReleases() {
+/**
+ * Get GitHub releases
+ *
+ * @returns - List of GitHub releases
+ */
+export function getGithubReleases(): Promise<Array<GithubRelease>> {
 	return new Promise( async( resolve: ( releases: Array<GithubRelease> ) => void, reject: ( error: string ) => void ): Promise<void> => {
 
 		request.get( {
@@ -23,6 +28,9 @@ export function getGithubReleases() {
 	} );
 }
 
+/**
+ * GitHub Release Interface
+ */
 export interface GithubRelease {
 	url: string;
 	assets_url: string;

@@ -9,6 +9,9 @@ const writeFileAsync = promisify( fs.writeFile );
 
 /**
  * Initialize Git Repository
+ *
+ * @param   projectPath        - Projcet path
+ * @param   packageJsonContent - Package JSON
  */
 export async function initGitRepository( projectPath: string, packageJsonContent: any ): Promise<void> {
 
