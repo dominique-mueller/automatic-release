@@ -21,6 +21,8 @@ export async function automaticRelease(): Promise<void> {
 			log( 'step', 'Collect information' );
 			const info: AutomaticReleaseInformation = await collectInformation();
 
+			console.info( info ); // TODO: Remove me
+
 			log();
 			log( 'step', 'Update "package.json" file' );
 			await updatePackageJson( info.newVersion );

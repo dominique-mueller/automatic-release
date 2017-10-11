@@ -4,7 +4,8 @@
 	"mapCoverage": true,
 	"moduleFileExtensions": [
 		"js",
-		"ts"
+		"ts",
+		"json"
 	],
 	"rootDir": ".",
 	"transform": {

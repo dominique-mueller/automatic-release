@@ -57,8 +57,10 @@
 		"@types/jest": "20.0.x",
 		"@types/node": "8.0.x",
 		"copyfiles": "1.2.x",
+		"del": "3.0.x",
 		"irish-pub": "0.2.x",
 		"jest": "20.0.x",
+		"request": "2.83.x",
 		"rimraf": "2.6.x",
 		"ts-jest": "20.0.x",
 		"typescript": "2.4.x"

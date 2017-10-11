@@ -1,3 +1,4 @@
+import * as path from 'path';
 import * as stream from 'stream';
 
 import * as conventionalChangelog from 'conventional-changelog';
@@ -51,10 +52,13 @@ function generateChangelog( changelogTemplates: { [ key: string ]: string },repo
 
 		// Header information
 		changelogChunks.push( '# Changelog\n\n' ); // Title
-		changelogChunks.push( `Also see the **[release page]( ${ repositoryUrl }/releases )**.\n\n` ); // Sub-title (Github-specific)
+		changelogChunks.push( `Also see the **[release page](${ repositoryUrl }/releases)**.\n\n` ); // Sub-title (Github-specific)
 
 		// Generate changelog
 		const changelogStream: stream.Readable = conventionalChangelog( { // package.json file has to be updated before
+			pkg: {
+				path: path.resolve( process.cwd(), 'package.json' )
+			},
 			preset: 'angular',
 			releaseCount: 0 // Regenerate the whole thing every time
 		}, {

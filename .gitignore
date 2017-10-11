@@ -3,6 +3,7 @@
 
 # Build & coverage
 /dist
+/dist-test
 /coverage
 
 # Development
