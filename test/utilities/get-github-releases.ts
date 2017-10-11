@@ -30,7 +30,7 @@ export function getGithubReleases(): Promise<Array<GithubRelease>> {
 				return;
 			}
 
-			resolve( JSON.parse( parsedBody ) );
+			resolve( parsedBody );
 
 		} );
 
