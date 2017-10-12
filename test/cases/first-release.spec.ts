@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import * as child_process from 'child_process';
+
 import { promisify } from 'util';
 
 import * as del from 'del';
@@ -11,6 +11,9 @@ import { initGitRepository } from './../utilities/init-git-repository';
 import { run } from '../utilities/run';
 import { GithubRelease, getGithubReleases } from '../utilities/get-github-releases';
 import { getGitTags } from '../utilities/get-git-tags';
+import { getInitialPackageJson } from '../data/initial-package-json';
+import { parseChangelog } from '../utilities/parse-changelog';
+import { setupMocks } from '../utilities/setup-mocks';
 
 const readFileAsync = promisify( fs.readFile );
 const mkdirAsync = promisify( fs.mkdir );
@@ -29,38 +32,8 @@ describe( 'Automatic Release: First Release', () => {
 	// Setup
 	beforeAll( async() => {
 
-		jest.resetModules();
-
-		jest.doMock( 'child_process', () => {
-			return {
-
-				// Switch the working directory (used by 'git-raw-commits')
-				execFile: ( fileName: string, args: Array<string>, options: child_process.ExecFileOptions = {} ): child_process.ChildProcess => {
-					const newOptions: child_process.ExecFileOptions = Object.assign( options, {
-						cwd: projectPath
-					} );
-					return child_process.execFile( fileName, args, newOptions );
-				},
-
-				// Switch the working directory (used by 'git-semver-tags' and 'simple-git')
-				exec: ( command: string, options: child_process.ExecOptions = {},
-					callback?: ( error: Error, stdout: Buffer, stderr: Buffer ) => void ): child_process.ChildProcess => {
-					const newOptions: child_process.ExecOptions = Object.assign( options, {
-						cwd: projectPath
-					} );
-					return child_process.exec( command, newOptions, callback );
-				},
-
-				// Simply forward (used by 'simple-git')
-				spawn: child_process.spawn
-
-			}
-		} );
-
-		// Hide logging output
-		jest.spyOn( console, 'log' ).mockImplementation( () => {
-			return;
-		} );
+		// Setup mocks
+		setupMocks( projectPath );
 
 		// Prepare folder (before changing working directory!!)
 		await del( projectPath );
@@ -142,7 +115,6 @@ describe( 'Automatic Release: First Release', () => {
 
 	it ( 'should update the branches', async() => {
 
-		// Check that develop and master branches are 'even' / up to date
 		const developMasterDiff = ( await run( 'git diff origin/develop origin/master', projectPath ) );
 
 		expect( developMasterDiff ).toBe( '' );
@@ -202,25 +174,4 @@ function testChangelogEntry( changelogContentLine: string, commit: GitConvention
 
 	expect( changelogContentLine ).toBe( `${ commitMessage } ${ commitLink }` );
 
-}
-
-function parseChangelog( changelog: string ): Array<Array<string>> {
-	const changelogLines: Array<string> = changelog.split( /\r?\n/ );
-	return [
-		changelogLines.slice( 0, 6 ),
-		changelogLines.slice( 6, -7 ),
-		changelogLines.slice( -7 )
-	];
-}
-
-function getInitialPackageJson(): PackageJson {
-	return  {
-		name: 'automatic-release-test',
-		description: 'Lorem ipsum dolor sit amet.',
-		version: '1.0.0',
-		repository: {
-			type: 'git',
-			url: 'https://github.com/dominique-mueller/automatic-release-test'
-		}
-	}
 }
