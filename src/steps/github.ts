@@ -17,27 +17,16 @@ import { readChangelogTemplateFiles } from './changelog';
  * @param   githubToken     - GitHub token
  * @returns                 - Promise
  */
-export function createAllGithubReleases( repositoryOwner: string, repositoyName: string, repositoryUrl: string, githubToken: string ):
+export async function createAllGithubReleases( repositoryOwner: string, repositoyName: string, repositoryUrl: string, githubToken: string ):
 	Promise<void> {
-	return new Promise<void>( async( resolve: () => void, reject: ( error: Error ) => void ) => {
 
-		try {
+	log( 'substep', 'Delete all existing GitHub releases' );
+	await deleteAllGithubReleases( repositoryOwner, repositoyName, githubToken );
 
-			log( 'substep', 'Delete all existing GitHub releases' );
-			await deleteAllGithubReleases( repositoryOwner, repositoyName, githubToken );
+	log( 'substep', 'Create all GitHub releases' );
+	const changelogTemplates: { [ key: string ]: string } = await readChangelogTemplateFiles();
+	await createGithubReleases( changelogTemplates, repositoryUrl, githubToken );
 
-			log( 'substep', 'Create all GitHub releases' );
-			const changelogTemplates: { [ key: string ]: string } = await readChangelogTemplateFiles();
-			await createGithubReleases( changelogTemplates, repositoryUrl, githubToken );
-
-			resolve();
-
-		} catch ( error ) {
-			reject( error );
-			return;
-		}
-
-	} );
 }
 
 /**
