@@ -9,7 +9,7 @@ const arrowSymbol = process.platform === 'win32' ? '→' : '➜';
  * @param [type='default'] - Log type
  * @param [message='']     - Log message
  */
-export function log( type: 'title' | 'success' | 'error' | 'note' | 'step' | 'substep' | 'default' = 'default', message: string = '' ):
+export function log( type: 'title' | 'success' | 'error' | 'step' | 'substep' | 'default' = 'default', message: string = '' ):
 	void {
 
 	switch( type ) {
@@ -24,10 +24,6 @@ export function log( type: 'title' | 'success' | 'error' | 'note' | 'step' | 'su
 
 		case 'error':
 			console.log( chalk.red.bold( message ) );
-			break;
-
-		case 'note':
-			console.log( chalk.yellow( `      !! ${  message }` ) );
 			break;
 
 		case 'step':
