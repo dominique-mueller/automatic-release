@@ -11,10 +11,9 @@ import { log } from './../log';
 import { PackageJson } from './../interfaces/package-json.interface';
 import { readFile } from './../utilities/read-file';
 import { RecommendedBump } from './../interfaces/recommended-bump.interface';
-import { writeFile } from './../utilities/write-file';
 
 /**
- * Collect all information needed for the automatic release process; also validates and even corrects them (if possible).
+ * Collect all information needed for the automatic release process; also validates and even corrects them (if possible)
  *
  * @returns - Promise, resolves with information
  */
@@ -24,7 +23,7 @@ export async function collectInformation(): Promise<AutomaticReleaseInformation>
 	log( 'substep', 'Read the "package.json" file' );
 	const packageJson: PackageJson = await readFile( 'package.json' );
 	log( 'substep', 'Validate the "package.json" file' );
-	validateAndCorrectPackageJson( packageJson );
+	validatePackageJson( packageJson );
 
 	const information: AutomaticReleaseInformation = {};
 
@@ -50,15 +49,15 @@ export async function collectInformation(): Promise<AutomaticReleaseInformation>
 }
 
 /**
- * Validate the package json content
+ * Validate the package json file, verifying that everything needed for a successful release is defined properly
  *
  * @param packageJson - Package json content
  */
-function validateAndCorrectPackageJson( packageJson: PackageJson ): void {
+function validatePackageJson( packageJson: PackageJson ): void {
 
 	// Check the 'version' field
 	if ( !packageJson.hasOwnProperty( 'version' ) ) {
-		throw new Error( `The "package.json" file does not have a version defined.` );
+		throw new Error( `The "package.json" file defines no version.` );
 	}
 	if ( semver.valid( packageJson.version ) === null ) { // 'null' means invalid
 		throw new Error( `The "package.json" file defines the version "${ packageJson.version }"; regarding semantic versioning this is not a valid version number.` );
@@ -69,7 +68,7 @@ function validateAndCorrectPackageJson( packageJson: PackageJson ): void {
 
 	// Check the 'repository' field
 	if ( !packageJson.hasOwnProperty( 'repository' ) || !packageJson.repository.hasOwnProperty( 'url' ) ) {
-		throw new Error( 'The "package.json" file defines no repository URL (and retrieving it from the Git project configuration failed).' );
+		throw new Error( 'The "package.json" file defines no repository URL.' );
 	}
 
 }
@@ -84,7 +83,7 @@ function hasGitTags(): Promise<boolean> {
 
 		// Get all git tags
 		git( process.cwd() )
-				.tags( ( gitTagsError: Error | null, gitTags: GitTags ) => {
+			.tags( ( gitTagsError: Error | null, gitTags: GitTags ) => {
 
 				// Handle errors
 				if ( gitTagsError ) {
