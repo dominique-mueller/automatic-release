@@ -37,18 +37,13 @@ export async function setupGitRepository( projectPath: string, packageJson: any 
 	// Initial commits
 	await run( 'git add .', projectPath );
 	await run( 'git commit -m "Initial commit"', projectPath );
-	// await run( 'git push origin master --force', projectPath );
 	await run( 'git checkout -b develop', projectPath );
 	await run( 'git push origin --all --force', projectPath );
 
 	// Delete tags
 	await run( 'git fetch --tags', projectPath );
-	const tags: Array<string> = await getGitTags( projectPath );
-	await Promise.all(
-		tags.map( async( tag: string ): Promise<void> => {
-			await run( `git tag --delete ${ tag }`, projectPath ); // Delete local tag
-			await run( `git push --delete origin ${ tag }`, projectPath ); // Delete tag on remote
-		} )
-	);
+	const tags: string = ( await getGitTags( projectPath ) ).join( ' ' );
+	await run( `git tag --delete ${ tags }`, projectPath );
+	await run( `git push --delete origin ${ tags }`, projectPath );
 
 }
