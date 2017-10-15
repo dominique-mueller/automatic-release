@@ -42,8 +42,8 @@ export async function initGitRepository( projectPath: string, packageJsonContent
 	const tags: Array<string> = await getGitTags( projectPath );
 	await Promise.all(
 		tags.map( async( tag: string ): Promise<void> => {
-			await await run( `git tag --delete ${ tag }`, projectPath ); // Delete locally
-			await await run( `git push --delete origin ${ tag }`, projectPath ); // Delete on remote
+			await run( `git tag --delete ${ tag }`, projectPath ); // Delete locally
+			await run( `git push --delete origin ${ tag }`, projectPath ); // Delete on remote
 		} )
 	);
 

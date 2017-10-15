@@ -13,7 +13,7 @@ import { readFile } from './../utilities/read-file';
 import { RecommendedBump } from './../interfaces/recommended-bump.interface';
 
 /**
- * Collect all information needed for the automatic release process; also validates and even corrects them (if possible)
+ * Collect all information needed for the automatic release process
  *
  * @returns - Promise, resolves with information
  */
@@ -153,7 +153,7 @@ function getGithubToken( repositoryOwner: string, repositoryName: string ): Prom
 			token: githubToken
 		} );
 
-		// We actually don't care about the collaborators - but we can "miss-use" this API request to check that the GitHub token is valid
+		// We actually don't care about the collaborators - but we can 'miss-use' this API request to check that the GitHub token is valid
 		// and veryify that we actually do have access to public repository information (the correct GitHub token scope).
 		// While the GitHub authorization API would be more meaningful here, it is restricted to usage with basic-auth only ... :/
 		github.repos.getCollaborators( {
