@@ -6,7 +6,6 @@ import * as semver from 'semver';
 
 import { AutomaticReleaseInformation } from './../interfaces/automatic-release-information.interface';
 import { GithubUrl } from './../interfaces/github-url.interface';
-import { GitRemote } from './../interfaces/git-remote.interface';
 import { GitTags } from './../interfaces/git-tags.interface';
 import { log } from './../log';
 import { PackageJson } from './../interfaces/package-json.interface';
