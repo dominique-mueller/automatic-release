@@ -5,8 +5,8 @@ import { promisify } from 'util';
 import * as del from 'del';
 
 import { PackageJson } from '../../src/interfaces/package-json.interface';
-import { initGitCommits, GitConventionalCommit } from './../utilities/init-git-commits';
-import { initGitRepository } from './../utilities/init-git-repository';
+import { setupGitCommits, GitConventionalCommit } from './../setup/setup-git-commits';
+import { setupGitRepository } from './../setup/setup-git-repository';
 import { run } from '../utilities/run';
 import { GithubRelease, getGithubReleases } from '../utilities/get-github-releases';
 import { getGitTags } from '../utilities/get-git-tags';
@@ -46,8 +46,8 @@ describe( 'Automatic Release: First Release', () => {
 		process.cwd = () => projectPath;
 
 		// Prepare repository
-		await initGitRepository( projectPath, getInitialPackageJson() );
-		commits = await initGitCommits( projectPath, 'minor' ); // Will do 3 commits
+		await setupGitRepository( projectPath, getInitialPackageJson() );
+		commits = await setupGitCommits( projectPath, 'minor' ); // Will do 3 commits
 
 		// Run automatic release (the test cases will check the result)
 		const automaticRelease: () => Promise<any> = ( await import( './../../index' ) ).automaticRelease;

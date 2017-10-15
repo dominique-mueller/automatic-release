@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { promisify } from 'util';
 
-import { run } from './run';
+import { run } from '../utilities/run';
 
 const writeFileAsync = promisify( fs.writeFile );
 
@@ -13,7 +13,7 @@ const writeFileAsync = promisify( fs.writeFile );
  * @param   type        - Release type to generate the commits for
  * @returns             - List of commits
  */
-export async function initGitCommits( projectPath: string, type: 'major' | 'minor' | 'patch' | 'none' ): Promise<Array<GitConventionalCommit>> {
+export async function setupGitCommits( projectPath: string, type: 'major' | 'minor' | 'patch' | 'none' ): Promise<Array<GitConventionalCommit>> {
 
 	// Do commits
 	const conventionalCommits: Array<GitConventionalCommit> = [];
@@ -28,7 +28,7 @@ export async function initGitCommits( projectPath: string, type: 'major' | 'mino
 		conventionalCommits.push( await commitForMajor( projectPath ) );
 	}
 
-	// Push changes, then switch to master
+	// Push changes, then switch to master (simulate 'release merge')
 	await run( 'git push origin develop', projectPath );
 	await run( 'git checkout master', projectPath );
 	await run( 'git merge develop', projectPath );
@@ -47,18 +47,13 @@ export async function initGitCommits( projectPath: string, type: 'major' | 'mino
 async function commitForNone( projectPath: string ): Promise<GitConventionalCommit> {
 
 	// Make changes
-	const changedFile: string = 'CONTRIBUTORS.md';
-	await writeFileAsync( path.resolve( projectPath, changedFile ), '# Contributors', 'utf-8' );
+	await writeFileAsync( path.resolve( projectPath, 'CONTRIBUTORS.md' ), '# Contributors', 'utf-8' );
 
-	// Prepare commit
+	// Commit
 	const commit: GitConventionalCommit = {
 		message: 'Add contributors file'
 	};
-
-	// Do commit
-	await run( `git add ${ changedFile }`, projectPath );
-	await run( `git commit -m "${ buildCommitMessage( commit ) }"`, projectPath );
-	commit.hash = ( await run( 'git show -s --format=%h', projectPath ) ).replace( /\r?\n/, '' );
+	commit.hash = await executeCommit( commit, projectPath );
 
 	return commit;
 
@@ -73,20 +68,15 @@ async function commitForNone( projectPath: string ): Promise<GitConventionalComm
 async function commitForPatch( projectPath: string ): Promise<GitConventionalCommit> {
 
 	// Make changes
-	const changedFile: string = 'select.js';
-	await writeFileAsync( path.resolve( projectPath, changedFile ), '// Select', 'utf-8' );
+	await writeFileAsync( path.resolve( projectPath, 'select.js' ), '// Select', 'utf-8' );
 
-	// Prepare commit
+	// Commit
 	const commit: GitConventionalCommit = {
 		type: 'perf',
 		scope: 'select',
 		message: 'Improve rendering performance for select options loop'
 	};
-
-	// Do commit
-	await run( `git add ${ changedFile }`, projectPath );
-	await run( `git commit -m "${ buildCommitMessage( commit ) }"`, projectPath );
-	commit.hash = ( await run( 'git show -s --format=%h', projectPath ) ).replace( /\r?\n/, '' );
+	commit.hash = await executeCommit( commit, projectPath );
 
 	return commit;
 
@@ -101,22 +91,17 @@ async function commitForPatch( projectPath: string ): Promise<GitConventionalCom
 async function commitForMinor( projectPath: string ): Promise<GitConventionalCommit> {
 
 	// Make changes
-	const changedFile: string = 'input.js';
-	await writeFileAsync( path.resolve( projectPath, changedFile ), '// Input', 'utf-8' );
+	await writeFileAsync( path.resolve( projectPath, 'input.js' ), '// Input', 'utf-8' );
 
-	// Prepare commit
+	// Commit
 	const commit: GitConventionalCommit = {
 		type: 'feat',
 		scope: 'input',
 		message: 'Add input component\n\n- Add input component implementation\n- Add unit tests\n- Add documentation'
 	};
+	commit.hash = await executeCommit( commit, projectPath );
 
-	// Do commit
-	await run( `git add ${ changedFile }`, projectPath );
-	await run( `git commit -m "${ buildCommitMessage( commit ) }"`, projectPath );
-	commit.hash = ( await run( 'git show -s --format=%h', projectPath ) ).replace( /\r?\n/, '' );
-
-	return commit
+	return commit;
 
 }
 
@@ -129,23 +114,31 @@ async function commitForMinor( projectPath: string ): Promise<GitConventionalCom
 async function commitForMajor( projectPath: string ): Promise<GitConventionalCommit> {
 
 	// Make changes
-	const changedFile: string = 'textarea.js';
-	await writeFileAsync( path.resolve( projectPath, changedFile ), '// Textarea', 'utf-8' );
+	await writeFileAsync( path.resolve( projectPath, 'textarea.js' ), '// Textarea', 'utf-8' );
 
-	// Prepare commit
+	// Commit
 	const commit: GitConventionalCommit = {
 		type: 'refactor',
 		scope: 'textarea',
 		message: 'Rename "maxlength" attribute to "maxLength"\n\nBREAKING CHANGE: The textarea "maxlength" attribute is now called "maxLength"'
 	};
-
-	// Do commit
-	await run( `git add ${ changedFile }`, projectPath );
-	await run( `git commit -m "${ buildCommitMessage( commit ) }"`, projectPath );
-	commit.hash = ( await run( 'git show -s --format=%h', projectPath ) ).replace( /\r?\n/, '' );
+	commit.hash = await executeCommit( commit, projectPath );
 
 	return commit;
 
+}
+
+/**
+ * Execute commit
+ *
+ * @param commit      - Commit
+ * @param projectPath - Project path
+ */
+async function executeCommit( commit: GitConventionalCommit, projectPath: string ): Promise<string> {
+	await run( 'git add .', projectPath );
+	await run( `git commit -m "${ buildCommitMessage( commit ) }"`, projectPath );
+	const commitHash: string = ( await run( 'git show -s --format=%h', projectPath ) ).replace( /\r?\n/, '' );
+	return commitHash;
 }
 
 /**
@@ -155,11 +148,7 @@ async function commitForMajor( projectPath: string ): Promise<GitConventionalCom
  * @returns        - Commit message
  */
 function buildCommitMessage( commit: GitConventionalCommit ): string {
-	if ( commit.type ) {
-		return `${ commit.type }(${ commit.scope ? commit.scope : '*' }): ${ commit.message }`;
-	} else {
-		return commit.message;
-	}
+	return commit.type ? `${ commit.type }(${ commit.scope ? commit.scope : '*' }): ${ commit.message }` : commit.message;
 }
 
 /**

@@ -2,22 +2,26 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { promisify } from 'util';
 
-import { run } from './run';
-import { getGitTags } from './get-git-tags';
+import { run } from './../utilities/run';
+import { getGitTags } from './../utilities/get-git-tags';
 
 const writeFileAsync = promisify( fs.writeFile );
 
 /**
- * Initialize Git Repository
+ * Initialize Git Repository; this includes:
+ * - setting up a fresh local Git repository, connected to remote
+ * - executing the first / initial commit (README and package.json)
+ * - force pushed to GitHub remote, replacing whatever exists there
+ * - cleaning up all tags, both locally and on remote
  *
- * @param   projectPath        - Projcet path
- * @param   packageJsonContent - Package JSON
+ * @param   projectPath - Project path
+ * @param   packageJson - Package JSON
  */
-export async function initGitRepository( projectPath: string, packageJsonContent: any ): Promise<void> {
+export async function setupGitRepository( projectPath: string, packageJson: any ): Promise<void> {
 
-	// Setup initial files
+	// Create initial files
 	await writeFileAsync( path.resolve( projectPath, 'README.md' ), '# README', 'utf-8' );
-	await writeFileAsync( path.resolve( projectPath, 'package.json' ), JSON.stringify( packageJsonContent, null, '	' ), 'utf-8' );
+	await writeFileAsync( path.resolve( projectPath, 'package.json' ), JSON.stringify( packageJson, null, '	' ), 'utf-8' );
 
 	// Init git repository
 	await run( 'git init', projectPath );
@@ -33,18 +37,13 @@ export async function initGitRepository( projectPath: string, packageJsonContent
 	// Initial commits
 	await run( 'git add .', projectPath );
 	await run( 'git commit -m "Initial commit"', projectPath );
-	await run( 'git push origin master --force', projectPath );
 	await run( 'git checkout -b develop', projectPath );
-	await run( 'git push origin develop --force', projectPath );
+	await run( 'git push origin --all --force', projectPath );
 
-	// Delete tags (on remote)
+	// Delete tags
 	await run( 'git fetch --tags', projectPath );
-	const tags: Array<string> = await getGitTags( projectPath );
-	await Promise.all(
-		tags.map( async( tag: string ): Promise<void> => {
-			await await run( `git tag --delete ${ tag }`, projectPath ); // Delete locally
-			await await run( `git push --delete origin ${ tag }`, projectPath ); // Delete on remote
-		} )
-	);
+	const tags: string = ( await getGitTags( projectPath ) ).join( ' ' );
+	await run( `git tag --delete ${ tags }`, projectPath );
+	await run( `git push --delete origin ${ tags }`, projectPath );
 
 }
