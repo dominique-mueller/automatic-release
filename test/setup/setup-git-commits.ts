@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { promisify } from 'util';
 
-import { run } from './run';
+import { run } from '../utilities/run';
 
 const writeFileAsync = promisify( fs.writeFile );
 
@@ -13,7 +13,7 @@ const writeFileAsync = promisify( fs.writeFile );
  * @param   type        - Release type to generate the commits for
  * @returns             - List of commits
  */
-export async function initGitCommits( projectPath: string, type: 'major' | 'minor' | 'patch' | 'none' ): Promise<Array<GitConventionalCommit>> {
+export async function setupGitCommits( projectPath: string, type: 'major' | 'minor' | 'patch' | 'none' ): Promise<Array<GitConventionalCommit>> {
 
 	// Do commits
 	const conventionalCommits: Array<GitConventionalCommit> = [];
