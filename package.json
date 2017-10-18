@@ -43,7 +43,7 @@
 		"test": "jest --config jest.config.json --runInBand --no-cache"
 	},
 	"dependencies": {
-		"chalk": "2.1.x",
+		"chalk": "~2.2.0",
 		"conventional-changelog": "1.1.x",
 		"conventional-github-releaser": "1.1.x",
 		"conventional-recommended-bump": "1.0.x",
