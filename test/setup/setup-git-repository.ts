@@ -14,10 +14,11 @@ const writeFileAsync = promisify( fs.writeFile );
  * - force pushed to GitHub remote, replacing whatever exists there
  * - cleaning up all tags, both locally and on remote
  *
- * @param   projectPath - Project path
- * @param   packageJson - Package JSON
+ * @param projectPath - Project path
+ * @param packageJson - Package JSON (both valid or invalid data is allowed)
+ * @param useRemote   - Flag, describing whether to use the Git remote repository
  */
-export async function setupGitRepository( projectPath: string, packageJson: any ): Promise<void> {
+export async function setupGitRepository( projectPath: string,  useRemote: boolean, packageJson: any ): Promise<void> {
 
 	// Create initial files
 	await writeFileAsync( path.resolve( projectPath, 'README.md' ), '# README', 'utf-8' );
@@ -38,12 +39,21 @@ export async function setupGitRepository( projectPath: string, packageJson: any 
 	await run( 'git add .', projectPath );
 	await run( 'git commit -m "Initial commit"', projectPath );
 	await run( 'git checkout -b develop', projectPath );
-	await run( 'git push origin --all --force', projectPath );
+	if ( useRemote ) {
+		await run( 'git push origin --all --force', projectPath );
+	}
 
 	// Delete tags
-	await run( 'git fetch --tags', projectPath );
-	const tags: string = ( await getGitTags( projectPath ) ).join( ' ' );
-	await run( `git tag --delete ${ tags }`, projectPath );
-	await run( `git push --delete origin ${ tags }`, projectPath );
+	if ( useRemote ) {
+		await run( 'git fetch --tags', projectPath );
+	}
+	const tags: Array<string> = await getGitTags( projectPath );
+	if ( tags.length > 0 ) {
+		const stringifiedTags: string = tags.join( ' ' );
+		await run( `git tag --delete ${ tags }`, projectPath );
+		if ( useRemote ) {
+			await run( `git push --delete origin ${ tags }`, projectPath );
+		}
+	}
 
 }
