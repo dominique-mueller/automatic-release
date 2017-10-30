@@ -54,12 +54,13 @@ async function doGitCommit( projectPath: string, preparedCommit: PreparedCommit 
 	await writeFileAsync( path.resolve( projectPath, preparedCommit.fileName ), preparedCommit.fileContent, 'utf-8' );
 
 	// Do commit
+	const commitMessageArgument: string = ` -m "${ buildCommitMessage( preparedCommit.commit ) }"`;
+	const commitBodyArument: string = preparedCommit.commit.body ? ` -m "${ preparedCommit.commit.body }"`: '';
 	await run( 'git add .', projectPath );
-	await run( `git commit -m "${ buildCommitMessage( preparedCommit.commit ) }"`, projectPath );
+	await run( `git commit${ commitMessageArgument }${ commitBodyArument }`, projectPath );
 
 	// Get commit hash
-	preparedCommit.commit.hash = ( await run( 'git show -s --format=%h', projectPath ) )
-		.replace( /\r?\n/, '' );
+	preparedCommit.commit.hash = ( await run( 'git show -s --format=%h', projectPath ) ).replace( /\r?\n/, '' );
 
 	return preparedCommit.commit;
 

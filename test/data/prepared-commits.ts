@@ -12,7 +12,8 @@ export const preparedCommits: PreparedCommits = {
             commit: {
                 type: 'refactor',
                 scope: 'textarea',
-                message: 'Rename "showCounter" attribute to "counter"\n\nBREAKING CHANGE: The textarea "showCounter" attribute is now called "counter"'
+                message: 'Rename showCounter attribute to counter',
+                body: 'BREAKING CHANGE: The textarea showCounter attribute is now called counter'
             }
         }
     ],
@@ -23,7 +24,7 @@ export const preparedCommits: PreparedCommits = {
             commit: {
                 type: 'feat',
                 scope: 'input',
-                message: 'Add input component\n\n- Add input component implementation\n- Add unit tests\n- Add documentation'
+                message: 'Add input component'
             }
         }
     ],
@@ -48,4 +49,4 @@ export const preparedCommits: PreparedCommits = {
         }
     ]
 
-}
+};

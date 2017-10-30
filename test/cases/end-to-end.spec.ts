@@ -4,20 +4,21 @@ import { promisify } from 'util';
 
 import * as del from 'del';
 
-import { PackageJson } from '../../src/interfaces/package-json.interface';
-import { setupGitRepository } from './../setup/setup-git-repository';
-import { run } from '../utilities/run';
-import { GithubRelease, getGithubReleases } from '../utilities/get-github-releases';
+import { doGitCommits } from '../setup/do-git-commits';
 import { getGitTags } from '../utilities/get-git-tags';
 import { getInitialPackageJson } from '../data/initial-package-json';
+import { GitConventionalCommit } from '../interfaces/git-conventional-commit.interface';
+import { GithubRelease, getGithubReleases } from '../utilities/get-github-releases';
+import { PackageJson } from '../../src/interfaces/package-json.interface';
 import { parseChangelog } from '../utilities/parse-changelog';
+import { preparedCommits } from '../data/prepared-commits';
+import { run } from '../utilities/run';
+import { setupGitRepository } from './../setup/setup-git-repository';
 import { setupMocks } from '../setup/setup-mocks';
-import { testChangelogEntry } from '../shared/test-changelog-entry';
+import { testChangelogBreakingChange } from '../shared/test-changelog-breaking-change';
+import { testChangelogChange } from '../shared/test-changelog-change';
 import { testChangelogFooter } from '../shared/test-changelog-footer';
 import { testChangelogHeader } from '../shared/test-changelog-header';
-import { GitConventionalCommit } from '../interfaces/git-conventional-commit.interface';
-import { preparedCommits } from '../data/prepared-commits';
-import { doGitCommits } from '../setup/do-git-commits';
 
 const readFileAsync = promisify( fs.readFile );
 const mkdirAsync = promisify( fs.mkdir );
@@ -63,9 +64,12 @@ describe( 'Automatic Release (end-to-end)', () => {
 			commits = await doGitCommits(
 				projectPath,
 				true,
+
+				// Do commits for all release types
 				preparedCommits.none[ 0 ],
+				preparedCommits.patch[ 0 ],
 				preparedCommits.minor[ 0 ],
-				preparedCommits.patch[ 0 ]
+				preparedCommits.major[ 0 ]
 			);
 
 			// Run automatic release (the test cases will check the result)
@@ -98,11 +102,19 @@ describe( 'Automatic Release (end-to-end)', () => {
 			expect( changelogContent[ 1 ] ).toBe( '' );
 			expect( changelogContent[ 2 ] ).toBe( '### Features' );
 			expect( changelogContent[ 3 ] ).toBe( '' );
-			testChangelogEntry( changelogContent[ 4 ], commits[ 1 ], getInitialPackageJson().repository.url );
+			testChangelogChange( changelogContent[ 4 ], commits[ 2 ], getInitialPackageJson().repository.url );
 			expect( changelogContent[ 5 ] ).toBe( '' );
 			expect( changelogContent[ 6 ] ).toBe( '### Performance Improvements' );
 			expect( changelogContent[ 7 ] ).toBe( '' );
-			testChangelogEntry( changelogContent[ 8 ], commits[ 2 ], getInitialPackageJson().repository.url );
+			testChangelogChange( changelogContent[ 8 ], commits[ 1 ], getInitialPackageJson().repository.url );
+			expect( changelogContent[ 9 ] ).toBe( '' );
+			expect( changelogContent[ 10 ] ).toBe( '### Refactoring' );
+			expect( changelogContent[ 11 ] ).toBe( '' );
+			testChangelogChange( changelogContent[ 12 ], commits[ 3 ], getInitialPackageJson().repository.url );
+			expect( changelogContent[ 13 ] ).toBe( '' );
+			expect( changelogContent[ 14 ] ).toBe( '### BREAKING CHANGES' );
+			expect( changelogContent[ 15 ] ).toBe( '' );
+			testChangelogBreakingChange( changelogContent[ 16 ], commits[ 3 ] );
 
 		} );
 
@@ -145,11 +157,19 @@ describe( 'Automatic Release (end-to-end)', () => {
 			// Check changelog content
 			expect( githubReleaseContent[ 0 ] ).toBe( '### Features' );
 			expect( githubReleaseContent[ 1 ] ).toBe( '' );
-			testChangelogEntry( githubReleaseContent[ 2 ], commits[ 1 ], getInitialPackageJson().repository.url );
+			testChangelogChange( githubReleaseContent[ 2 ], commits[ 2 ], getInitialPackageJson().repository.url );
 			expect( githubReleaseContent[ 3 ] ).toBe( '' );
 			expect( githubReleaseContent[ 4 ] ).toBe( '### Performance Improvements' );
 			expect( githubReleaseContent[ 5 ] ).toBe( '' );
-			testChangelogEntry( githubReleaseContent[ 6 ], commits[ 2 ], getInitialPackageJson().repository.url );
+			testChangelogChange( githubReleaseContent[ 6 ], commits[ 1 ], getInitialPackageJson().repository.url );
+			expect( githubReleaseContent[ 7 ] ).toBe( '' );
+			expect( githubReleaseContent[ 8 ] ).toBe( '### Refactoring' );
+			expect( githubReleaseContent[ 9 ] ).toBe( '' );
+			testChangelogChange( githubReleaseContent[ 10 ], commits[ 3 ], getInitialPackageJson().repository.url );
+			expect( githubReleaseContent[ 11 ] ).toBe( '' );
+			expect( githubReleaseContent[ 12 ] ).toBe( '### BREAKING CHANGES' );
+			expect( githubReleaseContent[ 13 ] ).toBe( '' );
+			testChangelogBreakingChange( githubReleaseContent[ 14 ], commits[ 3 ] );
 
 		} );
 
