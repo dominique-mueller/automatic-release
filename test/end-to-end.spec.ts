@@ -4,21 +4,21 @@ import { promisify } from 'util';
 
 import * as del from 'del';
 
-import { doGitCommits } from '../setup/do-git-commits';
-import { getGitTags } from '../utilities/get-git-tags';
-import { GitConventionalCommit } from '../interfaces/git-conventional-commit.interface';
-import { GithubRelease, getGithubReleases } from '../utilities/get-github-releases';
-import { initialPackageJson } from '../data/initial-package-json';
-import { PackageJson } from '../../src/interfaces/package-json.interface';
-import { parseChangelog } from '../utilities/parse-changelog';
-import { preparedCommits } from '../data/prepared-commits';
-import { run } from '../utilities/run';
-import { setupGitRepository } from './../setup/setup-git-repository';
-import { setupMocks } from '../setup/setup-mocks';
-import { testChangelogBreakingChange } from '../shared/test-changelog-breaking-change';
-import { testChangelogChange } from '../shared/test-changelog-change';
-import { testChangelogFooter } from '../shared/test-changelog-footer';
-import { testChangelogHeader } from '../shared/test-changelog-header';
+import { doGitCommits } from './setup/do-git-commits';
+import { getGitTags } from './utilities/get-git-tags';
+import { GitConventionalCommit } from './interfaces/git-conventional-commit.interface';
+import { GithubRelease, getGithubReleases } from './utilities/get-github-releases';
+import { initialPackageJson } from './data/initial-package-json';
+import { PackageJson } from '../src/interfaces/package-json.interface';
+import { parseChangelog } from './utilities/parse-changelog';
+import { preparedCommits } from './data/prepared-commits';
+import { run } from './utilities/run';
+import { setupGitRepository } from '././setup/setup-git-repository';
+import { setupMocks } from './setup/setup-mocks';
+import { testChangelogBreakingChange } from './shared/test-changelog-breaking-change';
+import { testChangelogChange } from './shared/test-changelog-change';
+import { testChangelogFooter } from './shared/test-changelog-footer';
+import { testChangelogHeader } from './shared/test-changelog-header';
 
 const readFileAsync = promisify( fs.readFile );
 const mkdirAsync = promisify( fs.mkdir );
@@ -35,7 +35,7 @@ const mkdirAsync = promisify( fs.mkdir );
  *
  * Note: Usually, this test should run green within under a minute.
  */
-describe( 'Automatic Release (end-to-end)', () => {
+describe( 'Automatic Release: end-to-end', () => {
 
 	let originalProcessCwd: () => string;
 	let commits: Array<GitConventionalCommit> = [];
@@ -82,7 +82,7 @@ describe( 'Automatic Release (end-to-end)', () => {
 			commits = [ ...commits, ...firstReleaseCommits ];
 
 			// Run automatic release (the test cases will check the result)
-			const automaticRelease: () => Promise<void> = ( await import( './../../index' ) ).automaticRelease;
+			const automaticRelease: () => Promise<void> = ( await import( './../index' ) ).automaticRelease;
 			await automaticRelease();
 
 		} );
@@ -201,7 +201,7 @@ describe( 'Automatic Release (end-to-end)', () => {
 			commits = [ ...commits, ...secondReleaseCommits ];
 
 			// Run automatic release (the test cases will check the result)
-			const automaticRelease: () => Promise<void> = ( await import( './../../index' ) ).automaticRelease;
+			const automaticRelease: () => Promise<void> = ( await import( './../index' ) ).automaticRelease;
 			await automaticRelease();
 
 		} );

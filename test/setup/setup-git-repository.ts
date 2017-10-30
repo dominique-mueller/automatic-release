@@ -19,11 +19,13 @@ const writeFileAsync = promisify( fs.writeFile );
  * @param packageJson - Package JSON (both valid or invalid data is allowed)
  * @param useRemote   - Flag, describing whether to use the Git remote repository
  */
-export async function setupGitRepository( projectPath: string,  useRemote: boolean, packageJson: PackageJson ): Promise<void> {
+export async function setupGitRepository( projectPath: string,  useRemote: boolean, packageJson?: PackageJson ): Promise<void> {
 
 	// Create initial files
 	await writeFileAsync( path.resolve( projectPath, 'README.md' ), '# README', 'utf-8' );
-	await writeFileAsync( path.resolve( projectPath, 'package.json' ), JSON.stringify( packageJson, null, '	' ), 'utf-8' );
+	if ( packageJson ) {
+		await writeFileAsync( path.resolve( projectPath, 'package.json' ), JSON.stringify( packageJson, null, '	' ), 'utf-8' );
+	}
 
 	// Init git repository
 	await run( 'git init', projectPath );
