@@ -1,4 +1,4 @@
-import * as chalk from 'chalk';
+import chalk from 'chalk';
 
 // Different arrow symbol based on OS
 const arrowSymbol = process.platform === 'win32' ? '→' : '➜';
@@ -9,8 +9,7 @@ const arrowSymbol = process.platform === 'win32' ? '→' : '➜';
  * @param [type='default'] - Log type
  * @param [message='']     - Log message
  */
-export function log( type: 'title' | 'success' | 'error' | 'step' | 'substep' | 'default' = 'default', message: string = '' ):
-	void {
+export function log( type: 'title' | 'success' | 'error' | 'step' | 'substep' | 'default' = 'default', message: string = '' ): void {
 
 	switch( type ) {
 
