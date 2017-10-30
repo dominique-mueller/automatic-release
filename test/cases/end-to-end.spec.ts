@@ -35,7 +35,7 @@ const mkdirAsync = promisify( fs.mkdir );
  *
  * Note: Usually, this test should run green within under a minute.
  */
-describe( 'Automatic Release (end-to-end)', () => {
+describe( 'Automatic Release: end-to-end', () => {
 
 	let originalProcessCwd: () => string;
 	let commits: Array<GitConventionalCommit> = [];
