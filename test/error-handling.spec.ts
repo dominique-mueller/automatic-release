@@ -50,7 +50,7 @@ describe( 'Automatic Release: Error handling', () => {
         // Run automatic release (the test cases will check the result)
         let error: Error | null = null;
         try {
-            const automaticRelease: () => Promise<void> = ( await import( './../../index' ) ).automaticRelease;
+            const automaticRelease: () => Promise<void> = ( await import( './../index' ) ).automaticRelease;
             await automaticRelease();
         } catch ( automaticReleaseError ) {
             error = automaticReleaseError;
@@ -69,7 +69,7 @@ describe( 'Automatic Release: Error handling', () => {
         // Run automatic release (the test cases will check the result)
         let error: Error | null = null;
         try {
-            const automaticRelease: () => Promise<void> = ( await import( './../../index' ) ).automaticRelease;
+            const automaticRelease: () => Promise<void> = ( await import( './../index' ) ).automaticRelease;
             await automaticRelease();
         } catch ( automaticReleaseError ) {
             error = automaticReleaseError;
@@ -95,7 +95,7 @@ describe( 'Automatic Release: Error handling', () => {
         // Run automatic release (the test cases will check the result)
         let error: Error | null = null;
         try {
-            const automaticRelease: () => Promise<void> = ( await import( './../../index' ) ).automaticRelease;
+            const automaticRelease: () => Promise<void> = ( await import( './../index' ) ).automaticRelease;
             await automaticRelease();
         } catch ( automaticReleaseError ) {
             error = automaticReleaseError;
@@ -122,7 +122,7 @@ describe( 'Automatic Release: Error handling', () => {
         // Run automatic release (the test cases will check the result)
         let error: Error | null = null;
         try {
-            const automaticRelease: () => Promise<void> = ( await import( './../../index' ) ).automaticRelease;
+            const automaticRelease: () => Promise<void> = ( await import( './../index' ) ).automaticRelease;
             await automaticRelease();
         } catch ( automaticReleaseError ) {
             error = automaticReleaseError;
@@ -149,7 +149,7 @@ describe( 'Automatic Release: Error handling', () => {
         // Run automatic release (the test cases will check the result)
         let error: Error | null = null;
         try {
-            const automaticRelease: () => Promise<void> = ( await import( './../../index' ) ).automaticRelease;
+            const automaticRelease: () => Promise<void> = ( await import( './../index' ) ).automaticRelease;
             await automaticRelease();
         } catch ( automaticReleaseError ) {
             error = automaticReleaseError;
@@ -173,7 +173,7 @@ describe( 'Automatic Release: Error handling', () => {
         // Run automatic release (the test cases will check the result)
         let error: Error | null = null;
         try {
-            const automaticRelease: () => Promise<void> = ( await import( './../../index' ) ).automaticRelease;
+            const automaticRelease: () => Promise<void> = ( await import( './../index' ) ).automaticRelease;
             await automaticRelease();
         } catch ( automaticReleaseError ) {
             error = automaticReleaseError;
@@ -204,7 +204,7 @@ describe( 'Automatic Release: Error handling', () => {
         // Run automatic release (the test cases will check the result)
         let error: Error | null = null;
         try {
-            const automaticRelease: () => Promise<void> = ( await import( './../../index' ) ).automaticRelease;
+            const automaticRelease: () => Promise<void> = ( await import( './../index' ) ).automaticRelease;
             await automaticRelease();
         } catch ( automaticReleaseError ) {
             error = automaticReleaseError;
@@ -238,7 +238,7 @@ describe( 'Automatic Release: Error handling', () => {
         // Run automatic release (the test cases will check the result)
         let error: Error | null = null;
         try {
-            const automaticRelease: () => Promise<void> = ( await import( './../../index' ) ).automaticRelease;
+            const automaticRelease: () => Promise<void> = ( await import( './../index' ) ).automaticRelease;
             await automaticRelease();
         } catch ( automaticReleaseError ) {
             error = automaticReleaseError;

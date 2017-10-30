@@ -82,7 +82,7 @@ describe( 'Automatic Release: end-to-end', () => {
 			commits = [ ...commits, ...firstReleaseCommits ];
 
 			// Run automatic release (the test cases will check the result)
-			const automaticRelease: () => Promise<void> = ( await import( './../../index' ) ).automaticRelease;
+			const automaticRelease: () => Promise<void> = ( await import( './../index' ) ).automaticRelease;
 			await automaticRelease();
 
 		} );
@@ -201,7 +201,7 @@ describe( 'Automatic Release: end-to-end', () => {
 			commits = [ ...commits, ...secondReleaseCommits ];
 
 			// Run automatic release (the test cases will check the result)
-			const automaticRelease: () => Promise<void> = ( await import( './../../index' ) ).automaticRelease;
+			const automaticRelease: () => Promise<void> = ( await import( './../index' ) ).automaticRelease;
 			await automaticRelease();
 
 		} );
