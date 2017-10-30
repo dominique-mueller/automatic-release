@@ -24,7 +24,16 @@ const readFileAsync = promisify( fs.readFile );
 const mkdirAsync = promisify( fs.mkdir );
 
 /**
- * Automatic Release: e2e
+ * Automatic Release: end-to-end
+ *
+ * This test suite is a complete end-to-end test for automatic releases, covering both a first release as well as a 'normal' release after
+ * that. It has been written in a way to reflect real use cases, to work in real environments and circumstances - meaning that we use the
+ * real dependencies and their code (no mocks or stubs), set up an actual Git repository (connected to a real GitHub remote repository),
+ * write files to the disk and do commits as usual and actually communicate with real backend systems. If mocks are being used, they only
+ * exist in order to manipulate the working directory (JavaScript execution context), necessary to make automatic release work in the dist
+ * test folder.
+ *
+ * Note: Usually, this test should run green within under a minute.
  */
 describe( 'Automatic Release (end-to-end)', () => {
 
