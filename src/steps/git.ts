@@ -49,7 +49,7 @@ export function saveChangesToGit( newVersion: string ): Promise<void> {
 
 				// Update the develop branch (and return back to master)
 				.checkout( 'develop' )
-				.mergeFromTo( 'master', 'develop' )
+				.merge( [ 'master' ] )
 				.push( 'origin', 'develop' )
 				.checkout( 'master' )
 

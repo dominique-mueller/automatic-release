@@ -298,8 +298,6 @@ describe( 'Automatic Release (end-to-end)', () => {
 
 			expect( githubReleases.length ).toBe( 2 );
 
-			console.info( githubReleases );
-
 			// Check changelog details
 			expect( githubReleases[ 1 ].tag_name ).toBe( expectedSecondRelease );
 			expect( githubReleases[ 1 ].name ).toBe( expectedSecondRelease );
