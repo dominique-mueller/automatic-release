@@ -26,6 +26,15 @@ export const preparedCommits: PreparedCommits = {
                 scope: 'input',
                 message: 'Add input component'
             }
+        },
+        {
+            fileName: 'checkbox.js',
+            fileContent: '// Chckbox',
+            commit: {
+                type: 'feat',
+                scope: 'checkbox',
+                message: 'Add checkbox & checkbox group component'
+            }
         }
     ],
     none: [
@@ -45,6 +54,15 @@ export const preparedCommits: PreparedCommits = {
                 type: 'perf',
                 scope: 'select',
                 message: 'Improve rendering performance for select options loop'
+            }
+        },
+        {
+            fileName: 'button.js',
+            fileContent: '// Button',
+            commit: {
+                type: 'fix',
+                scope: 'button',
+                message: 'Add button type to prevent possible rendering issues'
             }
         }
     ]

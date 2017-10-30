@@ -22,6 +22,8 @@ export async function doGitCommits(
 	...commits: Array<PreparedCommit>
 ): Promise<Array<GitConventionalCommit>> {
 
+	await run( 'git checkout develop', projectPath );
+
 	// Do commits
 	const commitsResult: Array<GitConventionalCommit> = [];
 	for ( let commit of commits ) {

@@ -2,8 +2,9 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { promisify } from 'util';
 
-import { run } from './../utilities/run';
 import { getGitTags } from './../utilities/get-git-tags';
+import { PackageJson } from '../../src/interfaces/package-json.interface';
+import { run } from './../utilities/run';
 
 const writeFileAsync = promisify( fs.writeFile );
 
@@ -18,7 +19,7 @@ const writeFileAsync = promisify( fs.writeFile );
  * @param packageJson - Package JSON (both valid or invalid data is allowed)
  * @param useRemote   - Flag, describing whether to use the Git remote repository
  */
-export async function setupGitRepository( projectPath: string,  useRemote: boolean, packageJson: any ): Promise<void> {
+export async function setupGitRepository( projectPath: string,  useRemote: boolean, packageJson: PackageJson ): Promise<void> {
 
 	// Create initial files
 	await writeFileAsync( path.resolve( projectPath, 'README.md' ), '# README', 'utf-8' );
@@ -50,9 +51,9 @@ export async function setupGitRepository( projectPath: string,  useRemote: boole
 	const tags: Array<string> = await getGitTags( projectPath );
 	if ( tags.length > 0 ) {
 		const stringifiedTags: string = tags.join( ' ' );
-		await run( `git tag --delete ${ tags }`, projectPath );
+		await run( `git tag --delete ${ stringifiedTags }`, projectPath );
 		if ( useRemote ) {
-			await run( `git push --delete origin ${ tags }`, projectPath );
+			await run( `git push --delete origin ${ stringifiedTags }`, projectPath );
 		}
 	}
 
