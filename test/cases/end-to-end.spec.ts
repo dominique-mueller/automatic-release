@@ -158,8 +158,9 @@ describe( 'Automatic Release (end-to-end)', () => {
 			const githubReleases: Array<GithubRelease> = await getGithubReleases();
 			const githubFirstReleaseContent: Array<string> = githubReleases[ 0 ].body.split( /\r?\n/ );
 
-			// Check changelog details
 			expect( githubReleases.length ).toBe( 1 );
+
+			// Check changelog details
 			expect( githubReleases[ 0 ].tag_name ).toBe( expectedFirstRelease );
 			expect( githubReleases[ 0 ].name ).toBe( expectedFirstRelease );
 			expect( githubReleases[ 0 ].target_commitish ).toBe( 'master' );
@@ -294,6 +295,10 @@ describe( 'Automatic Release (end-to-end)', () => {
 			const githubReleases: Array<GithubRelease> = await getGithubReleases();
 			const githubSecondReleaseContent: Array<string> = githubReleases[ 1 ].body.split( /\r?\n/ );
 			const githubFirstReleaseContent: Array<string> = githubReleases[ 0 ].body.split( /\r?\n/ );
+
+			expect( githubReleases.length ).toBe( 2 );
+
+			console.info( githubReleases );
 
 			// Check changelog details
 			expect( githubReleases[ 1 ].tag_name ).toBe( expectedSecondRelease );

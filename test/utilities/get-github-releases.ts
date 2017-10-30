@@ -30,7 +30,12 @@ export function getGithubReleases(): Promise<Array<GithubRelease>> {
 				return;
 			}
 
-			resolve( parsedBody );
+			// Just to make sure, sort by creation date
+			const sortedGithubReleases: Array<GithubRelease> = parsedBody.sort( ( a: GithubRelease, b: GithubRelease ) => {
+				return ( new Date( a.created_at ) ).getTime() - ( new Date( b.created_at ) ).getTime();
+			} );
+
+			resolve( sortedGithubReleases );
 
 		} );
 
