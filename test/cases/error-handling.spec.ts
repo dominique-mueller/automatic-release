@@ -8,6 +8,7 @@ import { PackageJson } from '../../src/interfaces/package-json.interface';
 import { setupGitRepository } from './../setup/setup-git-repository';
 import { setupMocks } from '../setup/setup-mocks';
 
+const writeFileAsync = promisify( fs.writeFile );
 const readFileAsync = promisify( fs.readFile );
 const mkdirAsync = promisify( fs.mkdir );
 
@@ -38,6 +39,43 @@ describe( 'Automatic Release: Error handling', () => {
 
         // Reset working directory
         process.cwd = originalProcessCwd;
+
+    } );
+
+    it ( 'should throw an error if the "package.json" file does not exist', async() => {
+
+        await setupGitRepository( projectPath, false );
+        const packageJsonPath: string = path.resolve( projectPath, 'package.json' );
+
+        // Run automatic release (the test cases will check the result)
+        let error: Error | null = null;
+        try {
+            const automaticRelease: () => Promise<void> = ( await import( './../../index' ) ).automaticRelease;
+            await automaticRelease();
+        } catch ( automaticReleaseError ) {
+            error = automaticReleaseError;
+        }
+
+        expect( error.message ).toContain( `An error occured while reading the file "${ packageJsonPath }".` );
+
+    } );
+
+    it ( 'should throw an error if the "package.json" file is corrupt', async() => {
+
+        await setupGitRepository( projectPath, false );
+        await writeFileAsync( path.resolve( projectPath, 'package.json' ), '{ "name": "automatic-release-test }', 'utf-8' );
+        const packageJsonPath: string = path.resolve( projectPath, 'package.json' );
+
+        // Run automatic release (the test cases will check the result)
+        let error: Error | null = null;
+        try {
+            const automaticRelease: () => Promise<void> = ( await import( './../../index' ) ).automaticRelease;
+            await automaticRelease();
+        } catch ( automaticReleaseError ) {
+            error = automaticReleaseError;
+        }
+
+        expect( error.message ).toContain( `An error occured while parsing the file "${ packageJsonPath }" as JSON.` );
 
     } );
 
@@ -206,7 +244,7 @@ describe( 'Automatic Release: Error handling', () => {
             error = automaticReleaseError;
         }
 
-        expect( error.message ).toBe( `An error occured while verifying the GitHub token. [401 Unauthorized: \"Bad credentials\"]` );
+        expect( error.message ).toContain( `An error occured while verifying the GitHub token.` );
 
         // AFTER
         process.env.GH_TOKEN = githubToken;
