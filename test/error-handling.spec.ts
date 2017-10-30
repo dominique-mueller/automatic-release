@@ -4,9 +4,9 @@ import { promisify } from 'util';
 
 import * as del from 'del';
 
-import { PackageJson } from '../../src/interfaces/package-json.interface';
-import { setupGitRepository } from './../setup/setup-git-repository';
-import { setupMocks } from '../setup/setup-mocks';
+import { PackageJson } from '../src/interfaces/package-json.interface';
+import { setupGitRepository } from './setup/setup-git-repository';
+import { setupMocks } from './setup/setup-mocks';
 
 const writeFileAsync = promisify( fs.writeFile );
 const readFileAsync = promisify( fs.readFile );

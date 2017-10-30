@@ -4,21 +4,21 @@ import { promisify } from 'util';
 
 import * as del from 'del';
 
-import { doGitCommits } from '../setup/do-git-commits';
-import { getGitTags } from '../utilities/get-git-tags';
-import { GitConventionalCommit } from '../interfaces/git-conventional-commit.interface';
-import { GithubRelease, getGithubReleases } from '../utilities/get-github-releases';
-import { initialPackageJson } from '../data/initial-package-json';
-import { PackageJson } from '../../src/interfaces/package-json.interface';
-import { parseChangelog } from '../utilities/parse-changelog';
-import { preparedCommits } from '../data/prepared-commits';
-import { run } from '../utilities/run';
-import { setupGitRepository } from './../setup/setup-git-repository';
-import { setupMocks } from '../setup/setup-mocks';
-import { testChangelogBreakingChange } from '../shared/test-changelog-breaking-change';
-import { testChangelogChange } from '../shared/test-changelog-change';
-import { testChangelogFooter } from '../shared/test-changelog-footer';
-import { testChangelogHeader } from '../shared/test-changelog-header';
+import { doGitCommits } from './setup/do-git-commits';
+import { getGitTags } from './utilities/get-git-tags';
+import { GitConventionalCommit } from './interfaces/git-conventional-commit.interface';
+import { GithubRelease, getGithubReleases } from './utilities/get-github-releases';
+import { initialPackageJson } from './data/initial-package-json';
+import { PackageJson } from '../src/interfaces/package-json.interface';
+import { parseChangelog } from './utilities/parse-changelog';
+import { preparedCommits } from './data/prepared-commits';
+import { run } from './utilities/run';
+import { setupGitRepository } from '././setup/setup-git-repository';
+import { setupMocks } from './setup/setup-mocks';
+import { testChangelogBreakingChange } from './shared/test-changelog-breaking-change';
+import { testChangelogChange } from './shared/test-changelog-change';
+import { testChangelogFooter } from './shared/test-changelog-footer';
+import { testChangelogHeader } from './shared/test-changelog-header';
 
 const readFileAsync = promisify( fs.readFile );
 const mkdirAsync = promisify( fs.mkdir );
