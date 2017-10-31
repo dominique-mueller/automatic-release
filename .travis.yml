@@ -35,6 +35,8 @@ jobs:
         - npm install
       script:
         - npm run test
+      after_success:
+        - npm run test:coverage
     - stage: release
       before_install:
         - git clone "https://github.com/$TRAVIS_REPO_SLUG.git" "$TRAVIS_REPO_SLUG"; # We also need the develop branch
