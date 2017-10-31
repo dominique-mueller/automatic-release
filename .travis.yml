@@ -27,10 +27,19 @@ jobs:
   include:
     - stage: build
       install: npm install
-      script: npm run build:run
+      script:
+        - ls
+        - npm run build:run
     - stage: test
       install: npm install
-      script: npm run test
+      script:
+        - ls
+        - npm run test
     - stage: release
       install: npm install
       script: echo "Release"
+      deploy:
+        provider: npm
+        email: dominique.m.mueller@gmail.com
+        api_key: "$NPM_TOKEN"
+        skip_cleanup: true
