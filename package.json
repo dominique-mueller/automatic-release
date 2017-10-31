@@ -39,7 +39,8 @@
 		"build:run": "tsc -p tsconfig.json",
 		"build": "npm run build:clean && npm run build:run && npm run build:copy",
 		"list-published-files": "cd dist && irish-pub && cd ..",
-		"post-automatic-release": "copyfiles \"docs/**\" package.json CHANGELOG.md LICENSE README.md dist",
+		"post-release": "copyfiles \"docs/**\" package.json CHANGELOG.md LICENSE README.md dist",
+		"release": "node dist/bin/automatic-release.js",
 		"test": "jest --config jest.config.json --runInBand --no-cache"
 	},
 	"dependencies": {

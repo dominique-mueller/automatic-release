@@ -26,20 +26,39 @@ stages:
 jobs:
   include:
     - stage: build
-      install: npm install
+      install:
+        - npm install
       script:
-        - ls
         - npm run build:run
     - stage: test
-      install: npm install
+      install:
+        - npm install
       script:
-        - ls
         - npm run test
     - stage: release
-      install: npm install
-      script: echo "Release"
+      before_install:
+        - git clone "https://github.com/$TRAVIS_REPO_SLUG.git" "$TRAVIS_REPO_SLUG"; # We also need the develop branch
+        - cd "$TRAVIS_REPO_SLUG";
+        - git checkout -qf "$TRAVIS_COMMIT";
+        - git checkout master # Fix Travis CI issue of detached head in git
+      install:
+        - npm install
+      script:
+        - npm run build:run
+        - npm run build:copy
+      before_deploy:
+        - git config --global user.name "dominique-mueller";
+        - git config --global user.email "dominique.m.mueller@gmail.com";
+        - git config credential.helper "store --file=.git/credentials";
+        - echo "https://$GH_TOKEN:@github.com" > .git/credentials;
+        - npm run release # Run itself
+        - npm run post-release # Copy updates package and changelog files
+        - cd dist # Publish from the dist folder
       deploy:
         provider: npm
         email: dominique.m.mueller@gmail.com
         api_key: "$NPM_TOKEN"
         skip_cleanup: true
+      after_deploy:
+        - cd ..
+        - npm run list-published-files
