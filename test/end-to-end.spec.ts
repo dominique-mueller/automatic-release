@@ -13,6 +13,7 @@ import { PackageJson } from '../src/interfaces/package-json.interface';
 import { parseChangelog } from './utilities/parse-changelog';
 import { preparedCommits } from './data/prepared-commits';
 import { run } from './utilities/run';
+import { setGithubDefaultBranch } from './utilities/set-github-default-branch';
 import { setupGitRepository } from '././setup/setup-git-repository';
 import { setupMocks } from './setup/setup-mocks';
 import { testChangelogBreakingChange } from './shared/test-changelog-breaking-change';
@@ -60,9 +61,15 @@ describe( 'Automatic Release: end-to-end', () => {
 
 	} );
 
-	afterAll( () => {
+	afterAll( async() => {
 
 		process.cwd = originalProcessCwd;
+
+		// Switch the GitHub repository default branch away from master, then back to master. Eventually, this removes the 'testing' repo
+		// from contribution counting -- force-pushing branches & commits 'overwrites' / invalidates previous commits, and switching the
+		// default branch results in contribution re-counting. #honesty #weird #idontmaketwohundredcontributionsaday
+		await setGithubDefaultBranch( 'develop' );
+		await setGithubDefaultBranch( 'master' );
 
 	} );
 
