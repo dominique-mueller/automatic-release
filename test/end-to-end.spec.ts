@@ -68,7 +68,7 @@ describe( 'Automatic Release: end-to-end', () => {
 		// Switch the GitHub repository default branch away from master, then back to master. Eventually, this removes the 'testing' repo
 		// from contribution counting -- force-pushing branches & commits 'overwrites' / invalidates previous commits, and switching the
 		// default branch results in contribution re-counting. #honesty #weird #idontmaketwohundredcontributionsaday
-		await setGithubDefaultBranch( 'temp' );
+		await setGithubDefaultBranch( 'develop' );
 		await setGithubDefaultBranch( 'master' );
 
 	} );

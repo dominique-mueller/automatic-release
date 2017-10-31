@@ -42,8 +42,6 @@ export async function setupGitRepository( projectPath: string,  useRemote: boole
 	await run( 'git add .', projectPath );
 	await run( 'git commit -m "Initial commit"', projectPath );
 	await run( 'git checkout -b develop', projectPath );
-	await run( 'git checkout -b temp', projectPath );
-	await run( 'git checkout develop', projectPath );
 	if ( useRemote ) {
 		await run( 'git push origin --all --force', projectPath );
 	}
