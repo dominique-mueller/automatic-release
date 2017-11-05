@@ -57,7 +57,7 @@ function generateChangelog( changelogTemplates: { [ key: string ]: string },repo
 			mainTemplate: changelogTemplates.mainTemplate,
 			commitPartial: changelogTemplates.commitTemplate,
 			headerPartial: changelogTemplates.headerTemplate,
-			footerTemplate: changelogTemplates.footerTemplate
+			footerPartial: changelogTemplates.footerTemplate
 		} );
 
 		// Handle errors
@@ -75,7 +75,7 @@ function generateChangelog( changelogTemplates: { [ key: string ]: string },repo
 		changelogStream.on( 'end', () => {
 
 			// Footer information
-			changelogChunks.push( '<br>\n\n---\n\n<sup>*Changelog generated automatically by [automatic-release](https://github.com/dominique-mueller/automatic-release).*</sup>\n' );
+			changelogChunks.push( '\n<br>\n\n---\n\n<sup>*Changelog generated automatically by [automatic-release](https://github.com/dominique-mueller/automatic-release).*</sup>\n' );
 
 			// Create the full changelog
 			const changelog: string = changelogChunks.join( '' );
