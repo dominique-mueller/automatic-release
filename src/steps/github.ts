@@ -57,7 +57,7 @@ function createGithubReleases( changelogTemplates: { [ key: string ]: string }, 
 			mainTemplate: changelogTemplates.mainTemplate,
 			commitPartial: changelogTemplates.commitTemplate,
 			headerPartial: '', // No header for release notes
-			footerTemplate: changelogTemplates.footerTemplate
+			footerPartial: changelogTemplates.footerTemplate
 		}, ( error: Error | null, response: any ) => { // We do not care about the response
 
 			// Catch library errors
