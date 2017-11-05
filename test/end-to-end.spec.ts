@@ -114,7 +114,6 @@ describe( 'Automatic Release: end-to-end', () => {
 			testChangelogFooter( changelogFooter );
 
 			// Check changelog content
-			expect( changelogContent.length ).toBe( 17 );
 			expect( changelogContent[ 0 ] ).toBe( `## [${ expectedFirstRelease }](${ initialPackageJson.repository.url }/releases/tag/${ expectedFirstRelease }) (${ today })` );
 			expect( changelogContent[ 1 ] ).toBe( '' );
 			expect( changelogContent[ 2 ] ).toBe( '### Features' );
@@ -173,7 +172,6 @@ describe( 'Automatic Release: end-to-end', () => {
 			expect( githubReleases[ 0 ].target_commitish ).toBe( 'master' );
 
 			// Check changelog content
-			expect( githubFirstReleaseContent.length ).toBe( 15 );
 			expect( githubFirstReleaseContent[ 0 ] ).toBe( '### Features' );
 			expect( githubFirstReleaseContent[ 1 ] ).toBe( '' );
 			testChangelogChange( githubFirstReleaseContent[ 2 ], commits[ 1 ], initialPackageJson.repository.url );
@@ -231,9 +229,6 @@ describe( 'Automatic Release: end-to-end', () => {
 			// Check changelog header & footer
 			testChangelogHeader( changelogHeader, initialPackageJson.repository.url );
 			testChangelogFooter( changelogFooter );
-
-			// Check changelog content
-			expect( changelogContent.length ).toBe( 29 );
 
 			// Release '1.1.0'
 			expect( changelogContent[ 0 ] ).toBe( `## [${ expectedSecondRelease }](${ initialPackageJson.repository.url }/releases/tag/${ expectedSecondRelease }) (${ today })` );
@@ -303,15 +298,12 @@ describe( 'Automatic Release: end-to-end', () => {
 			const githubSecondReleaseContent: Array<string> = githubReleases[ 1 ].body.split( /\r?\n/ );
 			const githubFirstReleaseContent: Array<string> = githubReleases[ 0 ].body.split( /\r?\n/ );
 
-			expect( githubReleases.length ).toBe( 2 );
-
 			// Check changelog details
 			expect( githubReleases[ 1 ].tag_name ).toBe( expectedSecondRelease );
 			expect( githubReleases[ 1 ].name ).toBe( expectedSecondRelease );
 			expect( githubReleases[ 1 ].target_commitish ).toBe( 'master' );
 
 			// Check changelog content
-			expect( githubSecondReleaseContent.length ).toBe( 7 );
 			expect( githubSecondReleaseContent[ 0 ] ).toBe( '### Bug Fixes' );
 			expect( githubSecondReleaseContent[ 1 ] ).toBe( '' );
 			testChangelogChange( githubSecondReleaseContent[ 2 ], commits[ 4 ], initialPackageJson.repository.url );
@@ -326,7 +318,6 @@ describe( 'Automatic Release: end-to-end', () => {
 			expect( githubReleases[ 0 ].target_commitish ).toBe( 'master' );
 
 			// Check changelog content
-			expect( githubFirstReleaseContent.length ).toBe( 15 );
 			expect( githubFirstReleaseContent[ 0 ] ).toBe( '### Features' );
 			expect( githubFirstReleaseContent[ 1 ] ).toBe( '' );
 			testChangelogChange( githubFirstReleaseContent[ 2 ], commits[ 1 ], initialPackageJson.repository.url );
