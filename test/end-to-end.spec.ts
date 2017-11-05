@@ -115,7 +115,7 @@ describe( 'Automatic Release: end-to-end', () => {
 
 			// Check changelog content
 			expect( changelogContent.length ).toBe( 17 );
-			expect( changelogContent[ 0 ] ).toBe( `## [${ expectedFirstRelease }](${ initialPackageJson.repository.url }/releases/tag/${ expectedFirstRelease }) / ${ today }` );
+			expect( changelogContent[ 0 ] ).toBe( `## [${ expectedFirstRelease }](${ initialPackageJson.repository.url }/releases/tag/${ expectedFirstRelease }) (${ today })` );
 			expect( changelogContent[ 1 ] ).toBe( '' );
 			expect( changelogContent[ 2 ] ).toBe( '### Features' );
 			expect( changelogContent[ 3 ] ).toBe( '' );
@@ -236,7 +236,7 @@ describe( 'Automatic Release: end-to-end', () => {
 			expect( changelogContent.length ).toBe( 29 );
 
 			// Release '1.1.0'
-			expect( changelogContent[ 0 ] ).toBe( `## [${ expectedSecondRelease }](${ initialPackageJson.repository.url }/releases/tag/${ expectedSecondRelease }) / ${ today }` );
+			expect( changelogContent[ 0 ] ).toBe( `## [${ expectedSecondRelease }](${ initialPackageJson.repository.url }/releases/tag/${ expectedSecondRelease }) (${ today })` );
 			expect( changelogContent[ 1 ] ).toBe( '' );
 			expect( changelogContent[ 2 ] ).toBe( '### Bug Fixes' );
 			expect( changelogContent[ 3 ] ).toBe( '' );
@@ -251,7 +251,7 @@ describe( 'Automatic Release: end-to-end', () => {
 			expect( changelogContent[ 11 ] ).toBe( '' );
 
 			// Release '1.0.0'
-			expect( changelogContent[ 12 ] ).toBe( `## [${ expectedFirstRelease }](${ initialPackageJson.repository.url }/releases/tag/${ expectedFirstRelease }) / ${ today }` );
+			expect( changelogContent[ 12 ] ).toBe( `## [${ expectedFirstRelease }](${ initialPackageJson.repository.url }/releases/tag/${ expectedFirstRelease }) (${ today })` );
 			expect( changelogContent[ 13 ] ).toBe( '' );
 			expect( changelogContent[ 14 ] ).toBe( '### Features' );
 			expect( changelogContent[ 15 ] ).toBe( '' );
