@@ -2,12 +2,13 @@
 
 # automatic-release
 
-**Automates the full release process for Open Source projects on GitHub, using Travis CI and deploying to NPM.**
+**Automates the release process for GitHub projects.**
 
 [![npm version](https://img.shields.io/npm/v/automatic-release.svg?maxAge=3600&style=flat)](https://www.npmjs.com/package/automatic-release)
 [![dependency status](https://img.shields.io/david/dominique-mueller/automatic-release.svg?maxAge=3600&style=flat)](https://david-dm.org/dominique-mueller/automatic-release)
 [![dev dependency status](https://img.shields.io/david/dev/dominique-mueller/automatic-release.svg?maxAge=3600&style=flat)](https://david-dm.org/dominique-mueller/automatic-release?type=dev)
 [![travis ci build status](https://img.shields.io/travis/dominique-mueller/automatic-release/master.svg?maxAge=3600&style=flat)](https://travis-ci.org/dominique-mueller/automatic-release)
+[![Codecov](https://img.shields.io/codecov/c/github/dominique-mueller/automatic-release.svg?maxAge=3600&style=flat)](https://codecov.io/gh/dominique-mueller/automatic-release)
 [![Known Vulnerabilities](https://snyk.io/test/github/dominique-mueller/automatic-release/badge.svg)](https://snyk.io/test/github/dominique-mueller/automatic-release)
 [![license](https://img.shields.io/npm/l/automatic-release.svg?maxAge=3600&style=flat)](https://github.com/dominique-mueller/automatic-release/LICENSE)
 
@@ -17,15 +18,20 @@
 
 ## What it does
 
-**automatic release** automates the whole release process for Open Source projects in GitHub by:
+WHY - HOW - WHAT
 
-- updating version numbers automatically
-- generating a detailed changelog
-- and creating releases on GitHub.
+Long story short, **automatic release** is a NodeJS-based command line tool which makes the usually long and complex task of publishing new releases a "matter of one click".
+
+
+ automates the release process for GitHub projects by:
+
+- updating version numbers
+- generating a changelog
+- creating GitHub releases
 
 When used in combination with the **Git Flow** branching model and a Continuous Integration platform such as **Travis CI**, releasing a library to NPM & GitHub gets as easy as merging the latest development state into the `master` branch.
 
-![Automatic Release Preview GIF](/docs/preview.gif?raw=true)
+TODO: Animated GIF
 
 <br>
 
