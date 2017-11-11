@@ -46,7 +46,7 @@ You can get **automatic-release** via **npm** by either adding it as a new devDe
 npm install automatic-release --save-dev
 ```
 
-**Requirements**
+### Requirements
 
 - **automatic-release** requires at least **NodeJS 7.6** (or higher). *Earlier 7.x versions of NodeJS (7.0 to 7.5) might also work when
 executing **automatic-release** using the `--harmony-async-await` flag.*
@@ -100,7 +100,7 @@ two branches to exist and get used correctly:
 
 ## Integration with Travis CI
 
-#### Step 1: Setup repository for Travis CI
+### Step 1: Setup repository for Travis CI
 
 First of all, setup **Travis CI** for your GitHub repository by
 
@@ -111,7 +111,7 @@ First of all, setup **Travis CI** for your GitHub repository by
 > For further details on how to setup Travis CI, continue reading the official
 **[Travis CI - Getting Started](https://docs.travis-ci.com/user/getting-started/)** guide.
 
-#### Step 2: Add environment variables
+### Step 2: Add environment variables
 
 Within Travis CI, select your GitHub project, go to *More Options / Settings* and make sure the following **Environment Variables** are
 defined:
@@ -130,7 +130,7 @@ instruction can be found **[right here](http://blog.npmjs.org/post/118393368555/
 `FORCE_COLOR`: This environment variable (forcefully) enables colorful logging output when set to `1`. If the **automatic-release** logging
 output is black'n'white only this variable might help.
 
-#### Step 3: Extend Travis CI configuration file
+### Step 3: Extend Travis CI configuration file
 
 Finally, setup the automated release process by extending the `.travis.yml` configuration file. First, make sure bothh the `master` and
 `develop` branches are included in the `branches` block. For example:
