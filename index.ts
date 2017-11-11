@@ -63,5 +63,3 @@ export async function automaticRelease(): Promise<void> {
 	} );
 
 }
-
-automaticRelease();
