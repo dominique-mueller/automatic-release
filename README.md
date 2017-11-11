@@ -33,7 +33,7 @@ includes
 > platform such as **Travis CI**, publishing a new library release to NPM & GitHub gets as simple as merging the latest `develop` state into
 > the `master` branch.
 
-*TODO: IMAGE*
+![Automatic Release Preview](/docs/preview.png?raw=true)
 
 <br><br>
 

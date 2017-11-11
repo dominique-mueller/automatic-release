@@ -17,7 +17,6 @@ branches:
 
 # Build stages
 stages:
-  - name: TEMP
   - name: build
   - name: test
   - name: release
@@ -26,13 +25,6 @@ stages:
 # Build jobs
 jobs:
   include:
-
-    - stage: TEMP
-      install:
-        - npm install
-        - npm install -g ts-node typescript
-      script:
-        - ts-node index.ts
 
     - stage: build
       install:
