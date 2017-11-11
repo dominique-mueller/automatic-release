@@ -30,7 +30,7 @@ jobs:
     - stage: TEMP
       install:
         - npm install
-        - npm install -g ts-node
+        - npm install -g ts-node typescript
       script:
         - ts-node index.ts
 
