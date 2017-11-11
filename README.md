@@ -13,7 +13,7 @@
 
 </div>
 
-<br>
+<br><br>
 
 ## What it does
 
@@ -35,7 +35,7 @@ includes
 
 *TODO: IMAGE*
 
-<br>
+<br><br>
 
 ## How to install
 
@@ -54,7 +54,7 @@ executing **automatic-release** using the `--harmony-async-await` flag.*
 - **automatic-release** expects a `package.json` and a `CHANGELOG.md` file at the project root. Further on, the `package.json` file should
 at least contain a package name, a version, and a valid GitHub repository URL.
 
-<br>
+<br><br>
 
 ## How to use
 
@@ -79,6 +79,8 @@ As of now, **automatic-release** expects the **Angular Commit Message Format** t
 less commits being made in general. Instead, it's probably better to squash commits when merging PRs, and then only name the PR merge commit
 after the naming convention.
 
+<br>
+
 ### Using Git Flow
 
 Moreover, following the **Git Flow** branching model is highly recommended. To summarize, **Git Flow** proposes a number of branch types
@@ -98,9 +100,9 @@ two branches to exist and get used correctly:
 
 <br>
 
-## Integration with Travis CI
+### Integration with Travis CI
 
-### Step 1: Setup repository for Travis CI
+#### Step 1: Setup repository for Travis CI
 
 First of all, setup **Travis CI** for your GitHub repository by
 
@@ -111,7 +113,7 @@ First of all, setup **Travis CI** for your GitHub repository by
 > For further details on how to setup Travis CI, continue reading the official
 **[Travis CI - Getting Started](https://docs.travis-ci.com/user/getting-started/)** guide.
 
-### Step 2: Add environment variables
+#### Step 2: Add environment variables
 
 Within Travis CI, select your GitHub project, go to *More Options / Settings* and make sure the following **Environment Variables** are
 defined:
@@ -130,7 +132,7 @@ instruction can be found **[right here](http://blog.npmjs.org/post/118393368555/
 `FORCE_COLOR`: This environment variable (forcefully) enables colorful logging output when set to `1`. If the **automatic-release** logging
 output is black'n'white only this variable might help.
 
-### Step 3: Extend Travis CI configuration file
+#### Step 3: Extend Travis CI configuration file
 
 Finally, setup the automated release process by extending the `.travis.yml` configuration file. First, make sure bothh the `master` and
 `develop` branches are included in the `branches` block. For example:
@@ -195,7 +197,7 @@ stages:
     if: branch = master
 ```
 
-<br>
+<br><br>
 
 ## Creator
 
