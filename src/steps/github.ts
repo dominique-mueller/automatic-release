@@ -21,11 +21,11 @@ export async function createAllGithubReleases( repositoryOwner: string, reposito
 	Promise<void> {
 
 	log( 'substep', 'Delete all existing GitHub releases' );
-	await deleteAllGithubReleases( repositoryOwner, repositoyName, githubToken );
+	// await deleteAllGithubReleases( repositoryOwner, repositoyName, githubToken );
 
 	log( 'substep', 'Create all GitHub releases' );
-	const changelogTemplates: { [ key: string ]: string } = await readChangelogTemplateFiles();
-	await createGithubReleases( changelogTemplates, repositoryUrl, githubToken );
+	// const changelogTemplates: { [ key: string ]: string } = await readChangelogTemplateFiles();
+	// await createGithubReleases( changelogTemplates, repositoryUrl, githubToken );
 
 }
 

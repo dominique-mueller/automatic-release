@@ -18,11 +18,11 @@ import { writeFile } from './../utilities/write-file';
 export async function generateAndWriteChangelog( repositoryUrl: string ): Promise<void> {
 
 	log( 'substep', 'Generage changelog' );
-	const changelogTemplates: { [ key: string ]: string } = await readChangelogTemplateFiles();
-	const changelog: string = await generateChangelog( changelogTemplates, repositoryUrl );
+	// const changelogTemplates: { [ key: string ]: string } = await readChangelogTemplateFiles();
+	// const changelog: string = await generateChangelog( changelogTemplates, repositoryUrl );
 
 	log( 'substep', 'Write the "CHANGELOG.md" file' );
-	await writeFile( 'CHANGELOG.md', changelog );
+	// await writeFile( 'CHANGELOG.md', changelog );
 
 }
 

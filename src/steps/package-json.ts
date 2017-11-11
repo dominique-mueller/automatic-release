@@ -15,12 +15,12 @@ import { writeFile } from './../utilities/write-file';
 export async function updatePackageJson( newVersion: string ): Promise<void> {
 
 	log( 'substep', 'Read the "package.json" file' );
-	const packageJson: PackageJson = await readFile( 'package.json' );
+	// const packageJson: PackageJson = await readFile( 'package.json' );
 
 	log( 'substep', 'Update the version number' );
-	packageJson.version = newVersion;
+	// packageJson.version = newVersion;
 
 	log( 'substep', 'Write the "package.json" file' );
-	await writeFile( 'package.json', packageJson );
+	// await writeFile( 'package.json', packageJson );
 
 }
