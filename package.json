@@ -49,7 +49,7 @@
 		"github": "12.0.x",
 		"parse-github-url": "1.0.x",
 		"semver": "5.4.x",
-		"simple-git": "1.80.x"
+		"simple-git": "1.81.x"
 	},
 	"devDependencies": {
 		"@types/jest": "21.1.x",
@@ -60,7 +60,7 @@
 		"jest": "21.2.x",
 		"request": "2.83.x",
 		"rimraf": "2.6.x",
-		"ts-jest": "21.1.x",
+		"ts-jest": "21.2.x",
 		"typescript": "2.6.x"
 	}
 }
