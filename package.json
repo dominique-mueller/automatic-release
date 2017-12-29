@@ -52,7 +52,7 @@
 		"simple-git": "1.81.x"
 	},
 	"devDependencies": {
-		"@types/jest": "21.1.x",
+		"@types/jest": "~22.0.0",
 		"@types/node": "8.0.x",
 		"codecov": "3.0.x",
 		"copyfiles": "1.2.x",
