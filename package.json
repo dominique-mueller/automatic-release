@@ -46,7 +46,7 @@
 		"conventional-github-releaser": "2.0.x",
 		"conventional-recommended-bump": "1.0.x",
 		"github-remove-all-releases": "1.0.x",
-		"github": "12.0.x",
+		"github": "12.1.x",
 		"parse-github-url": "1.0.x",
 		"semver": "5.5.x",
 		"simple-git": "1.89.x"
