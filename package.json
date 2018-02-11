@@ -49,7 +49,7 @@
 		"github": "12.0.x",
 		"parse-github-url": "1.0.x",
 		"semver": "5.5.x",
-		"simple-git": "1.81.x"
+		"simple-git": "1.89.x"
 	},
 	"devDependencies": {
 		"@types/jest": "21.1.x",
