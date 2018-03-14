@@ -55,7 +55,7 @@
 		"@types/jest": "22.2.x",
 		"@types/node": "8.9.x",
 		"codecov": "3.0.x",
-		"copyfiles": "1.2.x",
+		"copyfiles": "2.0.x",
 		"del": "3.0.x",
 		"jest": "22.4.x",
 		"request": "2.85.x",
