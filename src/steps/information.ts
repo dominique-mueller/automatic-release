@@ -1,6 +1,6 @@
 import * as conventionalRecommendedBump from 'conventional-recommended-bump';
 import * as git from 'simple-git';
-import * as GitHubApi from 'github';
+import * as GitHubApi from '@octokit/rest';
 import * as parseGithubUrl from 'parse-github-url';
 import * as semver from 'semver';
 

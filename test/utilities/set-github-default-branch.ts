@@ -1,4 +1,4 @@
-import * as GitHubApi from 'github';
+import * as GitHubApi from '@octokit/rest';
 
 /**
  * Set GitHub default branch ()
