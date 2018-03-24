@@ -53,7 +53,7 @@
 	},
 	"devDependencies": {
 		"@types/jest": "22.2.x",
-		"@types/node": "8.9.x",
+		"@types/node": "8.10.x",
 		"codecov": "3.0.x",
 		"copyfiles": "2.0.x",
 		"del": "3.0.x",
