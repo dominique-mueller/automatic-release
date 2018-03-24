@@ -18,6 +18,11 @@ export const commitTypes: { [ type: string ]: string } = {
 };
 
 /**
+ * Ordered commit type titles, used for sorting (pre-calculated here for #perf reasons)
+ */
+export const commitTypesOrder: Array<string> = Object.values( commitTypes );
+
+/**
  * Changelog transformer, primarily enhancing the commit content text
  */
 export function changelogTransformer( repositoryUrl: string ) {
@@ -71,4 +76,11 @@ export function changelogTransformer( repositoryUrl: string ) {
 
 	};
 
+};
+
+/**
+ * Changelog commit group sort function
+ */
+export function changelogCommitGroupsSort( a: any, b: any ) {
+	return commitTypesOrder.indexOf( a.title ) > commitTypesOrder.indexOf( b.title );
 };
