@@ -4,7 +4,7 @@ import * as path from 'path';
 import * as githubReleaser from 'conventional-github-releaser';
 import * as githubRemoveAllReleases from 'github-remove-all-releases';
 
-import { changelogTransformer } from './../templates/changelog-transform';
+import { changelogTransformer, changelogCommitGroupsSort } from './../templates/changelog-transform';
 import { log } from './../log';
 import { readChangelogTemplateFiles } from './changelog';
 
@@ -53,11 +53,12 @@ function createGithubReleases( changelogTemplates: { [ key: string ]: string }, 
 		}, {
 			linkCompare: false // We use a custom link
 		}, {}, {}, {
-			transform: changelogTransformer( repositoryUrl ), // Custom transform (shows all commit types)
-			mainTemplate: changelogTemplates.mainTemplate,
+			commitGroupsSort: changelogCommitGroupsSort,
 			commitPartial: changelogTemplates.commitTemplate,
+			footerPartial: changelogTemplates.footerTemplate,
 			headerPartial: '', // No header for release notes
-			footerPartial: changelogTemplates.footerTemplate
+			mainTemplate: changelogTemplates.mainTemplate,
+			transform: changelogTransformer( repositoryUrl ) // Custom transform (shows all commit types)
 		}, ( error: Error | null, response: any ) => { // We do not care about the response
 
 			// Catch library errors
