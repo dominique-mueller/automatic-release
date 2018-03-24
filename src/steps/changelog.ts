@@ -3,7 +3,7 @@ import * as stream from 'stream';
 
 import * as conventionalChangelog from 'conventional-changelog';
 
-import { changelogTransformer } from './../templates/changelog-transform';
+import { changelogTransformer, changelogCommitGroupsSort } from './../templates/changelog-transform';
 import { log } from './../log';
 import { readFile } from './../utilities/read-file';
 import { writeFile } from './../utilities/write-file';
@@ -53,11 +53,12 @@ function generateChangelog( changelogTemplates: { [ key: string ]: string },repo
 		}, {
 			linkCompare: false // We use a custom link
 		}, {}, {}, {
-			transform: changelogTransformer( repositoryUrl ), // Custom transform (shows all commit types)
-			mainTemplate: changelogTemplates.mainTemplate,
+			commitGroupsSort: changelogCommitGroupsSort,
 			commitPartial: changelogTemplates.commitTemplate,
+			footerPartial: changelogTemplates.footerTemplate,
 			headerPartial: changelogTemplates.headerTemplate,
-			footerPartial: changelogTemplates.footerTemplate
+			mainTemplate: changelogTemplates.mainTemplate,
+			transform: changelogTransformer( repositoryUrl ) // Custom transform (shows all commit types)
 		} );
 
 		// Handle errors
