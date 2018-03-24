@@ -44,7 +44,7 @@
 		"chalk": "2.3.x",
 		"conventional-changelog": "1.1.x",
 		"conventional-github-releaser": "2.0.x",
-		"conventional-recommended-bump": "1.0.x",
+		"conventional-recommended-bump": "2.0.x",
 		"github-remove-all-releases": "1.0.x",
 		"@octokit/rest": "15.2.x",
 		"parse-github-url": "1.0.x",
