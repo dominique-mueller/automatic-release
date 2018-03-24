@@ -237,13 +237,13 @@ describe( 'Automatic Release: end-to-end', () => {
 			expect( changelogContent.length ).toBe( 29 );
 			expect( changelogContent[ 0 ] ).toBe( `## [${ expectedSecondRelease }](${ initialPackageJson.repository.url }/releases/tag/${ expectedSecondRelease }) (${ today })` );
 			expect( changelogContent[ 1 ] ).toBe( '' );
-			expect( changelogContent[ 2 ] ).toBe( '### Bug Fixes' );
+			expect( changelogContent[ 2 ] ).toBe( '### Features' );
 			expect( changelogContent[ 3 ] ).toBe( '' );
-			testChangelogChange( changelogContent[ 4 ], commits[ 4 ], initialPackageJson.repository.url );
+			testChangelogChange( changelogContent[ 4 ], commits[ 5 ], initialPackageJson.repository.url );
 			expect( changelogContent[ 5 ] ).toBe( '' );
-			expect( changelogContent[ 6 ] ).toBe( '### Features' );
+			expect( changelogContent[ 6 ] ).toBe( '### Bug Fixes' );
 			expect( changelogContent[ 7 ] ).toBe( '' );
-			testChangelogChange( changelogContent[ 8 ], commits[ 5 ], initialPackageJson.repository.url );
+			testChangelogChange( changelogContent[ 8 ], commits[ 4 ], initialPackageJson.repository.url );
 
 			expect( changelogContent[ 9 ] ).toBe( '' );
 			expect( changelogContent[ 10 ] ).toBe( '<br>' );
@@ -309,13 +309,13 @@ describe( 'Automatic Release: end-to-end', () => {
 
 			// Check changelog content
 			expect( githubSecondReleaseContent.length ).toBe( 8 );
-			expect( githubSecondReleaseContent[ 0 ] ).toBe( '### Bug Fixes' );
+			expect( githubSecondReleaseContent[ 0 ] ).toBe( '### Features' );
 			expect( githubSecondReleaseContent[ 1 ] ).toBe( '' );
-			testChangelogChange( githubSecondReleaseContent[ 2 ], commits[ 4 ], initialPackageJson.repository.url );
+			testChangelogChange( githubSecondReleaseContent[ 2 ], commits[ 5 ], initialPackageJson.repository.url );
 			expect( githubSecondReleaseContent[ 3 ] ).toBe( '' );
-			expect( githubSecondReleaseContent[ 4 ] ).toBe( '### Features' );
+			expect( githubSecondReleaseContent[ 4 ] ).toBe( '### Bug Fixes' );
 			expect( githubSecondReleaseContent[ 5 ] ).toBe( '' );
-			testChangelogChange( githubSecondReleaseContent[ 6 ], commits[ 5 ], initialPackageJson.repository.url );
+			testChangelogChange( githubSecondReleaseContent[ 6 ], commits[ 4 ], initialPackageJson.repository.url );
 			expect( githubSecondReleaseContent[ 7 ] ).toBe( '' );
 
 			// Check changelog details
