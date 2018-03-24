@@ -6,7 +6,6 @@
 		"!src/templates/**"
 	],
 	"coverageDirectory": "<rootDir>/coverage",
-	"mapCoverage": true,
 	"moduleFileExtensions": [
 		"js",
 		"ts",
