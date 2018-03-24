@@ -1,47 +1,33 @@
 import { GitCommit, GitCommitNote, GitCommitReference } from './../interfaces/git-commit.interface';
 
 /**
+ * Commit types with title
+ */
+export const commitTypes: { [ type: string ]: string } = {
+	feat: 'Features',
+	fix: 'Bug Fixes',
+	style: 'Styles',
+	perf: 'Performance Improvements',
+	docs: 'Documentation',
+	refactor: 'Refactoring',
+	test: 'Tests',
+	// chore: 'Chores', // Ignored because internal
+	// build: 'Buid System', // Ignored because internal
+	// ci: 'Continuous Integration', // Ignored because internal
+	revert: 'Reverts'
+};
+
+/**
  * Changelog transformer, primarily enhancing the commit content text
  */
 export function changelogTransformer( repositoryUrl: string ) {
 
 	return ( commit: GitCommit ) => {
 
-		commit.notes.forEach( ( note: GitCommitNote ) => {
-			note.title = 'BREAKING CHANGES';
-		} );
-
-		// Get full commit type from shorthand notation
-		switch( commit.type ) {
-			case 'feat':
-				commit.type = 'Features';
-				break;
-			case 'fix':
-				commit.type = 'Bug Fixes';
-				break;
-			case 'perf':
-				commit.type = 'Performance Improvements';
-				break;
-			case 'style':
-				commit.type = 'Styles';
-				break;
-			case 'docs':
-				commit.type = 'Documentation';
-				break;
-			case 'refactor':
-				commit.type = 'Refactoring';
-				break;
-			case 'test':
-				commit.type = 'Tests'
-				break;
-			case 'chore':
-				commit.type = 'Chores';
-				break;
-			case 'revert':
-				commit.type = 'Reverts';
-				break;
-			default:
-				return; // Skip commits without commit message convention (e.g. release commits)
+		// Get full commit type from shorthand notation, skip if not defined (e.g. release commits)
+		commit.type = commitTypes[ commit.type ];
+		if ( !commit.type ) {
+			return;
 		}
 
 		// Ommit the scope if there is none defined
@@ -61,7 +47,7 @@ export function changelogTransformer( repositoryUrl: string ) {
 			commit.subject = commit.subject
 
 				// Link issues (including PRs)
-				.replace( /#([0-9]+)/g, function( match: string, issue: string ) {
+				.replace( /#([0-9]+)/g, function ( match: string, issue: string ) {
 					issues.push( issue );
 					return `[#${ issue }](${ repositoryUrl }/issues/${ issue })`;
 				} )
@@ -74,6 +60,11 @@ export function changelogTransformer( repositoryUrl: string ) {
 		// Remove references that already appear in the subject
 		commit.references = commit.references.filter( ( reference: GitCommitReference ) => {
 			return issues.indexOf( reference.issue ) === -1;
+		} );
+
+		// Notes are always breaking changes
+		commit.notes.forEach( ( note: GitCommitNote ) => {
+			note.title = 'BREAKING CHANGES';
 		} );
 
 		return commit;
