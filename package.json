@@ -57,7 +57,7 @@
 		"codecov": "3.0.x",
 		"copyfiles": "2.0.x",
 		"del": "3.0.x",
-		"jest": "23.0.x",
+		"jest": "23.1.x",
 		"request": "2.87.x",
 		"rimraf": "2.6.x",
 		"ts-jest": "22.4.x",
