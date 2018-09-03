@@ -58,7 +58,7 @@
 		"copyfiles": "2.0.x",
 		"del": "3.0.x",
 		"jest": "23.5.x",
-		"request": "2.87.x",
+		"request": "2.88.x",
 		"rimraf": "2.6.x",
 		"ts-jest": "22.4.x",
 		"typescript": "3.0.x"
