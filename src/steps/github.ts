@@ -51,10 +51,10 @@ function createGithubReleases( repositoryUrl: string, githubToken: string ): Pro
 			linkCompare: false // We use a custom link
 		}, {}, {}, {
 			commitGroupsSort: changelogCommitGroupsSort,
-			commitPartial: await this.readTemplate( 'commit' ),
-			footerPartial: await this.readTemplate( 'footer' ),
+			commitPartial: await readTemplate( 'commit' ),
+			footerPartial: await readTemplate( 'footer' ),
 			headerPartial: '', // No header for release notes
-			mainTemplate: await this.readTemplate( 'main' ),
+			mainTemplate: await readTemplate( 'main' ),
 			transform: changelogTransformer( repositoryUrl ) // Custom transform (shows all commit types)
 		}, ( error: Error | null, response: any ) => { // We do not care about the response
 
