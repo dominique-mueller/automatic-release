@@ -1,9 +1,8 @@
 import { AutomaticReleaseInformation } from './src/interfaces/automatic-release-information.interface';
 import { collectInformation } from './src/steps/information';
 import { createAllGithubReleases } from './src/steps/github';
-import { generateAndWriteChangelog } from './src/steps/changelog';
+import { ChangelogGenerator } from './src/steps/changelog';
 import { log } from './src/log';
-import { readFile } from './src/utilities/read-file';
 import { saveChangesToGit } from './src/steps/git';
 import { updatePackageJson } from './src/steps/package-json';
 
@@ -27,7 +26,8 @@ export async function automaticRelease(): Promise<void> {
 
 			log();
 			log( 'step', 'Generate "CHANGELOG.md" file' );
-			await generateAndWriteChangelog( info.repositoryUrl );
+			const changelogGenerator: ChangelogGenerator = new ChangelogGenerator();
+			await changelogGenerator.generateAndWriteChangelog( info.repositoryUrl );
 
 			log();
 			log( 'step', 'Save changes to Git' );
