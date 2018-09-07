@@ -1,4 +1,3 @@
-import * as fs from 'fs';
 import * as path from 'path';
 
 import * as githubReleaser from 'conventional-github-releaser';
@@ -6,7 +5,7 @@ import * as githubRemoveAllReleases from 'github-remove-all-releases';
 
 import { changelogTransformer, changelogCommitGroupsSort } from './../templates/changelog-transform';
 import { log } from './../log';
-import { readChangelogTemplateFiles } from './changelog';
+import { readFile } from '../utilities/read-file';
 
 /**
  * Create all GitHub releases
@@ -24,20 +23,18 @@ export async function createAllGithubReleases( repositoryOwner: string, reposito
 	await deleteAllGithubReleases( repositoryOwner, repositoyName, githubToken );
 
 	log( 'substep', 'Create all GitHub releases' );
-	const changelogTemplates: { [ key: string ]: string } = await readChangelogTemplateFiles();
-	await createGithubReleases( changelogTemplates, repositoryUrl, githubToken );
+	await createGithubReleases( repositoryUrl, githubToken );
 
 }
 
 /**
  * Create all GitHub releases
  *
- * @param   changelogTemplates - Changelog templates
  * @param   repositoryUrl      - Repository URL
  * @param   githubToken        - GitHub token
  * @returns                    - Promise
  */
-function createGithubReleases( changelogTemplates: { [ key: string ]: string }, repositoryUrl: string, githubToken: string ): Promise<void> {
+function createGithubReleases( repositoryUrl: string, githubToken: string ): Promise<void> {
 	return new Promise<void>( async( resolve: () => void, reject: ( error: Error ) => void ) => {
 
 		// Create a new release on GitHub
@@ -54,10 +51,10 @@ function createGithubReleases( changelogTemplates: { [ key: string ]: string }, 
 			linkCompare: false // We use a custom link
 		}, {}, {}, {
 			commitGroupsSort: changelogCommitGroupsSort,
-			commitPartial: changelogTemplates.commitTemplate,
-			footerPartial: changelogTemplates.footerTemplate,
+			commitPartial: await this.readTemplate( 'commit' ),
+			footerPartial: await this.readTemplate( 'footer' ),
 			headerPartial: '', // No header for release notes
-			mainTemplate: changelogTemplates.mainTemplate,
+			mainTemplate: await this.readTemplate( 'main' ),
 			transform: changelogTransformer( repositoryUrl ) // Custom transform (shows all commit types)
 		}, ( error: Error | null, response: any ) => { // We do not care about the response
 
@@ -103,4 +100,8 @@ function deleteAllGithubReleases( owner: string, name: string, githubToken: stri
 		} );
 
 	} );
+}
+
+async function readTemplate( templateName: string ): Promise<string> {
+	return readFile( `./../templates/changelog-${ templateName }.hbs`, true );
 }
