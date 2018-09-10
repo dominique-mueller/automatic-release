@@ -41,12 +41,12 @@
 		"test": "jest --config jest.config.json --runInBand --no-cache"
 	},
 	"dependencies": {
+		"@octokit/rest": "15.11.x",
 		"chalk": "2.4.x",
 		"conventional-changelog": "2.0.x",
 		"conventional-github-releaser": "2.0.x",
 		"conventional-recommended-bump": "4.0.x",
 		"github-remove-all-releases": "1.0.x",
-		"@octokit/rest": "15.11.x",
 		"parse-github-url": "1.0.x",
 		"semver": "5.5.x",
 		"simple-git": "1.96.x"
@@ -57,6 +57,7 @@
 		"codecov": "3.0.x",
 		"copyfiles": "2.1.x",
 		"del": "3.0.x",
+		"get-stream": "4.0.x",
 		"jest": "23.5.x",
 		"request": "2.88.x",
 		"rimraf": "2.6.x",
