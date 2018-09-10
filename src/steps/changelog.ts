@@ -1,5 +1,4 @@
 import * as path from 'path';
-import * as stream from 'stream';
 
 import * as getStream from 'get-stream';
 import * as conventionalChangelog from 'conventional-changelog';
@@ -21,7 +20,7 @@ export class ChangelogGenerator {
 	public async generateAndWriteChangelog( repositoryUrl: string ): Promise<void> {
 
 		log( 'substep', 'Generage changelog' );
-		const changelog: string = await this.generateChangelogContent( repositoryUrl );
+		const changelog: string = await this.generateChangelog( repositoryUrl );
 
 		log( 'substep', 'Write the "CHANGELOG.md" file' );
 		await writeFile( 'CHANGELOG.md', changelog );
@@ -34,34 +33,43 @@ export class ChangelogGenerator {
 	 * @param   repositoryUrl      - Repository URL
 	 * @returns                    - Promise, resolves with changelog
 	 */
-	private async generateChangelogContent( repositoryUrl: string ): Promise<string> {
-		return new Promise<string>( async ( resolve: ( changelogContent: string ) => void, reject: ( error: Error ) => void ) => {
+	private async generateChangelog( repositoryUrl: string ): Promise<string> {
 
-			const changelogHeader: string = `# Changelog\n\nAlso see the **[release page](${ repositoryUrl }/releases)**.\n`;
-			const changelogFooter: string = '\n<br>\n\n---\n\n<sup>*Changelog generated automatically by [automatic-release](https://github.com/dominique-mueller/automatic-release).*</sup>\n';
-			const changelogBody: string = await getStream(
-				conventionalChangelog( {
-					pkg: {
-						path: path.resolve( process.cwd(), 'package.json' )
-					},
-					preset: 'angular',
-					releaseCount: 0 // Regenerate the whole thing every time
-				}, {
-					linkCompare: false // We use a custom link
-				}, {}, {}, {
-					commitGroupsSort: changelogCommitGroupsSort,
-					commitPartial: await readFile( `./../templates/changelog-commit.hbs`, true ),
-					footerPartial: await await readFile( `./../templates/changelog-footer.hbs`, true ),
-					headerPartial: await await readFile( `./../templates/changelog-header.hbs`, true ),
-					mainTemplate: await await readFile( `./../templates/changelog-main.hbs`, true ),
-					transform: changelogTransformer( repositoryUrl ) // Custom transform
-				} )
-			);
+		const changelogOptions: any = {
+			pkg: {
+				path: path.resolve( process.cwd(), 'package.json' )
+			},
+			preset: 'angular',
+			releaseCount: 0 // Regenerate the whole thing every time
+		};
+		const changelogContext: any = {
+			linkCompare: false // We use a custom link
+		};
+		const changelogGitOptions: any = {};
+		const changelogParserOptions: any = {};
+		const changelogWriterOptions: any = {
+			commitGroupsSort: changelogCommitGroupsSort,
+			commitPartial: await readFile( `./../templates/changelog-commit.hbs`, true ),
+			footerPartial: await readFile( `./../templates/changelog-footer.hbs`, true ),
+			headerPartial: await readFile( `./../templates/changelog-header.hbs`, true ),
+			mainTemplate: await readFile( `./../templates/changelog-main.hbs`, true ),
+			transform: changelogTransformer( repositoryUrl ) // Custom transform
+		};
 
-			const changelog: string = `${ changelogHeader }${ changelogBody }${ changelogFooter }`;
-			resolve( changelog );
+		const changelogHeader: string = `# Changelog\n\nAlso see the **[release page](${ repositoryUrl }/releases)**.\n`;
+		const changelogFooter: string = '\n<br>\n\n---\n\n<sup>*Changelog generated automatically by [automatic-release](https://github.com/dominique-mueller/automatic-release).*</sup>\n';
+		const changelogBody: string = await getStream(
+			conventionalChangelog(
+				changelogOptions,
+				changelogContext,
+				changelogGitOptions,
+				changelogParserOptions,
+				changelogWriterOptions
+			)
+		);
 
-		} );
+		return `${ changelogHeader }${ changelogBody }${ changelogFooter }`;
+
 	}
 
 }
