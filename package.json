@@ -60,7 +60,7 @@
 		"jest": "23.5.x",
 		"request": "2.88.x",
 		"rimraf": "2.6.x",
-		"ts-jest": "22.4.x",
+		"ts-jest": "23.10.x",
 		"typescript": "3.0.x"
 	}
 }
