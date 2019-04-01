@@ -56,7 +56,7 @@
 		"@types/node": "8.10.x",
 		"codecov": "3.0.x",
 		"copyfiles": "2.1.x",
-		"del": "3.0.x",
+		"del": "4.1.x",
 		"jest": "23.5.x",
 		"request": "2.88.x",
 		"rimraf": "2.6.x",
