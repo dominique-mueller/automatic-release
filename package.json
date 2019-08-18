@@ -59,7 +59,7 @@
 		"del": "3.0.x",
 		"jest": "23.5.x",
 		"request": "2.88.x",
-		"rimraf": "2.6.x",
+		"rimraf": "2.7.x",
 		"ts-jest": "22.4.x",
 		"typescript": "3.0.x"
 	}
