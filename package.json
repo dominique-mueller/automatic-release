@@ -1,66 +1,70 @@
 {
-	"name": "automatic-release",
-	"description": "Automates the full release process for Open Source projects on GitHub, using Travis CI and deploying to NPM.",
-	"version": "1.1.1",
-	"author": {
-		"name": "Dominique Müller",
-		"email": "dominique.m.mueller@gmail.com",
-		"url": "https://www.devdom.io/"
-	},
-	"license": "MIT",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/dominique-mueller/automatic-release"
-	},
-	"homepage": "https://github.com/dominique-mueller/automatic-release",
-	"bugs": {
-		"url": "https://github.com/dominique-mueller/automatic-release/issues"
-	},
-	"keywords": [
-		"automatic",
-		"semantic",
-		"release",
-		"publish",
-		"deploy",
-		"ci",
-		"github",
-		"travis",
-		"npm",
-		"node"
-	],
-	"main": "index.js",
-	"types": "index.d.ts",
-	"bin": {
-		"automatic-release": "bin/automatic-release.js"
-	},
-	"scripts": {
-		"build": "tsc -p tsconfig.json && copyfiles \"src/**/*.hbs\" \"bin/**\" dist",
-		"clean": "rimraf -r dist/**",
-		"release": "node dist/bin/automatic-release.js && copyfiles \"docs/**\" package.json CHANGELOG.md LICENSE README.md dist",
-		"test:coverage": "codecov -f coverage/coverage-final.json",
-		"test": "jest --config jest.config.json --runInBand --no-cache"
-	},
-	"dependencies": {
-		"chalk": "2.4.x",
-		"conventional-changelog": "2.0.x",
-		"conventional-github-releaser": "2.0.x",
-		"conventional-recommended-bump": "4.0.x",
-		"github-remove-all-releases": "1.0.x",
-		"@octokit/rest": "15.11.x",
-		"parse-github-url": "1.0.x",
-		"semver": "5.5.x",
-		"simple-git": "1.96.x"
-	},
-	"devDependencies": {
-		"@types/jest": "23.3.x",
-		"@types/node": "8.10.x",
-		"codecov": "3.0.x",
-		"copyfiles": "2.1.x",
-		"del": "3.0.x",
-		"jest": "23.5.x",
-		"request": "2.88.x",
-		"rimraf": "2.6.x",
-		"ts-jest": "22.4.x",
-		"typescript": "3.0.x"
-	}
+  "name": "automatic-release",
+  "description": "Automates the full release process for Open Source projects on GitHub, using Travis CI and deploying to NPM.",
+  "version": "1.1.1",
+  "author": {
+    "name": "Dominique Müller",
+    "email": "dominique.m.mueller@gmail.com",
+    "url": "https://www.devdom.io/"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dominique-mueller/automatic-release"
+  },
+  "homepage": "https://github.com/dominique-mueller/automatic-release",
+  "bugs": {
+    "url": "https://github.com/dominique-mueller/automatic-release/issues"
+  },
+  "keywords": [
+    "automatic",
+    "semantic",
+    "release",
+    "publish",
+    "deploy",
+    "ci",
+    "github",
+    "travis",
+    "npm",
+    "node"
+  ],
+  "main": "index.js",
+  "types": "index.d.ts",
+  "bin": {
+    "automatic-release": "bin/automatic-release.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json && copyfiles \"src/**/*.hbs\" \"bin/**\" dist",
+    "clean": "rimraf -r dist/**",
+    "release": "node dist/bin/automatic-release.js && copyfiles \"docs/**\" package.json CHANGELOG.md LICENSE README.md dist",
+    "test:coverage": "codecov -f coverage/coverage-final.json",
+    "test": "jest --config jest.config.json --runInBand --no-cache",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
+  },
+  "dependencies": {
+    "chalk": "2.4.x",
+    "conventional-changelog": "2.0.x",
+    "conventional-github-releaser": "2.0.x",
+    "conventional-recommended-bump": "4.0.x",
+    "github-remove-all-releases": "1.0.x",
+    "@octokit/rest": "15.11.x",
+    "parse-github-url": "1.0.x",
+    "semver": "5.5.x",
+    "simple-git": "1.96.x",
+    "snyk": "^1.230.5"
+  },
+  "devDependencies": {
+    "@types/jest": "23.3.x",
+    "@types/node": "8.10.x",
+    "codecov": "3.0.x",
+    "copyfiles": "2.1.x",
+    "del": "3.0.x",
+    "jest": "23.5.x",
+    "request": "2.88.x",
+    "rimraf": "2.6.x",
+    "ts-jest": "22.4.x",
+    "typescript": "3.0.x"
+  },
+  "snyk": true
 }
