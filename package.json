@@ -46,7 +46,7 @@
 		"conventional-github-releaser": "2.0.x",
 		"conventional-recommended-bump": "4.0.x",
 		"github-remove-all-releases": "1.0.x",
-		"@octokit/rest": "15.11.x",
+		"@octokit/rest": "16.43.x",
 		"parse-github-url": "1.0.x",
 		"semver": "5.5.x",
 		"simple-git": "1.96.x"
