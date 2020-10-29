@@ -49,7 +49,7 @@
 		"@octokit/rest": "15.11.x",
 		"parse-github-url": "1.0.x",
 		"semver": "5.5.x",
-		"simple-git": "1.96.x"
+		"simple-git": "2.21.x"
 	},
 	"devDependencies": {
 		"@types/jest": "23.3.x",
