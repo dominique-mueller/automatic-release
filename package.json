@@ -42,9 +42,9 @@
 	},
 	"dependencies": {
 		"chalk": "2.4.x",
-		"conventional-changelog": "2.0.x",
-		"conventional-github-releaser": "2.0.x",
-		"conventional-recommended-bump": "4.0.x",
+		"conventional-changelog": "3.1.10",
+		"conventional-github-releaser": "3.1.2",
+		"conventional-recommended-bump": "6.0.11",
 		"github-remove-all-releases": "1.0.x",
 		"@octokit/rest": "15.11.x",
 		"parse-github-url": "1.0.x",
