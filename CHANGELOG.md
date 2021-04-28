@@ -1,6 +1,6 @@
 # Changelog
 
-Also see the **[release page](https://github.com/dominique-mueller/automatic-release/releases)**.
+Also see **[GitHub releases](https://github.com/dominique-mueller/automatic-release/releases)**.
 
 <br>
 
@@ -97,12 +97,4 @@ Also see the **[release page](https://github.com/dominique-mueller/automatic-rel
 
 ## [1.0.0](https://github.com/dominique-mueller/automatic-release/releases/tag/1.0.0) (2017-04-02)
 
-### Features
-
-* Add initial version ([d09f9d0](https://github.com/dominique-mueller/automatic-release/commit/d09f9d0))
-
-<br>
-
----
-
-<sup>*Changelog generated automatically by [automatic-release](https://github.com/dominique-mueller/automatic-release).*</sup>
+**Initial release**
