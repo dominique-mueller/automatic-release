@@ -1,15 +1,21 @@
+<br>
+
+---
+
+**DEPRECATION NOTICE**
+
+This library is now deprecated, I suggest using **[semantic-release](https://github.com/semantic-release/semantic-release)** as an
+alterantive.
+
+---
+
+<br><br>
+
 <div align="center">
 
 # automatic-release
 
 **Automates the release process for GitHub projects.**
-
-[![npm version](https://img.shields.io/npm/v/automatic-release.svg?maxAge=3600&style=flat)](https://www.npmjs.com/package/automatic-release)
-[![dependency status](https://img.shields.io/david/dominique-mueller/automatic-release.svg?maxAge=3600&style=flat)](https://david-dm.org/dominique-mueller/automatic-release)
-[![travis ci build status](https://img.shields.io/travis/dominique-mueller/automatic-release/master.svg?maxAge=3600&style=flat)](https://travis-ci.org/dominique-mueller/automatic-release)
-[![Codecov](https://img.shields.io/codecov/c/github/dominique-mueller/automatic-release.svg?maxAge=3600&style=flat)](https://codecov.io/gh/dominique-mueller/automatic-release)
-[![Known Vulnerabilities](https://snyk.io/test/github/dominique-mueller/automatic-release/badge.svg)](https://snyk.io/test/github/dominique-mueller/automatic-release)
-[![license](https://img.shields.io/npm/l/automatic-release.svg?maxAge=3600&style=flat)](https://github.com/dominique-mueller/automatic-release/LICENSE)
 
 </div>
 
@@ -196,13 +202,3 @@ stages:
   - name: release
     if: branch = master
 ```
-
-<br><br>
-
-## Creator
-
-**Dominique Müller**
-
-- E-Mail: **[dominique.m.mueller@gmail.com](mailto:dominique.m.mueller@gmail.com)**
-- Website: **[www.devdom.io](https://www.devdom.io/)**
-- Twitter: **[@itsdevdom](https://twitter.com/itsdevdom)**
