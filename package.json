@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "chalk": "2.4.x",
-    "conventional-changelog": "2.0.x",
+    "conventional-changelog": "3.1.10",
     "conventional-github-releaser": "2.0.x",
     "conventional-recommended-bump": "4.0.x",
     "github-remove-all-releases": "1.0.x",
